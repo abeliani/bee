@@ -1,0 +1,33 @@
+{
+    "name": "abeliani/pcs",
+    "description": "Personal content service",
+    "type": "project",
+    "require": {
+        "guzzlehttp/guzzle": "7.8.1",
+        "php-di/php-di": "7.0.6",
+        "vlucas/phpdotenv": "5.6.0",
+        "relay/relay": "2.1.2",
+        "middlewares/request-handler": "2.0.2",
+        "middlewares/fast-route": "2.0.1",
+        "guzzlehttp/psr7": "2.6.2",
+        "symfony/console": "7.0.3",
+        "twig/twig": "3.8.0"
+    },
+    "require-dev": {
+        "symfony/var-dumper": "7.0.3",
+        "codeception/codeception": "5.1"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Abeliani\\Blog\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Anatoli Beliani",
+            "email": "blog@treecode.ru"
+        }
+    ],
+    "minimum-stability": "stable"
+}
