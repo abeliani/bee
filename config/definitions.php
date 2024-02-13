@@ -10,8 +10,7 @@ use Abeliani\Blog\Infrastructure\Delivery\API\ItWorksController;
 
 return [
     Environment::class => function(): Environment {
-        $loader = new FilesystemLoader('templates');
-        return new Environment($loader);
+        return new Environment(new FilesystemLoader('templates'));
     },
     ItWorksController::class => function($container) {
         return new ItWorksController($container->get(Environment::class));

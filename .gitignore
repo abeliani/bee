@@ -1,1 +1,15 @@
+.idea/
+.vscode/
+
+.env
+
 /vendor/
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Linux
+*~
