@@ -12,7 +12,7 @@ final class CreateUserTable extends AbstractMigration
         $table = $this->table('users');
         $table->addColumn('name', 'string', ['limit' => 50])
             ->addColumn('email', 'string', ['limit' => 50])
-            ->addColumn('password', 'string', ['limit' => 180])
+            ->addColumn('password', 'string', ['limit' => 255])
             ->addColumn('status', 'integer', ['default' => 0, 'signed' => false, 'limit' => MysqlAdapter::INT_TINY])
             ->addColumn('role', 'integer', ['default' => 0, 'signed' => false, 'limit' => MysqlAdapter::INT_TINY])
             ->addColumn('email_verified_at', 'datetime', ['null' => true])
@@ -20,7 +20,7 @@ final class CreateUserTable extends AbstractMigration
             ->addColumn('updated_at', 'datetime')
             ->addColumn('last_login_at', 'datetime', ['null' => true])
             ->addColumn('login_count', 'integer', ['default' => 0, 'signed' => false, 'limit' => MysqlAdapter::INT_SMALL])
-            ->addIndex(['name', 'email'], ['unique' => true])
+            ->addIndex('email', ['unique' => true])
             ->create();
     }
 }
