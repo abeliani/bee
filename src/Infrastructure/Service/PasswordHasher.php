@@ -4,6 +4,10 @@ namespace Abeliani\Blog\Infrastructure\Service;
 
 use Abeliani\Blog\Domain\Service\PasswordHasher\PasswordHasherInterface;
 
+/**
+ * @todo
+ * @see symfony/password-hasher
+ */
 final readonly class PasswordHasher implements PasswordHasherInterface
 {
     public function __construct(private int $cost = 10)
