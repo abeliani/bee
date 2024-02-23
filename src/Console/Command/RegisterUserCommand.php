@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Abeliani\Blog\Console\Command;
 
-use Abeliani\Blog\Application\Service\UserRegistrationService;
+use Abeliani\Blog\Application\Service\UserRegistration\UserRegistrationService;
 use Abeliani\Blog\Domain\Enum\Role;
 use Abeliani\Blog\Domain\Enum\UserStatus;
 use Abeliani\Blog\Domain\Exception\UserException;
@@ -22,8 +22,8 @@ final class RegisterUserCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setDescription('Registers a new user.')
-            ->setHelp('This command allows you to register a user...');
+            ->setDescription('Registers a new root user.')
+            ->setHelp('This command allows you to register a root user...');
     }
 
     /**
