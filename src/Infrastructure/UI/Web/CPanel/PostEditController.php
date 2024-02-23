@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 
-namespace Abeliani\Blog\Infrastructure\Delivery\Backend;
+namespace Abeliani\Blog\Infrastructure\UI\Web\CPanel;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
