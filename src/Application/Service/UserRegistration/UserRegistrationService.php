@@ -1,6 +1,6 @@
 <?php
 
-namespace Abeliani\Blog\Application\Service;
+namespace Abeliani\Blog\Application\Service\UserRegistration;
 
 use Abeliani\Blog\Domain\Enum\Role;
 use Abeliani\Blog\Domain\Enum\UserStatus;
