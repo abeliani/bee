@@ -1,0 +1,167 @@
+{% import 'cpanel/form_macros.twig' as form %}
+{% extends "cpanel/main.twig" %}
+{% block content %}
+    {% block head %}
+    {% include 'cpanel/froala/styles.twig' %}
+    {% include 'cpanel/cropper/styles.twig' %}
+    {% include 'cpanel/datetimepicker/styles.twig' %}
+    <!--
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css">
+    -->
+    {% endblock %}
+
+    <form class="form-horizontal mt-3" method="POST" id="create_category" enctype="multipart/form-data" action="{{ action_url }}">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Common</h4>
+                        <div class="form-group">
+                            <label for="title">Title</label>
+                            {{ form.inputField('title', title, errors, {class: 'form-control', type: 'text', id: 'title'}) }}
+                        </div>
+                        <div class="form-group">
+                            <label for="slug">Slug</label>
+                            {{ form.inputField('slug', slug, errors, {class: 'form-control', type: 'text', id: 'slug'}) }}
+                        </div>
+                        <div class="form-group">
+                            <label class="mt-3">Published at</label>
+                            <div class="input-group">
+                                <input type="text" name="published_at" class="form-control" id="datepicker-autoclose" placeholder="mm/dd/yyyy" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text h-100"><i class="mdi mdi-calendar"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="mt-3">Status</label>
+                            <select name="status" class="select2 form-select shadow-none" style="width: 100%; height: 36px">
+                                <option value="">--</option>
+                                {% for name, value in statuses %}
+                                    <option value="{{ value }}">{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="mt-3">Language</label>
+                            <select name="language" class="select2 form-select shadow-none" style="width: 100%; height: 36px">
+                                <option value="">--</option>
+                                {% for name, value in languages %}
+                                    <option value="{{ value }}">{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Media</h4>
+                        <div class="form-group">
+                            <label for="title">Video</label>
+                            <input type="text" id="video" name="media[video]" class="form-control" data-control="video" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-0">SEO</h5>
+                        <div class="form-group">
+                            <label for="seo_title">Title</label>
+                            <input type="text" id="seo_title" name="seo[title]" class="form-control" data-control="seo_title" />
+                        </div>
+                        <div class="form-group">
+                            <label for="seo_description">Description</label>
+                            <input type="text" id="seo_description" name="seo[description]" class="form-control" data-control="seo_description" />
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-0">Open Graph</h5>
+                        <div class="form-group">
+                            <label for="og_title">Title</label>
+                            <input type="text" id="og_title" name="og_title" class="form-control" data-control="og_title" />
+                        </div>
+                        <div class="form-group">
+                            <label for="og_type">Type</label>
+                            <input type="text" id="og_type" name="og_type" class="form-control" data-control="og_type" />
+                        </div>
+                        <div class="form-group">
+                            <label for="og_url">Url</label>
+                            <input type="text" id="og_url" name="og_url" class="form-control" data-control="og_url" />
+                        </div>
+                        <div class="form-group">
+                            <label for="og_image">Image</label>
+                            <input type="text" id="og_image" name="og_image" class="form-control" data-control="og_image" />
+                        </div>
+                        <div class="form-group">
+                            <label for="og_description">Description</label>
+                            <input type="text" id="og_description" name="og_description" class="form-control" data-control="og_description" />
+                        </div>
+                        <div class="form-group">
+                            <label for="og_site_name">Site name</label>
+                            <input type="text" id="og_site_name" name="og_site_name" class="form-control" data-control="og_site_name" />
+                        </div>
+                        <div class="form-group">
+                            <label for="og_locale">Locale</label>
+                            <input type="text" id="og_locale" name="og_locale" class="form-control" data-control="og_locale" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                      <div class="form-group">
+                            <label for="imageTitle">Title</label>
+                                {{ form.inputField('media[imageTitle]', imageTitle, errors, {class: 'form-control', type: 'text', id: 'imageTitle'}) }}
+                            </div>
+                                {{ form.inputField('media[image]', image, errors, {class: 'form-control', type: 'file', id: 'imageInput', accept: 'image/*'}) }}
+                    <div id="imageContainer">
+                        <img id="image" style="max-width: 100%;">
+                    </div>
+                    {{ form.inputField('media[imageData]', imageData, errors, {class: 'form-control', type: 'hidden', id: 'imageData'}) }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        {{ form.textAreaField('content', content, errors, {class: 'form-control', type: 'text', id: 'editor'}) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="border-top">
+                        <div class="card-body">
+                            <button type="submit" class="btn btn-success text-white">Save</button>
+                            <button type="submit" class="btn btn-primary">Reset</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    {% block bottom %}
+    {% include 'cpanel/froala/scripts.twig' with {'editorId': 'editor'} %}
+    {% include 'cpanel/cropper/scripts.twig' with {'cropperId': 'imageInput', 'formId': 'create_category', 'dataId': 'imageData', 'imageId': 'image'} %}
+    {% include 'cpanel/datetimepicker/scripts.twig' with {'pickerId': 'datepicker-autoclose'} %}
+
+    <!--
+    <script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js"></script>
+    <script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/xml/xml.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.2.7/purify.min.js"></script>
+    -->
+    {% endblock %}
+{% endblock %}

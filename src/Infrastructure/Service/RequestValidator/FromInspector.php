@@ -28,7 +28,7 @@ final class FromInspector
     public function validate(): bool
     {
         $this->errors = $this->validaor->__invoke($this->form);
-        return $this->hasError();
+        return !$this->hasError();
     }
 
     public function getValidateErrors(): array

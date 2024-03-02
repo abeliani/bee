@@ -9,7 +9,6 @@ class Image extends Jsonable
     public function __construct(
         private readonly string $type,
         private readonly string $url,
-        private readonly string $alt,
     ) {
     }
 
@@ -23,17 +22,11 @@ class Image extends Jsonable
         return $this->url;
     }
 
-    public function getAlt(): string
-    {
-        return $this->alt;
-    }
-
     public function toArray(): array
     {
         return [
-            'type' => $this->type,
-            'url' => $this->url,
-            'alt' => $this->alt,
+            'type' => $this->getType(),
+            'url' => $this->getUrl(),
         ];
     }
 }

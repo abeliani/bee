@@ -16,6 +16,10 @@ final class FormService
     {
     }
 
+    /**
+     * @throws \JsonException
+     * @throws \ReflectionException
+     */
     public function buildInspector(ServerRequestInterface|array $data, string $formClass): FromInspector
     {
         if (!is_array($data)) {
@@ -30,6 +34,10 @@ final class FormService
         );
     }
 
+    /**
+     * @throws \JsonException
+     * @throws \ReflectionException
+     */
     private function hydrate(array $data, string $formClass): object
     {
         $form = new $formClass;

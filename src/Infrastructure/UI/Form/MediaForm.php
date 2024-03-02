@@ -10,15 +10,20 @@ use Abeliani\Blog\Infrastructure\Service\RequestValidator\Validator as MyAssert;
 final class MediaForm
 {
     #[MyAssert\Image(
-        maxSize: '4M',
-        mimeTypes: ['image/jpeg', 'image/png', 'image/gif'],
+        maxSize: '5M',
+        mimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg'],
         maxSizeMessage: 'The image is too large ({{ size }} {{ suffix }}). Maximum allowed size is {{ limit }} {{ suffix }}.',
         mimeTypesMessage: 'Please upload a valid image (JPEG, PNG, GIF).',
     )]
     private ?UploadedFile $image;
+
+    #[Assert\Valid]
+    private CropperData $imageData;
+
     #[Assert\NotBlank]
-    #[Assert\Length(min: 50)]
-    private string $image_data;
+    private string $imageTitle;
+
+    #[Assert\Url]
     private string $video;
 
     public function getImage(): ?UploadedFile
@@ -26,9 +31,14 @@ final class MediaForm
         return $this->image;
     }
 
-    public function getImageData(): string
+    public function getImageData(): CropperData
     {
-        return $this->image_data;
+        return $this->imageData;
+    }
+
+    public function getImageAlt(): string
+    {
+        return $this->imageTitle;
     }
 
     public function getVideo(): string

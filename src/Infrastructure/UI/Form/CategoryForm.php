@@ -3,9 +3,13 @@ declare(strict_types=1);
 
 namespace Abeliani\Blog\Infrastructure\UI\Form;
 
+use Abeliani\Blog\Domain\Enum\CategoryStatus;
+use Abeliani\Blog\Domain\Enum\Languages;
+use Abeliani\Blog\Domain\Interface\ToArrayInterface;
+use Abeliani\Blog\Infrastructure\Service\RequestValidator\Validator\EnumV;
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class CategoryForm
+final class CategoryForm implements ToArrayInterface
 {
     #[Assert\NotBlank]
     #[Assert\Length(min: 5, max: 100)]
@@ -20,9 +24,20 @@ final class CategoryForm
 
     #[Assert\Valid]
     private MediaForm $media;
-    private ?string $status;
+
+    #[Assert\Length(min: 50)]
     private string $content;
+
+    #[Assert\NotBlank]
+    #[EnumV(enumClass: CategoryStatus::class)]
+    private CategoryStatus $status;
+
     private string $published_at;
+
+    #[Assert\NotBlank]
+    #[EnumV(enumClass: Languages::class)]
+    private string $language;
+
 
     public function getTitle(): string
     {
@@ -44,7 +59,7 @@ final class CategoryForm
         return $this->media;
     }
 
-    public function getStatus(): string
+    public function getStatus(): CategoryStatus
     {
         return $this->status;
     }
@@ -57,5 +72,24 @@ final class CategoryForm
     public function getPublishedAt(): string
     {
         return $this->published_at;
+    }
+
+    public function getLanguage(): string
+    {
+        return $this->language;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'title' => $this->title,
+            'slug' => $this->slug,
+            'lang' => $this->language,
+            'seo' => $this->seo,
+            'media' => $this->media,
+            'status' => $this->status,
+            'content' => $this->content,
+            'published_at' => $this->published_at,
+        ];
     }
 }
