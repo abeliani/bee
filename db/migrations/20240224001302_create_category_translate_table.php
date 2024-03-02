@@ -17,6 +17,7 @@ final class CreateCategoryTranslateTable extends AbstractMigration
             ->addColumn('content', 'text', ['limit' => MysqlAdapter::TEXT_LONG])
             ->addColumn('seo_meta', 'json', ['null' => true])
             ->addColumn('seo_og', 'json', ['null' => true])
+            ->addColumn('media_image_alt', 'string', ['limit' => 150])
             ->addColumn('media_image', 'json', ['null' => true])
             ->addColumn('media_video', 'json', ['null' => true])
             ->addColumn('status', 'integer', ['default' => 0, 'signed' => false, 'limit' => MysqlAdapter::INT_TINY])
@@ -27,8 +28,12 @@ final class CreateCategoryTranslateTable extends AbstractMigration
             ->addIndex(['category_id', 'lang'], ['unique' => true])
 
             ->addForeignKey('category_id', 'categories', 'id', ['delete'=> 'NO_ACTION', 'update'=> 'NO_ACTION'])
-            ->addForeignKey('lang', 'languages', 'language_code', ['delete'=> 'NO_ACTION', 'update'=> 'NO_ACTION'])
 
             ->create();
+    }
+
+    public function down(): void
+    {
+        $this->table('category_translations')->drop()->save();
     }
 }
