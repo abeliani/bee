@@ -1,6 +1,13 @@
 <?php
 declare(strict_types=1);
 
+use Abeliani\Blog\Application\Service\Image\Args\Size;
+use Abeliani\Blog\Application\Service\Image\Builder\ImageQueryBuilder;
+use Abeliani\Blog\Application\Service\Image\Builder\Manipulate\Crop;
+use Abeliani\Blog\Application\Service\Image\Builder\Manipulate\Resize;
+use Abeliani\Blog\Application\Service\Image\Builder\Manipulate\Save;
+use Abeliani\Blog\Application\Service\Image\Builder\Manipulate\Strip;
+use Abeliani\Blog\Application\Service\Image\Processor\ProcessorContext;
 use Monolog\Handler\FilterHandler;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Level;
@@ -27,5 +34,25 @@ return [
         return (new Logger('app'))
             ->pushHandler(new FilterHandler($debugHandler, Level::Debug, Level::Notice))
             ->pushHandler(new FilterHandler($restHandler, Level::Warning, Level::Emergency));
+    },
+    ImageQueryBuilder::class => function(): ImageQueryBuilder {
+        $upload =  ROOT_DIR . DS . getenv('FILE_UPLOAD_DIR');
+
+        $thumb = new ImageQueryBuilder('thumb');
+        $thumb->append(new Resize(new Size(60.0, 40.0)))
+            ->append(new Save($upload . DS . date('Y') . DS . uniqid(), IMAGETYPE_JPEG));
+
+        $resized = new ImageQueryBuilder('view');
+        $resized->append(function (ProcessorContext $c) {
+            return Crop::build($c->get('width'), $c->get('height'), $c->get('x'), $c->get('y'));
+        }, Crop::getName())
+            ->append(new Resize(new Size(600.0,400.0)))
+            ->append(new Save($upload . DS . date('Y') . DS . uniqid(), IMAGETYPE_JPEG));
+
+        return (new ImageQueryBuilder('original'))
+            ->append(new Strip())
+            ->append(new Save($upload . DS . 'images/original' . DS . uniqid(), IMAGETYPE_JPEG))
+            ->branch($resized)
+            ->branch($thumb);
     },
 ];

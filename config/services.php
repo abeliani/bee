@@ -1,11 +1,16 @@
 <?php
 declare(strict_types=1);
 
+use Abeliani\Blog\Application\Service\Image\Builder\ImageQueryBuilder;
+use Abeliani\Blog\Application\Service\Image\Processor\ImageQueryProcessor;
+use Abeliani\Blog\Application\Service\Image\Processor\SavePathPremakeProcessor;
 use Abeliani\Blog\Application\Service\UserRegistration\UserRegistrationService;
 use Abeliani\Blog\Domain\Factory\UserFactory;
+use Abeliani\Blog\Domain\Repository\Category\CreateCategoryRepositoryInterface;
 use Abeliani\Blog\Domain\Repository\User\CreateUserRepositoryInterface;
 use Abeliani\Blog\Domain\Repository\User\ReadUserRepositoryInterface;
 use Abeliani\Blog\Domain\Service\PasswordHasher\PasswordHasherInterface;
+use Abeliani\Blog\Infrastructure\Service\CategoryService;
 use Abeliani\Blog\Infrastructure\Service\Form\FormService;
 use Abeliani\Blog\Infrastructure\Service\Hydrator;
 use Abeliani\Blog\Infrastructure\Service\JWTAuthentication;
@@ -51,5 +56,20 @@ return [
     },
     FormService::class => function(Container $c): FormService {
         return new FormService(new Hydrator(), $c->get(RequestValidatorService::class));
+    },
+    ImageQueryProcessor::class => function(Container $c): ImageQueryProcessor {
+        return new ImageQueryProcessor(
+            $c->get(ImageQueryBuilder::class),
+            \Imagick::class,
+            \GdImage::class,
+        );
+    },
+    CategoryService::class => function(Container $c): CategoryService {
+        return new CategoryService(
+            $c->get(CreateCategoryRepositoryInterface::class),
+            $c->get(ImageQueryProcessor::class),
+            new SavePathPremakeProcessor($c->get(ImageQueryBuilder::class)),
+            ROOT_DIR . DS . getenv('FILE_UPLOAD_DIR')
+        );
     },
 ];

@@ -9,12 +9,18 @@ const NS = 'Abeliani\\Blog\\Console\\Command';
 define('ROOT_DIR', dirname(__DIR__));
 define('DS', DIRECTORY_SEPARATOR);
 chdir(ROOT_DIR);
-define('TEMPLATES_DIR', sprintf('%s%s%s%s%s', ROOT_DIR, DS, 'templates', DS, 'back'));
+define('TEMPLATES_DIR', sprintf('%s%s%s%s%s', ROOT_DIR, DS, 'templates', DS, 'cpanel'));
 
 require_once 'vendor/autoload.php';
 
 $containerBuilder = (new ContainerBuilder())->useAutowiring(false);
 $containerBuilder->addDefinitions('config/definitions.php');
+$containerBuilder->addDefinitions('config/event_dispatcher.php');
+$containerBuilder->addDefinitions('config/handlers.php');
+$containerBuilder->addDefinitions('config/middlewares.php');
+$containerBuilder->addDefinitions('config/repositories.php');
+$containerBuilder->addDefinitions('config/services.php');
+$containerBuilder->addDefinitions('config/console.php');
 $container = $containerBuilder->build();
 
 $console = new Application();
