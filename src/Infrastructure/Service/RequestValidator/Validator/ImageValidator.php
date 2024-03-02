@@ -12,7 +12,7 @@ final class ImageValidator extends SymfonyImageValidator
     {
         if ($value instanceof UploadedFile) {
             $value = new SymfonyUploadedFile(
-                $value->getStream()->getMetadata('uri'),
+                $value->getSize() ? $value->getStream()->getMetadata('uri') : '',
                 $value->getClientFilename(),
                 $value->getClientMediaType(),
                 $value->getError(),
