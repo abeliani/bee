@@ -2,11 +2,13 @@
 declare(strict_types=1);
 
 use Abeliani\Blog\Application\Service\Image\Processor\ImageQueryProcessor;
+use Abeliani\Blog\Domain\Repository\Category\ReadCategoryRepositoryInterface;
 use Abeliani\Blog\Infrastructure\Delivery\Web\Controller\ItWorksController;
 use Abeliani\Blog\Infrastructure\Service\CategoryService;
 use Abeliani\Blog\Infrastructure\Service\Form\FormService;
 use Abeliani\Blog\Infrastructure\Service\Login;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\CategoryCreateController;
+use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\CategoryIndexController;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\ItIsBackendController;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\LoginBackendController;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\LogoutBackendController;
@@ -43,5 +45,12 @@ return [
     },
     LogoutBackendController::class => function(Container $c): LogoutBackendController {
         return new LogoutBackendController($c->get(Environment::class), $c->get(Login::class));
+    },
+    CategoryIndexController::class => function(Container $c): CategoryIndexController {
+        return new CategoryIndexController(
+            $c->get(Environment::class),
+            new Response(),
+            $c->get(ReadCategoryRepositoryInterface::class),
+        );
     },
 ];

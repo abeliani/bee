@@ -22,11 +22,13 @@ class Category
         private readonly array $seoOg,
         private readonly string $language,
         private readonly int $createdBy,
+        private readonly ?int $editedBy,
         private readonly int $status,
         private readonly \DateTimeImmutable $createdAt,
         private ?\DateTimeImmutable $publishedAt = null,
         private readonly ?\DateTimeImmutable $updatedAt = null,
         private readonly ?\DateTimeImmutable $deletedAt = null,
+        private readonly int $view_count = 0,
     ) {
         if ($id) {
             $this->id = $id;

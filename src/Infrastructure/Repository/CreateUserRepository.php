@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Abeliani\Blog\Infrastructure\Repository;
 
@@ -27,7 +28,7 @@ readonly class CreateUserRepository implements CreateUserRepositoryInterface
         $stmt->bindValue(':s', $user->getStatus()->value, \PDO::PARAM_INT);
 
         $result = $stmt->execute();
-        $user->setId($this->pdo->lastInsertId());
+        $user->setId((int) $this->pdo->lastInsertId());
 
         return $result;
     }

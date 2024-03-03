@@ -1,12 +1,12 @@
 <?php
 
-namespace Abeliani\Blog\Domain\Repository;
+namespace Abeliani\Blog\Domain\Repository\Category;
 
 use Abeliani\Blog\Domain\Model\Category;
-use Tightenco\Collect\Support\Collection;
 
 interface ReadCategoryRepositoryInterface
 {
-    public function findById($id): ?Category;
-    public function findAll(): Collection;
+    public function find(int $id): ?Category;
+    public function findAll(): CategoryCollection;
+    public function findPublished(int $actorId): CategoryCollection;
 }

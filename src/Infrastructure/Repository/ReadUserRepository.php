@@ -15,6 +15,9 @@ readonly class ReadUserRepository implements ReadUserRepositoryInterface
     {
     }
 
+    /**
+     * @throws \Exception
+     */
     public function find(int $id): ?User
     {
         $stmt = $this->pdo->prepare('SELECT * FROM users WHERE id = :i AND status = :s LIMIT 1');
@@ -25,6 +28,9 @@ readonly class ReadUserRepository implements ReadUserRepositoryInterface
         return ($row = $stmt->fetch()) ? $this->mapper->map($row) : null;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function findByEmail(string $email): ?User
     {
         $stmt = $this->pdo->prepare('SELECT * FROM users WHERE email = :e AND status = :s LIMIT 1');

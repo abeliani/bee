@@ -1,0 +1,58 @@
+{% extends "cpanel/main.twig" %}
+{% block content %}
+    {% block head %}
+        <link rel="stylesheet" type="text/css" href="/a5s7oupt/assets/extra-libs/multicheck/multicheck.css" />
+        <link href="/a5s7oupt/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.css" rel="stylesheet" />
+        <link href="/a5s7oupt/dist/css/style.min.css" rel="stylesheet" />
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+          <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    {% endblock %}
+
+    <div class="col-12">
+        <div class="card">
+            <div class="table-responsive">
+                <table class="table">
+                  <thead class="thead-light">
+                    <tr>
+                      <th>
+                        <label class="customcheckbox mb-3">
+                          <input type="checkbox" id="mainCheckbox" />
+                          <span class="checkmark"></span>
+                        </label>
+                      </th>
+                      <th scope="col">Title</th>
+                      <th scope="col">Slug</th>
+                      <th scope="col">Lang </th>
+                      <th scope="col">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody class="customtable">
+                   {% for category in categories %}
+                    <tr>
+                      <th>
+                        <label class="customcheckbox">
+                          <input type="checkbox" class="listCheckbox" />
+                          <span class="checkmark"></span>
+                        </label>
+                      </th>
+                      <td>{{ category.title }}</td>
+                      <td>{{ category.slug }}</td>
+                      <td>{{ category.language }}</td>
+                      <td>{{ category.status }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% block bottom %}
+        <script src="/a5s7oupt/assets/extra-libs/multicheck/datatable-checkbox-init.js"></script>
+        <script src="/a5s7oupt/assets/extra-libs/multicheck/jquery.multicheck.js"></script>
+        <script src="/a5s7oupt/assets/extra-libs/DataTables/datatables.min.js"></script>
+    {% endblock %}
+{% endblock %}

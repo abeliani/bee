@@ -1,0 +1,56 @@
+{% macro inputField(name, value, errors, attributes = {}) %}
+    {% set classes = attributes.class|default('') %}
+    {% set error = errors[name] is defined ? errors[name] : null %}
+
+    {% if error %}
+        {% set classes = classes ~ ' is-invalid' %}
+    {% endif %}
+
+    <input
+        {% for attrName, attrValue in attributes %}
+            {% if attrName != 'class' %}{{ attrName }}="{{ attrValue }}" {% endif %}
+        {% endfor %}
+        class="{{ classes|trim }}"
+        name="{{ name }}" value="{{ value|default('') }}"
+    />
+
+    {% if error %}
+        <div class="invalid-feedback">{{ error }}</div>
+    {% endif %}
+{% endmacro %}
+
+{% macro textAreaField(name, value, errors, attributes = {}) %}
+    {% set classes = attributes.class|default('') %}
+    {% set error = errors[name] is defined ? errors[name] : null %}
+
+    {% if error %}
+        {% set classes = classes ~ ' is-invalid' %}
+    {% endif %}
+
+    <textarea
+        {% for attrName, attrValue in attributes %}
+            {% if attrName != 'class' %}{{ attrName }}="{{ attrValue }}" {% endif %}
+        {% endfor %}
+        class="{{ classes|trim }}"
+        name="{{ name }}"
+    />{{ value|default('') }}</textarea>
+
+    {% if error %}
+        <div class="invalid-feedback">{{ error }}</div>
+    {% endif %}
+{% endmacro %}
+
+{% macro display_errors(errors) %}
+    {% import _self as self %}
+    <ul>
+        {% for key, value in errors %}
+            {% if value is iterable %}
+                <li>{{ key }}:
+                    {{ self.display_errors(value) }}
+                </li>
+            {% else %}
+                <li>{{ key }}: {{ value }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endmacro %}

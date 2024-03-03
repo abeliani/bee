@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\CategoryCreateController;
+use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\CategoryIndexController;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\ItIsBackendController;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\LoginBackendController;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\LogoutBackendController;
@@ -22,6 +23,7 @@ return simpleDispatcher(function (RouteCollector $r) {
         $r->get('/post/create', PostEditController::class);
         $r->get('/category/create', CategoryCreateController::class);
         $r->post('/category/create', CategoryCreateController::class);
+        $r->get('/category', CategoryIndexController::class);
         $r->get('', ItIsBackendController::class);
     });
 });

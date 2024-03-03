@@ -50,8 +50,51 @@ final class CategoryFactory
             $seoOg,
             $language,
             $actorId,
+            null,
             $status->value,
             new \DateTimeImmutable()
+        );
+    }
+
+    /**
+     * @throws \JsonException
+     * @throws \Exception
+     */
+    public static function createFromDb(
+        int $id,
+        string $title,
+        string $slug,
+        string $content,
+        string $mediaImage,
+        string $mediaImageAlt,
+        ?string $mediaVideo,
+        string $seoMeta,
+        string $seoOg,
+        string $language,
+        int $status,
+        int $actorId,
+        ?int $editBy,
+        string $createdAt,
+        string $publishedAt,
+        ?string $updatedAt,
+    ): Category {
+        return new Category(
+            $id,
+            $title,
+            $slug,
+            $content,
+            json_decode($mediaImage, null, 10, JSON_THROW_ON_ERROR),
+            $mediaImageAlt,
+            $mediaVideo ? json_decode($mediaVideo, true, 10, JSON_THROW_ON_ERROR) : null,
+            json_decode($seoMeta, true, 10, JSON_THROW_ON_ERROR),
+            json_decode($seoOg, true, 10, JSON_THROW_ON_ERROR),
+            $language,
+            $actorId,
+            $editBy,
+            $status,
+            new \DateTimeImmutable($createdAt),
+            new \DateTimeImmutable($publishedAt),
+            $updatedAt === null ? null : new \DateTimeImmutable($updatedAt),
         );
     }
 }
