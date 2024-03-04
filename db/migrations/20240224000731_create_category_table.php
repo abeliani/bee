@@ -9,7 +9,7 @@ final class CreateCategoryTable extends AbstractMigration
 {
     public function change(): void
     {
-        $table = $this->table('categories');
+        $table = $this->table('categories', ['engine' => 'InnoDB', 'collation' => 'utf8mb4_unicode_ci']);
         $table->addColumn('status', 'integer', ['default' => 0, 'signed' => false, 'limit' => MysqlAdapter::INT_TINY])
             ->addColumn('created_at', 'datetime', ['default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('published_at', 'datetime')

@@ -21,7 +21,7 @@ return [
         return new Environment(new FilesystemLoader(TEMPLATES_DIR));
     },
     PDO::class => function (): PDO {
-        return new PDO('mysql:host=db;dbname=bee', 'root', 'root', [
+        return new PDO('mysql:host=db;dbname=bee;charset=utf8mb4', 'root', 'root', [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES   => false,
@@ -40,18 +40,18 @@ return [
 
         $thumb = new ImageQueryBuilder('thumb');
         $thumb->append(new Resize(new Size(60.0, 40.0)))
-            ->append(new Save($upload . DS . date('Y') . DS . uniqid(), IMAGETYPE_JPEG));
+            ->append(new Save($upload . DS . date('Y') . DS . uniqid(), IMAGETYPE_WEBP));
 
         $resized = new ImageQueryBuilder('view');
         $resized->append(function (ProcessorContext $c) {
             return Crop::build($c->get('width'), $c->get('height'), $c->get('x'), $c->get('y'));
         }, Crop::getName())
             ->append(new Resize(new Size(600.0,400.0)))
-            ->append(new Save($upload . DS . date('Y') . DS . uniqid(), IMAGETYPE_JPEG));
+            ->append(new Save($upload . DS . date('Y') . DS . uniqid(), IMAGETYPE_WEBP));
 
         return (new ImageQueryBuilder('original'))
             ->append(new Strip())
-            ->append(new Save($upload . DS . 'images/original' . DS . uniqid(), IMAGETYPE_JPEG))
+            ->append(new Save($upload . DS . 'images/original' . DS . uniqid(), IMAGETYPE_WEBP))
             ->branch($resized)
             ->branch($thumb);
     },
