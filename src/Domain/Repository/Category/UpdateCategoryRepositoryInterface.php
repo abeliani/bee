@@ -6,5 +6,5 @@ use Abeliani\Blog\Domain\Model\Category;
 
 interface UpdateCategoryRepositoryInterface
 {
-    public function update(Category $category): void;
+    public function update(Category $c): void;
 }

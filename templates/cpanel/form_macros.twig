@@ -54,3 +54,16 @@
         {% endfor %}
     </ul>
 {% endmacro %}
+
+{% macro selectField(name, selectedValue, options, error, class, style) %}
+    {% set error = errors[name] is defined ? errors[name] : null %}
+    <select name="{{ name }}" class="{{ class }}" style="{{ style }}">
+        <option value="">--</option>
+        {% for optionName, optionValue in options %}
+            <option value="{{ optionValue }}" {% if selectedValue == optionValue %}selected="true"{% endif %}>{{ optionName }}</option>
+        {% endfor %}
+    </select>
+    {% if error %}
+        <div class="invalid-feedback">{{ error }}</div>
+    {% endif %}
+{% endmacro %}

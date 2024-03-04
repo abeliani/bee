@@ -23,14 +23,15 @@ final class FormService
     public function buildInspector(ServerRequestInterface|array $data, string $formClass): FromInspector
     {
         if (!is_array($data)) {
+            $query = $data->getQueryParams();
             $data = array_merge_recursive($data->getParsedBody(), $data->getUploadedFiles());
         }
 
         return new FromInspector(
-            $this->hydrate($data, $formClass),
+            $this->hydrate(array_merge($data, $query ?? []), $formClass),
             empty($data),
-            fn ($form) => $this->validator->validate($form),
-            fn ($form) => $this->hydrator->convert($form)
+            fn (object $form, ?string $field) => $this->validator->validate($form, $field),
+            fn (object $form) => $this->hydrator->convert($form)
         );
     }
 

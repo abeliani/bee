@@ -7,20 +7,16 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class CropperData
 {
-    #[Assert\NotBlank]
     #[Assert\Type("numeric")]
     private float $x;
 
-    #[Assert\NotBlank]
     #[Assert\Type("numeric")]
     private float $y;
 
-    #[Assert\NotBlank]
     #[Assert\Type("numeric")]
     #[Assert\GreaterThan(value: 0)]
     private float $width;
 
-    #[Assert\NotBlank]
     #[Assert\Type("numeric")]
     #[Assert\GreaterThan(value: 0)]
     private float $height;

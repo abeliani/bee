@@ -35,6 +35,28 @@ class CategoryMapper implements AggregateMapperInterface
         );
     }
 
+    public function mapToFormData(Category $category): array
+    {
+        if (!empty($category->getImages())) {
+            $images = array_filter($category->getImages(), fn($image) => $image->type === 'view');
+            $image = array_shift($images);
+        }
+
+        return [
+            'id' => $category->getId(),
+            'title' => $category->getTitle(),
+            'slug' => $category->getSlug(),
+            'seo' => $category->getSeoMeta(),
+            'imageTitle' => $category->getImageAlt(),
+            'image_loaded' => isset($image) ? $image->url : null,
+            'video' => $category->getVideo(),
+            'content' => $category->getContent(),
+            'status' => $category->getStatus()->value,
+            'publish_at' => $category->getPublishedAt()->format('m/d/Y H:i:s'),
+            'language' => $category->getLanguage(),
+        ];
+    }
+
     /**
      * @throws \JsonException
      */

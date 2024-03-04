@@ -11,6 +11,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class CategoryForm implements ToArrayInterface
 {
+    #[Assert\Type('integer')]
+    private int $id;
+
     #[Assert\NotBlank]
     #[Assert\Length(min: 5, max: 100)]
     private string $title;
@@ -38,6 +41,10 @@ final class CategoryForm implements ToArrayInterface
     #[EnumV(enumClass: Languages::class)]
     private string $language;
 
+    public function getId(): int
+    {
+        return $this->id;
+    }
 
     public function getTitle(): string
     {

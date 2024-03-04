@@ -25,9 +25,9 @@ final class FromInspector
         return $this->converter->__invoke($this->form);
     }
 
-    public function validate(): bool
+    public function validate(?string $field = null): bool
     {
-        $this->errors = $this->validaor->__invoke($this->form);
+        $this->errors = $this->validaor->__invoke($this->form, $field);
         return !$this->hasError();
     }
 

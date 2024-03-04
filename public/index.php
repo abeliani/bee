@@ -38,6 +38,9 @@ if ($dispatcher === Dispatcher::NOT_FOUND || $dispatcher === Dispatcher::METHOD_
     $request = $request->withAttribute('dispatcher', $dispatcher);
     $handler = RouteDispatcherMiddleware::class;
 } else {
+    if (!empty($dispatchInfo[2])) {
+        $request = $request->withQueryParams(array_merge($request->getQueryParams(), $dispatchInfo[2]));
+    }
     $handler = $dispatchInfo[1];
 }
 

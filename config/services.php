@@ -7,6 +7,7 @@ use Abeliani\Blog\Application\Service\Image\Processor\SavePathPremakeProcessor;
 use Abeliani\Blog\Application\Service\UserRegistration\UserRegistrationService;
 use Abeliani\Blog\Domain\Factory\UserFactory;
 use Abeliani\Blog\Domain\Repository\Category\CreateCategoryRepositoryInterface;
+use Abeliani\Blog\Domain\Repository\Category\UpdateCategoryRepositoryInterface;
 use Abeliani\Blog\Domain\Repository\User\CreateUserRepositoryInterface;
 use Abeliani\Blog\Domain\Repository\User\ReadUserRepositoryInterface;
 use Abeliani\Blog\Domain\Service\PasswordHasher\PasswordHasherInterface;
@@ -67,6 +68,7 @@ return [
     CategoryService::class => function(Container $c): CategoryService {
         return new CategoryService(
             $c->get(CreateCategoryRepositoryInterface::class),
+            $c->get(UpdateCategoryRepositoryInterface::class),
             $c->get(ImageQueryProcessor::class),
             new SavePathPremakeProcessor($c->get(ImageQueryBuilder::class)),
             ROOT_DIR . DS . getenv('FILE_UPLOAD_DIR')

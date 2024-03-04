@@ -4,6 +4,9 @@
     "type": "project",
     "require": {
         "ext-pdo": "*",
+        "ext-imagick": "*",
+        "ext-gd": "*",
+        "ext-fileinfo": "*",
         "guzzlehttp/guzzle": "7.8.1",
         "php-di/php-di": "7.0.6",
         "vlucas/phpdotenv": "5.6.0",

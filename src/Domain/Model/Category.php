@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Abeliani\Blog\Domain\Model;
 
+use Abeliani\Blog\Domain\Enum\CategoryStatus;
 use Abeliani\Blog\Domain\Trait\SurrogateId;
 
 class Category
@@ -23,7 +24,7 @@ class Category
         private readonly string $language,
         private readonly int $createdBy,
         private readonly ?int $editedBy,
-        private readonly int $status,
+        private readonly CategoryStatus $status,
         private readonly \DateTimeImmutable $createdAt,
         private ?\DateTimeImmutable $publishedAt = null,
         private readonly ?\DateTimeImmutable $updatedAt = null,
@@ -93,7 +94,12 @@ class Category
         return $this->createdBy;
     }
 
-    public function getStatus(): int
+    public function getEditedBy(): ?int
+    {
+        return $this->editedBy;
+    }
+
+    public function getStatus(): CategoryStatus
     {
         return $this->status;
     }
@@ -116,5 +122,10 @@ class Category
     public function getDeletedAt(): ?\DateTimeImmutable
     {
         return $this->deletedAt;
+    }
+
+    public function getViewCount(): int
+    {
+        return $this->view_count;
     }
 }
