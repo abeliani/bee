@@ -2,12 +2,16 @@
 
 declare(strict_types=1);
 
-
 namespace Abeliani\Blog\Domain\Factory;
 
-use Abeliani\Blog\Domain\Enum\CategoryStatus;
+use Abeliani\Blog\Domain\Collection\Concrete;
+use Abeliani\Blog\Domain\Entity\CategoryOg;
+use Abeliani\Blog\Domain\Entity\Image;
+use Abeliani\Blog\Domain\Entity\SeoMeta;
+use Abeliani\Blog\Domain\Enum;
 use Abeliani\Blog\Domain\Exception\CategoryException;
 use Abeliani\Blog\Domain\Model\Category;
+use Abeliani\Blog\Infrastructure\UI\Form\CategoryForm;
 
 final class CategoryFactory
 {
@@ -15,19 +19,20 @@ final class CategoryFactory
      * @throws CategoryException
      */
     public static function create(
-        int $actorId,
-        string $title,
-        string $slug,
-        string $content,
-        array $images,
-        string $imageAlt,
-        string $video,
-        array $seoMeta,
-        array $seoOg,
-        string $language,
-        CategoryStatus $status,
-        ?int $id = null,
-    ): Category {
+        int                 $actorId,
+        string              $title,
+        string              $slug,
+        string              $content,
+        string              $images,
+        string              $imageAlt,
+        string              $video,
+        array               $seoMeta,
+        array               $seoOg,
+        Enum\Language       $language,
+        Enum\CategoryStatus $status,
+        ?int                $id = null,
+    ): Category
+    {
         return self::createFull(
             $id,
             $title,
@@ -36,8 +41,8 @@ final class CategoryFactory
             $images,
             $imageAlt,
             $video ?: null,
-            $seoMeta,
-            $seoOg,
+            json_encode($seoMeta),
+            json_encode($seoOg),
             $language,
             $actorId,
             null,
@@ -49,26 +54,58 @@ final class CategoryFactory
     /**
      * @throws CategoryException
      */
-    public static function createFull(
-        ?int $id,
-        string $title,
-        string $slug,
-        string $content,
-        array $images,
-        string $imageAlt,
-        ?string $video,
-        array $seoMeta,
-        array $seoOg,
-        string $language,
-        int $createdBy,
-        ?int $editedBy,
-        CategoryStatus $status,
+    public static function createFromForm(
+        int $actorId,
+        int $authorId,
         \DateTimeImmutable $createdAt,
+        int $viewCount,
+        CategoryForm $form,
+        Concrete\ImageCollection $images
+    ): Category {
+        return CategoryFactory::createFull(
+            $form->getId(),
+            $form->getTitle(),
+            $form->getSlug(),
+            $form->getContent(),
+            (string) $images,
+            $form->getMedia()->getImageAlt(),
+            $form->getMedia()->getVideo(),
+            json_encode($form->getSeo()),
+            json_encode($form->getOg()),
+            $form->getLanguage(),
+            $authorId,
+            $actorId,
+            $form->getStatus(),
+            $createdAt,
+            new \DateTimeImmutable($form->getPublishedAt()),
+            new \DateTimeImmutable(),
+            $viewCount
+        );
+    }
+
+    /**
+     * @throws CategoryException
+     */
+    public static function createFull(
+        ?int                $id,
+        string              $title,
+        string              $slug,
+        string              $content,
+        string              $images,
+        string              $imageAlt,
+        ?string             $video,
+        string              $seoMeta,
+        ?string             $seoOg,
+        Enum\Language       $language,
+        int                 $createdBy,
+        ?int                $editedBy,
+        Enum\CategoryStatus $status,
+        \DateTimeImmutable  $createdAt,
         ?\DateTimeImmutable $publishedAt = null,
         ?\DateTimeImmutable $updatedAt = null,
-        ?\DateTimeImmutable $deletedAt = null,
-        int $view_count = 0,
-    ): Category {
+        int                 $view_count = 0,
+    ): Category
+    {
         if (empty($title)) {
             throw new CategoryException('Title cannot be empty');
         }
@@ -79,12 +116,30 @@ final class CategoryFactory
             throw new CategoryException('Slug cannot be the same as title');
         }
 
+        $imagesCollection = new Concrete\ImageCollection();
+        foreach (json_decode($images) as $image) {
+            $imagesCollection->add(new Image($image->type, $image->url, '', '', ''));
+        }
+
+        $seoMeta = json_decode($seoMeta);
+        $seoMeta = new SeoMeta($seoMeta->title, $seoMeta->description);
+
+        $seoOg = json_decode($seoOg ?? '');
+        $seoOg = new CategoryOg(
+            $seoOg->title ?? '',
+            Enum\OgType::tryFrom($seoOg->type ?? '') ?? Enum\OgType::Article,
+                $seoOg->url ?? '',
+                $seoOg->description ?? '',
+                $seoOg->site_name ?? '',
+            Enum\Locale::tryFrom($seoOg->locale ?? '') ?? Enum\Locale::ru
+        );
+
         return new Category(
             $id,
             $title,
             $slug,
             $content,
-            $images,
+            $imagesCollection,
             $imageAlt,
             $video,
             $seoMeta,
@@ -96,7 +151,6 @@ final class CategoryFactory
             $createdAt,
             $publishedAt,
             $updatedAt,
-            $deletedAt,
             $view_count
         );
     }
@@ -105,41 +159,26 @@ final class CategoryFactory
      * @throws \JsonException
      * @throws \Exception
      */
-    public static function createFromDb(
-        int $id,
-        string $title,
-        string $slug,
-        string $content,
-        string $mediaImage,
-        string $mediaImageAlt,
-        ?string $mediaVideo,
-        string $seoMeta,
-        string $seoOg,
-        string $language,
-        int $status,
-        int $actorId,
-        ?int $editBy,
-        string $createdAt,
-        string $publishedAt,
-        ?string $updatedAt,
-    ): Category {
+    public static function createFromDb(array $data): Category
+    {
         return self::createFull(
-            $id,
-            $title,
-            $slug,
-            $content,
-            json_decode($mediaImage, null, 10, JSON_THROW_ON_ERROR),
-            $mediaImageAlt,
-            $mediaVideo ? json_decode($mediaVideo, true, 10, JSON_THROW_ON_ERROR) : null,
-            json_decode($seoMeta, true, 20, JSON_THROW_ON_ERROR),
-            json_decode($seoOg, true, 10, JSON_THROW_ON_ERROR),
-            $language,
-            $actorId,
-            $editBy,
-            CategoryStatus::tryFrom($status),
-            new \DateTimeImmutable($createdAt),
-            new \DateTimeImmutable($publishedAt),
-            $updatedAt === null ? null : new \DateTimeImmutable($updatedAt),
+            $data['id'],
+            $data['title'],
+            $data['slug'],
+            $data['content'],
+            $data['media_image'],
+            $data['media_image_alt'],
+            $data['media_video'],
+            $data['seo_meta'],
+            $data['seo_og'],
+            Enum\Language::tryFrom($data['lang']),
+            $data['author_id'],
+            $data['edited_by'],
+            Enum\CategoryStatus::tryFrom($data['status']),
+            new \DateTimeImmutable($data['created_at']),
+            new \DateTimeImmutable($data['published_at']),
+            $data['updated_at'] === null ? null : new \DateTimeImmutable($data['updated_at']),
+            $data['view_count']
         );
     }
 }

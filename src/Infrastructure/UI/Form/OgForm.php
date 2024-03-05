@@ -19,9 +19,6 @@ class OgForm implements \JsonSerializable
     private string $url;
 
     #[Assert\Type('string')]
-    private string $image;
-
-    #[Assert\Type('string')]
     private string $description;
 
     #[Assert\Type('string')]
@@ -36,7 +33,6 @@ class OgForm implements \JsonSerializable
             'title' => $this->title,
             'type' => $this->type,
             'url' => $this->url,
-            'image' => $this->image,
             'description' => $this->description,
             'site_name' => $this->site_name,
             'locale' => $this->locale->value,

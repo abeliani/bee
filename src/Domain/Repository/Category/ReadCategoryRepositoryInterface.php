@@ -8,5 +8,4 @@ interface ReadCategoryRepositoryInterface
 {
     public function find(int $id, int $creatorId): ?Category;
     public function findAll(): CategoryCollection;
-    public function findPublished(int $actorId): CategoryCollection;
 }

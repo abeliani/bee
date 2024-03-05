@@ -36,13 +36,13 @@ SQL;
         $this->pdo->prepare($sql)
             ->execute([
                 $c->getId(),
-                $c->getLanguage(),
+                $c->getLanguage()->value,
                 $c->getTitle(),
                 $c->getSlug(),
                 $c->getContent(),
-                json_encode($c->getSeoMeta()),
-                json_encode($c->getSeoOg()),
-                json_encode($c->getImages()),
+                $c->getSeoMeta(),
+                $c->getSeoOg(),
+                $c->getImages(),
                 $c->getImageAlt(),
                 $c->getVideo(),
                 $c->getStatus()->value,

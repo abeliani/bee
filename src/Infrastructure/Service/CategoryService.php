@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Abeliani\Blog\Infrastructure\Service;
@@ -7,20 +8,20 @@ use Abeliani\Blog\Application\Service\Image\Processor\Handler\UploadedFileHandle
 use Abeliani\Blog\Application\Service\Image\Processor\ImageQueryProcessor;
 use Abeliani\Blog\Application\Service\Image\Processor\ProcessorContext;
 use Abeliani\Blog\Application\Service\Image\Processor\SavePathPremakeProcessor;
+use Abeliani\Blog\Domain\Collection\Concrete\ImageCollection;
+use Abeliani\Blog\Domain\Entity\Image;
 use Abeliani\Blog\Domain\Exception\CategoryException;
 use Abeliani\Blog\Domain\Factory\CategoryFactory;
 use Abeliani\Blog\Domain\Model\Category;
-use Abeliani\Blog\Domain\Model\Image;
 use Abeliani\Blog\Domain\Model\User;
-use Abeliani\Blog\Domain\Repository\Category\CreateCategoryRepositoryInterface;
-use Abeliani\Blog\Domain\Repository\Category\UpdateCategoryRepositoryInterface;
+use Abeliani\Blog\Domain\Repository\Category as repo;
 use Abeliani\Blog\Infrastructure\UI\Form\CategoryForm;
 
 readonly class CategoryService
 {
     public function __construct(
-        private CreateCategoryRepositoryInterface $categoryRepository,
-        private UpdateCategoryRepositoryInterface $updateRepository,
+        private repo\CreateCategoryRepositoryInterface $categoryRepository,
+        private repo\UpdateCategoryRepositoryInterface $updateRepository,
         private ImageQueryProcessor               $imageQueryProcessor,
         private SavePathPremakeProcessor          $imagePathsProcessor,
         private string                            $uploadDir,
@@ -38,11 +39,11 @@ readonly class CategoryService
             $form->getTitle(),
             $form->getSlug(),
             $form->getContent(),
-            $this->getImagesPaths(),
+            (string) $this->getImagesData(),
             $form->getMedia()->getImageAlt(),
             $form->getMedia()->getVideo(),
             $form->getSeo()->jsonSerialize(),
-            [],
+            $form->getOg()->jsonSerialize(),
             $form->getLanguage(),
             $form->getStatus(),
         );
@@ -66,36 +67,22 @@ readonly class CategoryService
     {
         if ($form->getMedia()->getImage()->getError() === UPLOAD_ERR_OK) {
             foreach($category->getImages() as $image) {
-                if ($image->type === 'original') {
+                if ($image->getType() === 'original') {
                     continue;
                 }
 
-                $file = dirname($this->uploadDir) . $image->url;
+                $file = dirname($this->uploadDir) . $image->getUrl();
                 file_exists($file) and unlink($file);
             }
-
-            $images = $this->getImagesPaths();
         }
 
-        $updated = CategoryFactory::createFull(
-            $category->getId(),
-            $form->getTitle(),
-            $form->getSlug(),
-            $form->getContent(),
-            $images ?? $category->getImages(),
-            $form->getMedia()->getImageAlt(),
-            $form->getMedia()->getVideo(),
-            $form->getSeo()->jsonSerialize(),
-            [],
-            $form->getLanguage(),
-            $category->getCreatedBy(),
+        $updated = CategoryFactory::createFromForm(
             $user->getId(),
-            $form->getStatus(),
+            $category->getCreatedBy(),
             $category->getCreatedAt(),
-            new \DateTimeImmutable($form->getPublishedAt()),
-            new \DateTimeImmutable(),
-            $category->getDeletedAt(),
-            $category->getViewCount()
+            $category->getViewCount(),
+            $form,
+            $this->getImagesData()
         );
 
         $this->updateRepository->update($updated);
@@ -110,14 +97,14 @@ readonly class CategoryService
         ));
     }
 
-    public function getImagesPaths(): array
+    public function getImagesData(): ImageCollection
     {
+        $collection = new ImageCollection;
         $storage = dirname($this->uploadDir);
         foreach ($this->imagePathsProcessor->process() as $type => $absolute) {
-            $relative = str_replace($storage, '', $absolute);
-            $images[] = new Image($type, $relative);
+            $collection->add(new Image($type, str_replace($storage, '', $absolute)));
         }
 
-        return $images ?? [];
+        return $collection;
     }
 }
