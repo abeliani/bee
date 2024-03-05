@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Abeliani\Blog\Infrastructure\UI\Web\CPanel;
 
-use Abeliani\Blog\Application\Event\LogDebugEvent;
 use Abeliani\Blog\Application\Event\RequestEvent;
 use Abeliani\Blog\Infrastructure\Service\Login;
 use GuzzleHttp\Psr7\Response;
@@ -38,7 +37,7 @@ final readonly class LoginBackendController implements RequestHandlerInterface
 
         $data = $request->getParsedBody();
         if ($this->auth->login($data['email'], $data['password'])) {
-            $this->eventDispatcher->dispatch(new RequestEvent('User logged in'));
+            $this->eventDispatcher->dispatch(new RequestEvent('User logged in', $request, $this));
 
             parse_str($request->getHeaderLine('Referer') ?? '', $parsed_url);
             $response = $response
