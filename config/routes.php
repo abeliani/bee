@@ -2,8 +2,7 @@
 
 declare(strict_types=1);
 
-use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\CategoryCreateController;
-use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\CategoryIndexController;
+use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\ItIsBackendController;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\LoginBackendController;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\LogoutBackendController;
@@ -21,9 +20,11 @@ return simpleDispatcher(function (RouteCollector $r) {
         $r->get('/logout', LogoutBackendController::class);
 
         $r->get('/post/create', PostEditController::class);
-        $r->get('/category/create', CategoryCreateController::class);
-        $r->post('/category/create', CategoryCreateController::class);
-        $r->get('/category', CategoryIndexController::class);
+        $r->get('/category/create', Controller\CategoryCreateController::class);
+        $r->post('/category/create', Controller\CategoryCreateController::class);
+        $r->get('/category', Controller\CategoryIndexController::class);
+        $r->get('/category/update/{id:\d+}', Controller\CategoryUpdateController::class);
+        $r->post('/category/update/{id:\d+}', Controller\CategoryUpdateController::class);
         $r->get('', ItIsBackendController::class);
     });
 });

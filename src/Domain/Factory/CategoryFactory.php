@@ -28,17 +28,7 @@ final class CategoryFactory
         CategoryStatus $status,
         ?int $id = null,
     ): Category {
-        if (empty($title)) {
-            throw new CategoryException('Title cannot be empty');
-        }
-        if (empty($slug)) {
-            throw new CategoryException('Slug cannot be empty');
-        }
-        if ($slug === $title) {
-            throw new CategoryException('Slug cannot be the same as title');
-        }
-        
-        return new Category(
+        return self::createFull(
             $id,
             $title,
             $slug,
@@ -51,8 +41,63 @@ final class CategoryFactory
             $language,
             $actorId,
             null,
-            $status->value,
+            $status,
             new \DateTimeImmutable()
+        );
+    }
+
+    /**
+     * @throws CategoryException
+     */
+    public static function createFull(
+        ?int $id,
+        string $title,
+        string $slug,
+        string $content,
+        array $images,
+        string $imageAlt,
+        ?string $video,
+        array $seoMeta,
+        array $seoOg,
+        string $language,
+        int $createdBy,
+        ?int $editedBy,
+        CategoryStatus $status,
+        \DateTimeImmutable $createdAt,
+        ?\DateTimeImmutable $publishedAt = null,
+        ?\DateTimeImmutable $updatedAt = null,
+        ?\DateTimeImmutable $deletedAt = null,
+        int $view_count = 0,
+    ): Category {
+        if (empty($title)) {
+            throw new CategoryException('Title cannot be empty');
+        }
+        if (empty($slug)) {
+            throw new CategoryException('Slug cannot be empty');
+        }
+        if ($slug === $title) {
+            throw new CategoryException('Slug cannot be the same as title');
+        }
+
+        return new Category(
+            $id,
+            $title,
+            $slug,
+            $content,
+            $images,
+            $imageAlt,
+            $video,
+            $seoMeta,
+            $seoOg,
+            $language,
+            $createdBy,
+            $editedBy,
+            $status,
+            $createdAt,
+            $publishedAt,
+            $updatedAt,
+            $deletedAt,
+            $view_count
         );
     }
 
@@ -78,7 +123,7 @@ final class CategoryFactory
         string $publishedAt,
         ?string $updatedAt,
     ): Category {
-        return new Category(
+        return self::createFull(
             $id,
             $title,
             $slug,
@@ -86,12 +131,12 @@ final class CategoryFactory
             json_decode($mediaImage, null, 10, JSON_THROW_ON_ERROR),
             $mediaImageAlt,
             $mediaVideo ? json_decode($mediaVideo, true, 10, JSON_THROW_ON_ERROR) : null,
-            json_decode($seoMeta, true, 10, JSON_THROW_ON_ERROR),
+            json_decode($seoMeta, true, 20, JSON_THROW_ON_ERROR),
             json_decode($seoOg, true, 10, JSON_THROW_ON_ERROR),
             $language,
             $actorId,
             $editBy,
-            $status,
+            CategoryStatus::tryFrom($status),
             new \DateTimeImmutable($createdAt),
             new \DateTimeImmutable($publishedAt),
             $updatedAt === null ? null : new \DateTimeImmutable($updatedAt),

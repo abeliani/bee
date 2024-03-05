@@ -39,10 +39,10 @@
                           <span class="checkmark"></span>
                         </label>
                       </th>
-                      <td>{{ category.title }}</td>
+                      <td><a href="category/update/{{ category.id }}" target="_self">{{ category.title }}</a></td>
                       <td>{{ category.slug }}</td>
                       <td>{{ category.language }}</td>
-                      <td>{{ category.status }}</td>
+                      <td>{{ category.status.name }}</td>
                     </tr>
                     {% endfor %}
                   </tbody>
