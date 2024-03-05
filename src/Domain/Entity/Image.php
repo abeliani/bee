@@ -2,14 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Abeliani\Blog\Domain\Model;
+namespace Abeliani\Blog\Domain\Entity;
 
-class Image extends Jsonable
+final readonly class Image extends Jsonable
 {
-    public function __construct(
-        private readonly string $type,
-        private readonly string $url,
-    ) {
+    public function __construct(private string $type, private string $url)
+    {
     }
 
     public function getType(): string

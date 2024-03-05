@@ -81,7 +81,7 @@ class Collection implements CollectionInterface
 
     public function current(): mixed
     {
-        return $this->items[$this->position];
+        return $this->items[$this->position] ?? null;
     }
 
     public function key(): int
@@ -102,5 +102,15 @@ class Collection implements CollectionInterface
     public function count(): int
     {
         return count($this->items);
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->items;
+    }
+
+    public function __toString(): string
+    {
+        return json_encode($this->jsonSerialize(), JSON_UNESCAPED_SLASHES);
     }
 }

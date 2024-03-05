@@ -2,7 +2,7 @@
 
 namespace Abeliani\Blog\Domain\Collection;
 
-interface CollectionInterface extends \ArrayAccess, \Iterator, \Countable
+interface CollectionInterface extends \ArrayAccess, \Iterator, \Countable, \JsonSerializable, \Stringable
 {
     public function addAll(mixed $items): void;
 

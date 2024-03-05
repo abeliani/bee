@@ -5,8 +5,8 @@ namespace Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller;
 use Abeliani\Blog\Application\Enum\AuthRequestAttrs;
 use Abeliani\Blog\Application\Middleware\JwtAuthenticationMiddleware;
 use Abeliani\Blog\Domain\Enum\CategoryStatus;
-use Abeliani\Blog\Domain\Enum\EnumUtils;
-use Abeliani\Blog\Domain\Enum\Languages;
+use Abeliani\Blog\Domain\Enum\Utils;
+use Abeliani\Blog\Domain\Enum\Language;
 use Abeliani\Blog\Domain\Exception\CategoryException;
 use Abeliani\Blog\Domain\Model\User;
 use Abeliani\Blog\Infrastructure\Middleware\WithMiddleware;
@@ -56,8 +56,8 @@ final readonly class CategoryCreateController implements RequestHandlerInterface
         $render = $this->view->render('cpanel/category_create.twig', array_merge($formInspector->formToArray(), [
             'section' => 'Crete category',
             'action_url' => '/cpanel/category/create',
-            'languages' => EnumUtils::toArray(Languages::class),
-            'statuses' => EnumUtils::toArray(CategoryStatus::class),
+            'languages' => Utils::toArray(Language::class),
+            'statuses' => Utils::toArray(CategoryStatus::class),
             'errors' => $formInspector->getValidateErrors(),
         ]));
 

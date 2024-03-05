@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace Abeliani\Blog\Infrastructure\UI\Form;
 
-use Abeliani\Blog\Domain\Enum\CategoryStatus;
-use Abeliani\Blog\Domain\Enum\Languages;
+use Abeliani\Blog\Domain\Enum;
 use Abeliani\Blog\Domain\Interface\ToArrayInterface;
 use Abeliani\Blog\Infrastructure\Service\RequestValidator\Validator\EnumV;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -26,20 +25,24 @@ final class CategoryForm implements ToArrayInterface
     private SeoForm $seo;
 
     #[Assert\Valid]
+    private OgForm $og;
+
+    #[Assert\Valid]
     private MediaForm $media;
 
     #[Assert\Length(min: 50)]
     private string $content;
 
     #[Assert\NotBlank]
-    #[EnumV(enumClass: CategoryStatus::class)]
-    private CategoryStatus $status;
+    #[EnumV(enumClass: Enum\CategoryStatus::class)]
+    private Enum\CategoryStatus $status;
 
+    #[Assert\Type('string')]
     private string $published_at;
 
     #[Assert\NotBlank]
-    #[EnumV(enumClass: Languages::class)]
-    private string $language;
+    #[EnumV(enumClass: Enum\Language::class)]
+    private Enum\Language $language;
 
     public function getId(): int
     {
@@ -61,12 +64,17 @@ final class CategoryForm implements ToArrayInterface
         return $this->seo;
     }
 
+    public function getOg(): OgForm
+    {
+        return $this->og;
+    }
+
     public function getMedia(): MediaForm
     {
         return $this->media;
     }
 
-    public function getStatus(): CategoryStatus
+    public function getStatus(): Enum\CategoryStatus
     {
         return $this->status;
     }
@@ -81,7 +89,7 @@ final class CategoryForm implements ToArrayInterface
         return $this->published_at;
     }
 
-    public function getLanguage(): string
+    public function getLanguage(): Enum\Language
     {
         return $this->language;
     }
@@ -91,10 +99,10 @@ final class CategoryForm implements ToArrayInterface
         return [
             'title' => $this->title,
             'slug' => $this->slug,
-            'lang' => $this->language,
+            'lang' => $this->language->value,
             'seo' => $this->seo,
             'media' => $this->media,
-            'status' => $this->status,
+            'status' => $this->status->value,
             'content' => $this->content,
             'published_at' => $this->published_at,
         ];

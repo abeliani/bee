@@ -73,31 +73,27 @@
                         <h5 class="card-title mb-0">Open Graph</h5>
                         <div class="form-group">
                             <label for="og_title">Title</label>
-                            <input type="text" id="og_title" name="og_title" class="form-control" data-control="og_title" />
+                            {{ form.inputField('og[title]', og.title, errors, {class: 'form-control', 'data-control': 'og_title', type: 'text', id: 'og_title'}) }}
                         </div>
                         <div class="form-group">
                             <label for="og_type">Type</label>
-                            <input type="text" id="og_type" name="og_type" class="form-control" data-control="og_type" />
+                            {{ form.inputField('og[type]', og.type.value, errors, {class: 'form-control', 'data-control': 'og_type', type: 'text', id: 'og_type'}) }}
                         </div>
                         <div class="form-group">
                             <label for="og_url">Url</label>
-                            <input type="text" id="og_url" name="og_url" class="form-control" data-control="og_url" />
-                        </div>
-                        <div class="form-group">
-                            <label for="og_image">Image</label>
-                            <input type="text" id="og_image" name="og_image" class="form-control" data-control="og_image" />
+                            {{ form.inputField('og[url]', og.url, errors, {class: 'form-control', 'data-control': 'og_url', type: 'text', id: 'og_url'}) }}
                         </div>
                         <div class="form-group">
                             <label for="og_description">Description</label>
-                            <input type="text" id="og_description" name="og_description" class="form-control" data-control="og_description" />
+                            {{ form.inputField('og[description]', og.description, errors, {class: 'form-control', 'data-control': 'og_description', type: 'text', id: 'og_description'}) }}
                         </div>
                         <div class="form-group">
                             <label for="og_site_name">Site name</label>
-                            <input type="text" id="og_site_name" name="og_site_name" class="form-control" data-control="og_site_name" />
+                            {{ form.inputField('og[site_name]', og.siteName, errors, {class: 'form-control', 'data-control': 'og_site_name', type: 'text', id: 'og_site_name'}) }}
                         </div>
                         <div class="form-group">
                             <label for="og_locale">Locale</label>
-                            <input type="text" id="og_locale" name="og_locale" class="form-control" data-control="og_locale" />
+                            {{ form.inputField('og[locale]', og.locale.value, errors, {class: 'form-control', 'data-control': 'og_locale', type: 'text', id: 'og_locale'}) }}
                         </div>
                     </div>
                 </div>
@@ -113,7 +109,7 @@
                             </div>
                             {{ form.inputField('media[image]', image, errors, {class: 'form-control', type: 'file', id: 'imageInput', accept: 'image/*'}) }}
                     <div id="imageContainer">
-                        <img id="image" src="{{ image_loaded }}" alt="{{ imageTitle }} style="max-width: 100%;">
+                        <img id="image" src="{{ image_loaded }}" alt="{{ imageTitle }}" style="max-width: 100%;">
                     </div>
                     {{ form.inputField('media[imageData]', imageData, errors, {class: 'form-control', type: 'hidden', id: 'imageData'}) }}
                 </div>

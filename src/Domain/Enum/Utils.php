@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Abeliani\Blog\Domain\Enum;
 
-class EnumUtils
+class Utils
 {
     public static function toArray(string $enumClass): array
     {

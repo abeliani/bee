@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-use Abeliani\Blog\Domain\Model\Jsonable;
+namespace Abeliani\Blog\Domain\Entity;
 
-class SeoMeta extends Jsonable
+final readonly class SeoMeta extends Jsonable
 {
     public function __construct(
-        private readonly string $title,
-        private readonly string $description,
-        private readonly string $keywords,
+        private string $title,
+        private string $description,
     ) {
     }
 
@@ -23,17 +22,11 @@ class SeoMeta extends Jsonable
         return $this->description;
     }
 
-    public function getKeywords(): string
-    {
-        return $this->keywords;
-    }
-
     public function toArray(): array
     {
         return [
             'title' => $this->title,
             'description' => $this->description,
-            'keywords' => $this->keywords,
         ];
     }
 }

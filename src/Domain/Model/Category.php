@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Abeliani\Blog\Domain\Model;
 
-use Abeliani\Blog\Domain\Enum\CategoryStatus;
+use Abeliani\Blog\Domain\Collection\Concrete;
+use Abeliani\Blog\Domain\Entity;
+use Abeliani\Blog\Domain\Enum;
 use Abeliani\Blog\Domain\Trait\SurrogateId;
 
 class Category
@@ -16,19 +18,18 @@ class Category
         private readonly string $title,
         private readonly string $slug, 
         private readonly string $content,
-        private readonly array $images,
+        private readonly Concrete\ImageCollection $images,
         private readonly string $imageAlt,
         private readonly ?string $video,
-        private readonly array $seoMeta,
-        private readonly array $seoOg,
-        private readonly string $language,
+        private readonly Entity\SeoMeta $seoMeta,
+        private readonly Entity\CategoryOg $seoOg,
+        private readonly Enum\Language $language,
         private readonly int $createdBy,
         private readonly ?int $editedBy,
-        private readonly CategoryStatus $status,
+        private readonly Enum\CategoryStatus $status,
         private readonly \DateTimeImmutable $createdAt,
         private ?\DateTimeImmutable $publishedAt = null,
         private readonly ?\DateTimeImmutable $updatedAt = null,
-        private readonly ?\DateTimeImmutable $deletedAt = null,
         private readonly int $view_count = 0,
     ) {
         if ($id) {
@@ -59,7 +60,7 @@ class Category
         return $this->content;
     }
 
-    public function getImages(): array
+    public function getImages(): Concrete\ImageCollection
     {
         return $this->images;
     }
@@ -74,17 +75,17 @@ class Category
         return $this->video;
     }
 
-    public function getSeoMeta(): array
+    public function getSeoMeta(): Entity\SeoMeta
     {
         return $this->seoMeta;
     }
 
-    public function getSeoOg(): array
+    public function getSeoOg(): Entity\CategoryOg
     {
         return $this->seoOg;
     }
 
-    public function getLanguage(): string
+    public function getLanguage(): Enum\Language
     {
         return $this->language;
     }
@@ -99,7 +100,7 @@ class Category
         return $this->editedBy;
     }
 
-    public function getStatus(): CategoryStatus
+    public function getStatus(): Enum\CategoryStatus
     {
         return $this->status;
     }
@@ -117,11 +118,6 @@ class Category
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
-    }
-
-    public function getDeletedAt(): ?\DateTimeImmutable
-    {
-        return $this->deletedAt;
     }
 
     public function getViewCount(): int

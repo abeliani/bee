@@ -5,8 +5,8 @@ namespace Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller;
 use Abeliani\Blog\Application\Enum\AuthRequestAttrs;
 use Abeliani\Blog\Application\Middleware\JwtAuthenticationMiddleware;
 use Abeliani\Blog\Domain\Enum\CategoryStatus;
-use Abeliani\Blog\Domain\Enum\EnumUtils;
-use Abeliani\Blog\Domain\Enum\Languages;
+use Abeliani\Blog\Domain\Enum\Language;
+use Abeliani\Blog\Domain\Enum\Utils;
 use Abeliani\Blog\Domain\Exception\CategoryException;
 use Abeliani\Blog\Domain\Exception\InvalidEntityException;
 use Abeliani\Blog\Domain\Exception\NotFoundException;
@@ -29,13 +29,14 @@ use Twig\Error\SyntaxError;
 final readonly class CategoryUpdateController implements RequestHandlerInterface
 {
     public function __construct(
-        private Environment $view,
-        private FormService $formService,
-        private ResponseInterface $response,
-        private CategoryService $category,
+        private Environment                     $view,
+        private FormService                     $formService,
+        private ResponseInterface               $response,
+        private CategoryService                 $category,
         private ReadCategoryRepositoryInterface $repository,
-        private CategoryMapper $mapper,
-    ) {
+        private CategoryMapper                  $mapper,
+    )
+    {
     }
 
     /**
@@ -54,7 +55,7 @@ final readonly class CategoryUpdateController implements RequestHandlerInterface
         /** @var User $actor */
         $actor = $request->getAttribute(AuthRequestAttrs::CurrentUser->value);
 
-        if (!$formInspector->validate( 'id')
+        if (!$formInspector->validate('id')
             || !($category = $this->repository->find($form->getId(), $actor->getId()))) {
             throw new NotFoundException('Category not found');
         }
@@ -73,8 +74,8 @@ final readonly class CategoryUpdateController implements RequestHandlerInterface
             $render = $this->view->render('cpanel/category_create.twig', array_merge($formData, [
                 'section' => 'Update category',
                 'action_url' => '/cpanel/category/update/' . $form->getId(),
-                'languages' => EnumUtils::toArray(Languages::class),
-                'statuses' => EnumUtils::toArray(CategoryStatus::class),
+                'languages' => Utils::toArray(Language::class),
+                'statuses' => Utils::toArray(CategoryStatus::class),
                 'errors' => $formInspector->getValidateErrors(),
             ]));
 
