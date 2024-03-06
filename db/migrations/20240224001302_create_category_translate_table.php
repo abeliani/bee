@@ -19,7 +19,6 @@ final class CreateCategoryTranslateTable extends AbstractMigration
             ->addColumn('seo_og', 'json', ['null' => true])
             ->addColumn('media_image_alt', 'string', ['limit' => 150])
             ->addColumn('media_image', 'json', ['null' => true])
-            ->addColumn('media_video', 'string', ['null' => true])
             ->addColumn('status', 'integer', ['default' => 0, 'signed' => false, 'limit' => MysqlAdapter::INT_TINY])
             ->addColumn('view_count', 'integer', ['default' => 0, 'signed' => false, 'limit' => MysqlAdapter::INT_BIG])
 
