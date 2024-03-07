@@ -9,9 +9,9 @@ use Abeliani\Blog\Infrastructure\Persistence\Mapper\CategoryMapper;
 use Abeliani\Blog\Infrastructure\Service;
 use Abeliani\Blog\Infrastructure\Service\Form\FormService;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\Article;
+use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\Category;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\CategoryCreateController;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\CategoryIndexController;
-use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\CategoryUpdateController;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\ItIsBackendController;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\LoginBackendController;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\LogoutBackendController;
@@ -77,8 +77,8 @@ return [
             $c->get(ReadCategoryRepositoryInterface::class),
         );
     },
-    CategoryUpdateController::class => function(Container $c): CategoryUpdateController {
-        return new CategoryUpdateController(
+    Category\UpdateController::class => function(Container $c): Category\UpdateController {
+        return new Category\UpdateController(
             $c->get(Environment::class),
             $c->get(FormService::class),
             new Response(),

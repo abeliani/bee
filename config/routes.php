@@ -28,8 +28,8 @@ return simpleDispatcher(function (RouteCollector $r) {
         $r->get('/category/create', CPanel\Controller\CategoryCreateController::class);
         $r->post('/category/create', CPanel\Controller\CategoryCreateController::class);
 
-        $r->get('/category/update/{id:\d+}', CPanel\Controller\CategoryUpdateController::class);
-        $r->post('/category/update/{id:\d+}', CPanel\Controller\CategoryUpdateController::class);
+        $r->get('/category/update/{id:\d+}', CPanel\Controller\Category\UpdateController::class);
+        $r->post('/category/update/{id:\d+}', CPanel\Controller\Category\UpdateController::class);
 
         $r->get('/category', CPanel\Controller\CategoryIndexController::class);
     });

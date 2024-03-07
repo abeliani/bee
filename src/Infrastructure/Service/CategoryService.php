@@ -17,7 +17,7 @@ use Abeliani\Blog\Domain\Model\User;
 use Abeliani\Blog\Domain\Repository\Category as repo;
 use Abeliani\Blog\Infrastructure\UI\Form\CategoryForm;
 
-readonly class CategoryService
+final readonly class CategoryService
 {
     public function __construct(
         private repo\CreateCategoryRepositoryInterface $categoryRepository,
@@ -34,6 +34,17 @@ readonly class CategoryService
      */
     public function create(User $actor, CategoryForm $form): void
     {
+        if ($form->getMedia()->getImage()->getError() === UPLOAD_ERR_OK) {
+            register_shutdown_function(fn () =>
+                $this->imageQueryProcessor->process(new ProcessorContext([
+                    'width' => $form->getMedia()->getImageData()->getWidth(),
+                    'height' => $form->getMedia()->getImageData()->getHeight(),
+                    'x' => $form->getMedia()->getImageData()->getX(),
+                    'y' => $form->getMedia()->getImageData()->getY(),
+                ]),  new UploadedFileHandler($form->getMedia()->getImage())
+            ));
+        }
+
         $category = CategoryFactory::create(
             $actor->getId(),
             $form->getTitle(),
@@ -48,15 +59,6 @@ readonly class CategoryService
         );
 
         $this->categoryRepository->create($category);
-
-        register_shutdown_function(fn () =>
-            $this->imageQueryProcessor->process(new ProcessorContext([
-                'width' => $form->getMedia()->getImageData()->getWidth(),
-                'height' => $form->getMedia()->getImageData()->getHeight(),
-                'x' => $form->getMedia()->getImageData()->getX(),
-                'y' => $form->getMedia()->getImageData()->getY(),
-            ]),  new UploadedFileHandler($form->getMedia()->getImage())
-        ));
     }
 
     /**
@@ -73,6 +75,17 @@ readonly class CategoryService
                 $file = dirname($this->uploadDir) . $image->getUrl();
                 file_exists($file) and unlink($file);
             }
+
+            register_shutdown_function(fn () =>
+                $this->imageQueryProcessor->process(new ProcessorContext([
+                    'width' => $form->getMedia()->getImageData()->getWidth(),
+                    'height' => $form->getMedia()->getImageData()->getHeight(),
+                    'x' => $form->getMedia()->getImageData()->getX(),
+                    'y' => $form->getMedia()->getImageData()->getY(),
+                ]),  new UploadedFileHandler($form->getMedia()->getImage())
+            ));
+
+            $imageData = $this->getImagesData();
         }
 
         $updated = CategoryFactory::createFromForm(
@@ -80,19 +93,10 @@ readonly class CategoryService
             $category->getCreatedBy(),
             $category->getCreatedAt(),
             $form,
-            $this->getImagesData()
+            $imageData ?? $category->getImages()
         );
 
         $this->updateRepository->update($updated);
-
-        register_shutdown_function(fn () =>
-            $this->imageQueryProcessor->process(new ProcessorContext([
-                'width' => $form->getMedia()->getImageData()->getWidth(),
-                'height' => $form->getMedia()->getImageData()->getHeight(),
-                'x' => $form->getMedia()->getImageData()->getX(),
-                'y' => $form->getMedia()->getImageData()->getY(),
-            ]),  new UploadedFileHandler($form->getMedia()->getImage())
-        ));
     }
 
     public function getImagesData(): ImageCollection

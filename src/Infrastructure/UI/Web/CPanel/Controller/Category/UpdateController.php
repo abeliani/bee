@@ -1,14 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller;
+namespace Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\Category;
 
 use Abeliani\Blog\Application\Enum\AuthRequestAttrs;
 use Abeliani\Blog\Application\Middleware\JwtAuthenticationMiddleware;
-use Abeliani\Blog\Domain\Enum\CategoryStatus;
-use Abeliani\Blog\Domain\Enum\Language;
-use Abeliani\Blog\Domain\Enum\Utils;
+use Abeliani\Blog\Domain\Enum;
 use Abeliani\Blog\Domain\Exception\CategoryException;
-use Abeliani\Blog\Domain\Exception\InvalidEntityException;
 use Abeliani\Blog\Domain\Exception\NotFoundException;
 use Abeliani\Blog\Domain\Model\User;
 use Abeliani\Blog\Domain\Repository\Category\ReadCategoryRepositoryInterface;
@@ -21,12 +18,10 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Twig\Environment;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
+use Twig\Error;
 
 #[WithMiddleware(JwtAuthenticationMiddleware::class)]
-final readonly class CategoryUpdateController implements RequestHandlerInterface
+final readonly class UpdateController implements RequestHandlerInterface
 {
     public function __construct(
         private Environment                     $view,
@@ -35,14 +30,13 @@ final readonly class CategoryUpdateController implements RequestHandlerInterface
         private CategoryService                 $category,
         private ReadCategoryRepositoryInterface $repository,
         private CategoryMapper                  $mapper,
-    )
-    {
+    ) {
     }
 
     /**
-     * @throws SyntaxError
-     * @throws RuntimeError
-     * @throws LoaderError
+     * @throws Error\SyntaxError
+     * @throws Error\RuntimeError
+     * @throws Error\LoaderError
      * @throws \JsonException
      * @throws \ReflectionException
      * @throws NotFoundException|CategoryException
@@ -70,19 +64,20 @@ final readonly class CategoryUpdateController implements RequestHandlerInterface
 
         if ($formInspector->isEmptyForm()) {
             $formData = $this->mapper->mapToFormData($category);
-
-            $render = $this->view->render('cpanel/category_create.twig', array_merge($formData, [
-                'section' => 'Update category',
-                'action_url' => '/cpanel/category/update/' . $form->getId(),
-                'languages' => Utils::toArray(Language::class),
-                'statuses' => Utils::toArray(CategoryStatus::class),
-                'errors' => $formInspector->getValidateErrors(),
-            ]));
-
-            $this->response->getBody()->write($render);
-            return $this->response;
+        } else {
+            $formData = $form->toArray();
         }
 
-        throw new InvalidEntityException('Wrong category update request');
+        $render = $this->view->render('cpanel/category_create.twig', array_merge($formData, [
+            'section' => 'Update category',
+            'upload_dir' => '/uploads',
+            'action_url' => '/cpanel/category/update/' . $formData['id'],
+            'languages' => Enum\Utils::toArray(Enum\Language::class),
+            'statuses' => Enum\Utils::toArray(Enum\CategoryStatus::class),
+            'errors' => $formInspector->getValidateErrors(),
+        ]));
+
+        $this->response->getBody()->write($render);
+        return $this->response;
     }
 }
