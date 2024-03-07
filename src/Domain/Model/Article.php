@@ -9,7 +9,7 @@ use Abeliani\Blog\Domain\Entity;
 use Abeliani\Blog\Domain\Enum;
 use Abeliani\Blog\Domain\Trait\SurrogateId;
 
-class Category
+class Article
 {
     use SurrogateId;
 
@@ -18,17 +18,20 @@ class Category
         private readonly string $title,
         private readonly string $slug, 
         private readonly string $content,
+        private readonly array $tags,
         private readonly Concrete\ImageCollection $images,
         private readonly string $imageAlt,
+        private readonly ?string $video,
         private readonly Entity\SeoMeta $seoMeta,
-        private readonly Entity\CategoryOg $seoOg,
+        private readonly Entity\ArticleOg $seoOg,
         private readonly Enum\Language $language,
         private readonly int $createdBy,
         private readonly ?int $editedBy,
-        private readonly Enum\CategoryStatus $status,
+        private readonly Enum\ArticleStatus $status,
         private readonly \DateTimeImmutable $createdAt,
         private ?\DateTimeImmutable $publishedAt = null,
         private readonly ?\DateTimeImmutable $updatedAt = null,
+        private readonly int $view_count = 0,
     ) {
         if ($id) {
             $this->id = $id;
@@ -58,6 +61,11 @@ class Category
         return $this->content;
     }
 
+    public function getTags(): array
+    {
+        return $this->tags;
+    }
+
     public function getImages(): Concrete\ImageCollection
     {
         return $this->images;
@@ -68,12 +76,17 @@ class Category
         return $this->imageAlt;
     }
 
+    public function getVideo(): ?string
+    {
+        return $this->video;
+    }
+
     public function getSeoMeta(): Entity\SeoMeta
     {
         return $this->seoMeta;
     }
 
-    public function getSeoOg(): Entity\CategoryOg
+    public function getSeoOg(): Entity\ArticleOg
     {
         return $this->seoOg;
     }
@@ -93,7 +106,7 @@ class Category
         return $this->editedBy;
     }
 
-    public function getStatus(): Enum\CategoryStatus
+    public function getStatus(): Enum\ArticleStatus
     {
         return $this->status;
     }
@@ -111,5 +124,10 @@ class Category
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
+    }
+
+    public function getViewCount(): int
+    {
+        return $this->view_count;
     }
 }

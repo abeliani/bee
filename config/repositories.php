@@ -1,33 +1,44 @@
 <?php
+
 declare(strict_types=1);
 
+use Abeliani\Blog\Domain\Repository\Article;
 use Abeliani\Blog\Domain\Repository\Category;
 use Abeliani\Blog\Domain\Repository\User\CreateUserRepositoryInterface;
 use Abeliani\Blog\Domain\Repository\User\ReadUserRepositoryInterface;
-use Abeliani\Blog\Infrastructure\Persistence\Mapper\CategoryMapper;
-use Abeliani\Blog\Infrastructure\Persistence\Mapper\UserMapper;
+use Abeliani\Blog\Infrastructure\Persistence\Mapper;
 use Abeliani\Blog\Infrastructure\Repository;
 use Abeliani\Blog\Infrastructure\Repository\CreateUserRepository;
 use Abeliani\Blog\Infrastructure\Repository\ReadUserRepository;
 use DI\Container;
 
 return [
-    UserMapper::class => fn(): UserMapper => new UserMapper(),
-    CategoryMapper::class => fn (): CategoryMapper => new CategoryMapper(),
+    Mapper\UserMapper::class => fn(): Mapper\UserMapper => new Mapper\UserMapper(),
+    Mapper\CategoryMapper::class => fn (): Mapper\CategoryMapper => new Mapper\CategoryMapper(),
+    Mapper\ArticleMapper::class => fn (): Mapper\ArticleMapper => new Mapper\ArticleMapper(),
 
     CreateUserRepositoryInterface::class => function(Container $c): CreateUserRepositoryInterface {
         return new CreateUserRepository($c->get(PDO::class));
     },
     ReadUserRepositoryInterface::class => function(Container $c): ReadUserRepositoryInterface {
-        return new ReadUserRepository($c->get(PDO::class), $c->get(UserMapper::class));
+        return new ReadUserRepository($c->get(PDO::class), $c->get(Mapper\UserMapper::class));
     },
     Category\CreateCategoryRepositoryInterface::class => function(Container $c): Category\CreateCategoryRepositoryInterface {
         return new Repository\CreateCategoryRepository($c->get(PDO::class));
     },
     Category\ReadCategoryRepositoryInterface::class => function(Container $c): Category\ReadCategoryRepositoryInterface {
-        return new Repository\ReadCategoryRepository($c->get(PDO::class), $c->get(CategoryMapper::class));
+        return new Repository\ReadCategoryRepository($c->get(PDO::class), $c->get(Mapper\CategoryMapper::class));
     },
     Category\UpdateCategoryRepositoryInterface::class => function(Container $c): Category\UpdateCategoryRepositoryInterface {
         return new Repository\UpdateCategoryRepository($c->get(PDO::class));
+    },
+    Article\CreateRepositoryInterface::class => function(Container $c): Article\CreateRepositoryInterface {
+        return new Repository\Article\CreateRepository($c->get(PDO::class));
+    },
+    Article\UpdateRepositoryInterface::class => function(Container $c): Article\UpdateRepositoryInterface {
+        return new Repository\Article\UpdateRepository($c->get(PDO::class));
+    },
+    Article\ReadRepositoryInterface::class => function(Container $c): Article\ReadRepositoryInterface {
+        return new Repository\Article\ReadRepository($c->get(PDO::class), $c->get(Mapper\ArticleMapper::class));
     },
 ];

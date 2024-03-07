@@ -11,10 +11,9 @@ final class CreateTags extends AbstractMigration
     {
         $table = $this->table('tags', ['engine' => 'InnoDB', 'collation' => 'utf8mb4_unicode_ci']);
         $table->addColumn('name', MysqlAdapter::PHINX_TYPE_STRING, ['limit' => 100])
-            ->addColumn('slug', MysqlAdapter::PHINX_TYPE_STRING, ['limit' => 100])
             ->addColumn('frequency', MysqlAdapter::PHINX_TYPE_SMALL_INTEGER, ['signed' => false, 'default' => 0])
 
-            ->addIndex(['name', 'slug'], ['unique' => true])
+            ->addIndex(['name'], ['unique' => true])
             ->create();
     }
 

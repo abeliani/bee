@@ -32,8 +32,7 @@ readonly class UpdateCategoryRepository implements UpdateCategoryRepositoryInter
         
         $sql = <<<SQL
 UPDATE category_translations 
-    SET title = ?, slug = ?, content = ?, seo_meta = ?, seo_og = ?, media_image = ?, media_image_alt = ?,
-        media_video = ?, status = ?, view_count = ?
+    SET title = ?, slug = ?, content = ?, seo_meta = ?, seo_og = ?, media_image = ?, media_image_alt = ?, status = ?
     WHERE category_id = ? AND lang = ?
 SQL;
 
@@ -46,9 +45,7 @@ SQL;
                 $c->getSeoOg(),
                 $c->getImages(),
                 $c->getImageAlt(),
-                $c->getVideo(),
                 $c->getStatus()->value,
-                $c->getViewCount(),
                 $c->getId(),
                 $c->getLanguage()->value,
             ]);

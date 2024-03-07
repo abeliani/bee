@@ -10,44 +10,46 @@ use Abeliani\Blog\Application\Service\Image\Processor\ProcessorContext;
 use Abeliani\Blog\Application\Service\Image\Processor\SavePathPremakeProcessor;
 use Abeliani\Blog\Domain\Collection\Concrete\ImageCollection;
 use Abeliani\Blog\Domain\Entity\Image;
-use Abeliani\Blog\Domain\Exception\CategoryException;
-use Abeliani\Blog\Domain\Factory\CategoryFactory;
-use Abeliani\Blog\Domain\Model\Category;
+use Abeliani\Blog\Domain\Exception\ArticleException;
+use Abeliani\Blog\Domain\Factory\ArticleFactory;
+use Abeliani\Blog\Domain\Model\Article;
 use Abeliani\Blog\Domain\Model\User;
-use Abeliani\Blog\Domain\Repository\Category as repo;
-use Abeliani\Blog\Infrastructure\UI\Form\CategoryForm;
+use Abeliani\Blog\Domain\Repository\Article as repo;
+use Abeliani\Blog\Infrastructure\UI\Form\ArticleForm;
 
-readonly class CategoryService
+readonly class ArticleService
 {
     public function __construct(
-        private repo\CreateCategoryRepositoryInterface $categoryRepository,
-        private repo\UpdateCategoryRepositoryInterface $updateRepository,
-        private ImageQueryProcessor               $imageQueryProcessor,
-        private SavePathPremakeProcessor          $imagePathsProcessor,
-        private string                            $uploadDir,
+        private repo\CreateRepositoryInterface $article,
+        private repo\UpdateRepositoryInterface $updateRepository,
+        private ImageQueryProcessor            $imageQueryProcessor,
+        private SavePathPremakeProcessor       $imagePathsProcessor,
+        private string                         $uploadDir,
     ) {
     }
 
     /**
      * @throws \ImagickException
-     * @throws CategoryException
+     * @throws ArticleException
      */
-    public function create(User $actor, CategoryForm $form): void
+    public function create(User $actor, ArticleForm $form): void
     {
-        $category = CategoryFactory::create(
+        $article = ArticleFactory::create(
             $actor->getId(),
             $form->getTitle(),
             $form->getSlug(),
             $form->getContent(),
+            $form->getTags(),
             (string) $this->getImagesData(),
             $form->getMedia()->getImageAlt(),
+            $form->getMedia()->getVideo(),
             $form->getSeo()->jsonSerialize(),
             $form->getOg()->jsonSerialize(),
             $form->getLanguage(),
             $form->getStatus(),
         );
 
-        $this->categoryRepository->create($category);
+        $this->article->create($article);
 
         register_shutdown_function(fn () =>
             $this->imageQueryProcessor->process(new ProcessorContext([
@@ -60,12 +62,17 @@ readonly class CategoryService
     }
 
     /**
-     * @throws CategoryException
+     * @param User $user
+     * @param Article $article
+     * @param ArticleForm $form
+     * @return void
+     * @throws ArticleException
+     * @throws \ImagickException
      */
-    public function update(User $user, Category $category, CategoryForm $form): void
+    public function update(User $user, Article $article, ArticleForm $form): void
     {
         if ($form->getMedia()->getImage()->getError() === UPLOAD_ERR_OK) {
-            foreach($category->getImages() as $image) {
+            foreach($article->getImages() as $image) {
                 if ($image->getType() === 'original') {
                     continue;
                 }
@@ -75,10 +82,11 @@ readonly class CategoryService
             }
         }
 
-        $updated = CategoryFactory::createFromForm(
+        $updated = ArticleFactory::createFromForm(
             $user->getId(),
-            $category->getCreatedBy(),
-            $category->getCreatedAt(),
+            $article->getCreatedBy(),
+            $article->getCreatedAt(),
+            $article->getViewCount(),
             $form,
             $this->getImagesData()
         );

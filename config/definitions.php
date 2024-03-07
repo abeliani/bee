@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Abeliani\Blog\Application\Enum\ConfigDi;
 use Abeliani\Blog\Application\Service\Image\Args\Size;
 use Abeliani\Blog\Application\Service\Image\Builder\ImageQueryBuilder;
 use Abeliani\Blog\Application\Service\Image\Builder\Manipulate\Crop;
@@ -35,8 +36,28 @@ return [
             ->pushHandler(new FilterHandler($debugHandler, Level::Debug, Level::Notice))
             ->pushHandler(new FilterHandler($restHandler, Level::Warning, Level::Emergency));
     },
-    ImageQueryBuilder::class => function(): ImageQueryBuilder {
-        $upload =  ROOT_DIR . DS . getenv('FILE_UPLOAD_DIR');
+    ConfigDi::CategoryImageBuilder->name => function(): ImageQueryBuilder {
+        $upload =  ROOT_DIR . DS . getenv('FILE_UPLOAD_DIR') . DS . 'category';
+
+        $thumb = new ImageQueryBuilder('thumb');
+        $thumb->append(new Resize(new Size(60.0, 40.0)))
+            ->append(new Save($upload . DS . date('Y') . DS . uniqid(), IMAGETYPE_WEBP));
+
+        $resized = new ImageQueryBuilder('view');
+        $resized->append(function (ProcessorContext $c) {
+            return Crop::build($c->get('width'), $c->get('height'), $c->get('x'), $c->get('y'));
+        }, Crop::getName())
+            ->append(new Resize(new Size(600.0,400.0)))
+            ->append(new Save($upload . DS . date('Y') . DS . uniqid(), IMAGETYPE_WEBP));
+
+        return (new ImageQueryBuilder('original'))
+            ->append(new Strip())
+            ->append(new Save($upload . DS . 'images/original' . DS . uniqid(), IMAGETYPE_WEBP))
+            ->branch($resized)
+            ->branch($thumb);
+    },
+    ConfigDi::ArticleImageBuilder->name => function(): ImageQueryBuilder {
+        $upload =  ROOT_DIR . DS . getenv('FILE_UPLOAD_DIR') . DS . 'article';
 
         $thumb = new ImageQueryBuilder('thumb');
         $thumb->append(new Resize(new Size(60.0, 40.0)))

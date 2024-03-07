@@ -5,40 +5,43 @@ declare(strict_types=1);
 namespace Abeliani\Blog\Domain\Factory;
 
 use Abeliani\Blog\Domain\Collection\Concrete;
-use Abeliani\Blog\Domain\Entity\CategoryOg;
+use Abeliani\Blog\Domain\Entity\ArticleOg;
 use Abeliani\Blog\Domain\Entity\Image;
 use Abeliani\Blog\Domain\Entity\SeoMeta;
 use Abeliani\Blog\Domain\Enum;
-use Abeliani\Blog\Domain\Exception\CategoryException;
-use Abeliani\Blog\Domain\Model\Category;
-use Abeliani\Blog\Infrastructure\UI\Form\CategoryForm;
+use Abeliani\Blog\Domain\Exception\ArticleException;
+use Abeliani\Blog\Domain\Model\Article;
+use Abeliani\Blog\Infrastructure\UI\Form\ArticleForm;
 
-final class CategoryFactory
+final class ArticleFactory
 {
     /**
-     * @throws CategoryException
+     * @throws ArticleException
      */
     public static function create(
         int                 $actorId,
         string              $title,
         string              $slug,
         string              $content,
+        string              $tags,
         string              $images,
         string              $imageAlt,
+        string              $video,
         array               $seoMeta,
         array               $seoOg,
         Enum\Language       $language,
-        Enum\CategoryStatus $status,
+        Enum\ArticleStatus $status,
         ?int                $id = null,
-    ): Category
-    {
+    ): Article {
         return self::createFull(
             $id,
             $title,
             $slug,
             $content,
+            $tags,
             $images,
             $imageAlt,
+            $video ?: null,
             json_encode($seoMeta),
             json_encode($seoOg),
             $language,
@@ -50,22 +53,25 @@ final class CategoryFactory
     }
 
     /**
-     * @throws CategoryException
+     * @throws ArticleException
      */
     public static function createFromForm(
         int $actorId,
         int $authorId,
         \DateTimeImmutable $createdAt,
-        CategoryForm $form,
+        int $viewCount,
+        ArticleForm $form,
         Concrete\ImageCollection $images
-    ): Category {
-        return CategoryFactory::createFull(
+    ): Article {
+        return ArticleFactory::createFull(
             $form->getId(),
             $form->getTitle(),
             $form->getSlug(),
             $form->getContent(),
+            $form->getTags(),
             (string) $images,
             $form->getMedia()->getImageAlt(),
+            $form->getMedia()->getVideo(),
             json_encode($form->getSeo()),
             json_encode($form->getOg()),
             $form->getLanguage(),
@@ -75,39 +81,44 @@ final class CategoryFactory
             $createdAt,
             new \DateTimeImmutable($form->getPublishedAt()),
             new \DateTimeImmutable(),
+            $viewCount
         );
     }
 
     /**
-     * @throws CategoryException
+     * @throws ArticleException
      */
     public static function createFull(
         ?int                $id,
         string              $title,
         string              $slug,
         string              $content,
+        string              $tags,
         string              $images,
         string              $imageAlt,
+        ?string             $video,
         string              $seoMeta,
         ?string             $seoOg,
         Enum\Language       $language,
         int                 $createdBy,
         ?int                $editedBy,
-        Enum\CategoryStatus $status,
+        Enum\ArticleStatus $status,
         \DateTimeImmutable  $createdAt,
         ?\DateTimeImmutable $publishedAt = null,
         ?\DateTimeImmutable $updatedAt = null,
-    ): Category
-    {
+        int                 $view_count = 0,
+    ): Article {
         if (empty($title)) {
-            throw new CategoryException('Title cannot be empty');
+            throw new ArticleException('Title cannot be empty');
         }
         if (empty($slug)) {
-            throw new CategoryException('Slug cannot be empty');
+            throw new ArticleException('Slug cannot be empty');
         }
         if ($slug === $title) {
-            throw new CategoryException('Slug cannot be the same as title');
+            throw new ArticleException('Slug cannot be the same as title');
         }
+
+        $tagsParsed = array_map('trim', explode(',', $tags));
 
         $imagesCollection = new Concrete\ImageCollection();
         foreach (json_decode($images) as $image) {
@@ -118,7 +129,7 @@ final class CategoryFactory
         $seoMeta = new SeoMeta($seoMeta->title, $seoMeta->description);
 
         $seoOg = json_decode($seoOg ?? '');
-        $seoOg = new CategoryOg(
+        $seoOg = new ArticleOg(
             $seoOg->title ?? '',
             Enum\OgType::tryFrom($seoOg->type ?? '') ?? Enum\OgType::Article,
                 $seoOg->url ?? '',
@@ -127,13 +138,15 @@ final class CategoryFactory
             Enum\Locale::tryFrom($seoOg->locale ?? '') ?? Enum\Locale::ru
         );
 
-        return new Category(
+        return new Article(
             $id,
             $title,
             $slug,
             $content,
+            $tagsParsed,
             $imagesCollection,
             $imageAlt,
+            $video,
             $seoMeta,
             $seoOg,
             $language,
@@ -143,6 +156,7 @@ final class CategoryFactory
             $createdAt,
             $publishedAt,
             $updatedAt,
+            $view_count
         );
     }
 
@@ -150,24 +164,27 @@ final class CategoryFactory
      * @throws \JsonException
      * @throws \Exception
      */
-    public static function createFromDb(array $data): Category
+    public static function createFromDb(array $data): Article
     {
         return self::createFull(
             $data['id'],
             $data['title'],
             $data['slug'],
             $data['content'],
+            $data['tags'],
             $data['media_image'],
             $data['media_image_alt'],
+            $data['media_video'],
             $data['seo_meta'],
             $data['seo_og'],
             Enum\Language::tryFrom($data['lang']),
             $data['author_id'],
             $data['edited_by'],
-            Enum\CategoryStatus::tryFrom($data['status']),
+            Enum\ArticleStatus::tryFrom($data['status']),
             new \DateTimeImmutable($data['created_at']),
             new \DateTimeImmutable($data['published_at']),
             $data['updated_at'] === null ? null : new \DateTimeImmutable($data['updated_at']),
+            $data['view_count']
         );
     }
 }

@@ -2,12 +2,8 @@
 
 declare(strict_types=1);
 
-use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller;
-use Abeliani\Blog\Infrastructure\UI\Web\CPanel\ItIsBackendController;
-use Abeliani\Blog\Infrastructure\UI\Web\CPanel\LoginBackendController;
-use Abeliani\Blog\Infrastructure\UI\Web\CPanel\LogoutBackendController;
-use Abeliani\Blog\Infrastructure\UI\Web\CPanel\PostEditController;
 use Abeliani\Blog\Infrastructure\Delivery\Web\Controller\ItWorksController;
+use Abeliani\Blog\Infrastructure\UI\Web\CPanel;
 use FastRoute\RouteCollector;
 use function FastRoute\simpleDispatcher;
 
@@ -15,16 +11,26 @@ return simpleDispatcher(function (RouteCollector $r) {
     $r->get('/', ItWorksController::class);
 
     $r->addGroup('/cpanel', function (RouteCollector $r) {
-        $r->post('/login', LoginBackendController::class);
-        $r->get('/login', LoginBackendController::class);
-        $r->get('/logout', LogoutBackendController::class);
+        $r->post('/login', CPanel\LoginBackendController::class);
+        $r->get('/login', CPanel\LoginBackendController::class);
+        $r->get('/logout', CPanel\LogoutBackendController::class);
 
-        $r->get('/post/create', PostEditController::class);
-        $r->get('/category/create', Controller\CategoryCreateController::class);
-        $r->post('/category/create', Controller\CategoryCreateController::class);
-        $r->get('/category', Controller\CategoryIndexController::class);
-        $r->get('/category/update/{id:\d+}', Controller\CategoryUpdateController::class);
-        $r->post('/category/update/{id:\d+}', Controller\CategoryUpdateController::class);
-        $r->get('', ItIsBackendController::class);
+        $r->get('', CPanel\ItIsBackendController::class);
+
+        $r->get('/article/create', CPanel\Controller\Article\CreateController::class);
+        $r->post('/article/create', CPanel\Controller\Article\CreateController::class);
+
+        $r->get('/article/update/{id:\d+}', CPanel\Controller\Article\UpdateController::class);
+        $r->post('/article/update/{id:\d+}', CPanel\Controller\Article\UpdateController::class);
+
+        $r->get('/article', CPanel\Controller\Article\IndexController::class);
+
+        $r->get('/category/create', CPanel\Controller\CategoryCreateController::class);
+        $r->post('/category/create', CPanel\Controller\CategoryCreateController::class);
+
+        $r->get('/category/update/{id:\d+}', CPanel\Controller\CategoryUpdateController::class);
+        $r->post('/category/update/{id:\d+}', CPanel\Controller\CategoryUpdateController::class);
+
+        $r->get('/category', CPanel\Controller\CategoryIndexController::class);
     });
 });

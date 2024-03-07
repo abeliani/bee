@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Abeliani\Blog\Infrastructure\Service\Form;
 
 use Abeliani\Blog\Infrastructure\Service\Hydrator;
@@ -7,13 +9,12 @@ use Abeliani\Blog\Infrastructure\Service\RequestValidator\FromInspector;
 use Abeliani\Blog\Infrastructure\Service\RequestValidator\RequestValidatorService;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class FormService
+final readonly class FormService
 {
     public function __construct(
-        private readonly Hydrator $hydrator,
-        private readonly RequestValidatorService $validator,
-    )
-    {
+        private Hydrator $hydrator,
+        private RequestValidatorService $validator,
+    ) {
     }
 
     /**

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Abeliani\Blog\Infrastructure\UI\Form;
@@ -8,7 +9,7 @@ use Abeliani\Blog\Domain\Interface\ToArrayInterface;
 use Abeliani\Blog\Infrastructure\Service\RequestValidator\Validator\EnumV;
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class CategoryForm implements ToArrayInterface
+final class ArticleForm implements ToArrayInterface
 {
     #[Assert\Type('integer')]
     private int $id;
@@ -28,14 +29,17 @@ final class CategoryForm implements ToArrayInterface
     private OgForm $og;
 
     #[Assert\Valid]
-    private CategoryMediaForm $media;
+    private ArticleMediaForm $media;
+
+    #[Assert\Type('string')]
+    private string $tags;
 
     #[Assert\Length(min: 50)]
     private string $content;
 
     #[Assert\NotBlank]
-    #[EnumV(enumClass: Enum\CategoryStatus::class)]
-    private Enum\CategoryStatus $status;
+    #[EnumV(enumClass: Enum\ArticleStatus::class)]
+    private Enum\ArticleStatus $status;
 
     #[Assert\Type('string')]
     private string $published_at;
@@ -69,12 +73,17 @@ final class CategoryForm implements ToArrayInterface
         return $this->og;
     }
 
-    public function getMedia(): CategoryMediaForm
+    public function getMedia(): ArticleMediaForm
     {
         return $this->media;
     }
 
-    public function getStatus(): Enum\CategoryStatus
+    public function getTags(): string
+    {
+        return $this->tags;
+    }
+
+    public function getStatus(): Enum\ArticleStatus
     {
         return $this->status;
     }

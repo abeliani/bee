@@ -35,7 +35,6 @@ class CategoryMapper implements AggregateMapperInterface
             'og' => $category->getSeoOg(),
             'imageTitle' => $category->getImageAlt(),
             'image_loaded' => $image?->getUrl(),
-            'video' => $category->getVideo(),
             'content' => $category->getContent(),
             'status' => $category->getStatus()->value,
             'publish_at' => $category->getPublishedAt()->format('m/d/Y H:i:s'),

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Abeliani\Blog\Infrastructure\UI\Form;
@@ -7,7 +8,7 @@ use GuzzleHttp\Psr7\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 use Abeliani\Blog\Infrastructure\Service\RequestValidator\Validator as MyAssert;
 
-final class MediaForm
+final class CategoryMediaForm
 {
     #[MyAssert\Image(
         maxSize: '5M',
@@ -23,9 +24,6 @@ final class MediaForm
     #[Assert\NotBlank]
     private string $imageTitle;
 
-    #[Assert\Url]
-    private string $video;
-
     public function getImage(): ?UploadedFile
     {
         return $this->image;
@@ -39,10 +37,5 @@ final class MediaForm
     public function getImageAlt(): string
     {
         return $this->imageTitle;
-    }
-
-    public function getVideo(): string
-    {
-        return $this->video;
     }
 }

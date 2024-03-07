@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Abeliani\Blog\Infrastructure\Repository;
@@ -29,8 +30,8 @@ readonly class CreateCategoryRepository implements CreateCategoryRepositoryInter
 
         $sql = <<<SQL
 INSERT INTO category_translations 
-    (category_id, lang, title, slug, content, seo_meta, seo_og, media_image, media_image_alt, media_video, status)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    (category_id, lang, title, slug, content, seo_meta, seo_og, media_image, media_image_alt, status)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 SQL;
 
         $this->pdo->prepare($sql)
@@ -44,7 +45,6 @@ SQL;
                 $c->getSeoOg(),
                 $c->getImages(),
                 $c->getImageAlt(),
-                $c->getVideo(),
                 $c->getStatus()->value,
             ]);
 
