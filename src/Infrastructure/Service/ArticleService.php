@@ -17,7 +17,7 @@ use Abeliani\Blog\Domain\Model\User;
 use Abeliani\Blog\Domain\Repository\Article as repo;
 use Abeliani\Blog\Infrastructure\UI\Form\ArticleForm;
 
-readonly class ArticleService
+final readonly class ArticleService
 {
     public function __construct(
         private repo\CreateRepositoryInterface $article,
@@ -34,6 +34,17 @@ readonly class ArticleService
      */
     public function create(User $actor, ArticleForm $form): void
     {
+        if ($form->getMedia()->getImage()->getError() === UPLOAD_ERR_OK) {
+            register_shutdown_function(fn () =>
+                $this->imageQueryProcessor->process(new ProcessorContext([
+                    'width' => $form->getMedia()->getImageData()->getWidth(),
+                    'height' => $form->getMedia()->getImageData()->getHeight(),
+                    'x' => $form->getMedia()->getImageData()->getX(),
+                    'y' => $form->getMedia()->getImageData()->getY(),
+                ]),  new UploadedFileHandler($form->getMedia()->getImage())
+            ));
+        }
+
         $article = ArticleFactory::create(
             $actor->getId(),
             $form->getTitle(),
@@ -50,15 +61,6 @@ readonly class ArticleService
         );
 
         $this->article->create($article);
-
-        register_shutdown_function(fn () =>
-            $this->imageQueryProcessor->process(new ProcessorContext([
-                'width' => $form->getMedia()->getImageData()->getWidth(),
-                'height' => $form->getMedia()->getImageData()->getHeight(),
-                'x' => $form->getMedia()->getImageData()->getX(),
-                'y' => $form->getMedia()->getImageData()->getY(),
-            ]),  new UploadedFileHandler($form->getMedia()->getImage())
-        ));
     }
 
     /**
@@ -80,6 +82,17 @@ readonly class ArticleService
                 $file = dirname($this->uploadDir) . $image->getUrl();
                 file_exists($file) and unlink($file);
             }
+
+            register_shutdown_function(fn () =>
+                $this->imageQueryProcessor->process(new ProcessorContext([
+                    'width' => $form->getMedia()->getImageData()->getWidth(),
+                    'height' => $form->getMedia()->getImageData()->getHeight(),
+                    'x' => $form->getMedia()->getImageData()->getX(),
+                    'y' => $form->getMedia()->getImageData()->getY(),
+                ]),  new UploadedFileHandler($form->getMedia()->getImage())
+            ));
+
+            $imageData = $this->getImagesData();
         }
 
         $updated = ArticleFactory::createFromForm(
@@ -88,19 +101,10 @@ readonly class ArticleService
             $article->getCreatedAt(),
             $article->getViewCount(),
             $form,
-            $this->getImagesData()
+            $imageData ?? $article->getImages(),
         );
 
         $this->updateRepository->update($updated);
-
-        register_shutdown_function(fn () =>
-            $this->imageQueryProcessor->process(new ProcessorContext([
-                'width' => $form->getMedia()->getImageData()->getWidth(),
-                'height' => $form->getMedia()->getImageData()->getHeight(),
-                'x' => $form->getMedia()->getImageData()->getX(),
-                'y' => $form->getMedia()->getImageData()->getY(),
-            ]),  new UploadedFileHandler($form->getMedia()->getImage())
-        ));
     }
 
     public function getImagesData(): ImageCollection

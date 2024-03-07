@@ -30,8 +30,7 @@ final readonly class UpdateController implements RequestHandlerInterface
         private ArticleService            $article,
         private ReadRepositoryInterface   $repository,
         private ArticleMapper             $mapper,
-    )
-    {
+    ) {
     }
 
     /**
@@ -66,21 +65,21 @@ final readonly class UpdateController implements RequestHandlerInterface
         }
 
         if ($formInspector->isEmptyForm()) {
-            $formData = $this->mapper->mapToFormData($article);
-
-            $render = $this->view->render('cpanel/article_create.twig', array_merge($formData, [
-                'section' => 'Update article',
-                'action_url' => '/cpanel/article/update/' . $form->getId(),
-                'upload_dir' => '/uploads',
-                'languages' => Enum\Utils::toArray(Enum\Language::class),
-                'statuses' => Enum\Utils::toArray(Enum\ArticleStatus::class),
-                'errors' => $formInspector->getValidateErrors(),
-            ]));
-
-            $this->response->getBody()->write($render);
-            return $this->response;
+            $form = $this->mapper->mapToFormData($article);
+        } else {
+            $form = $form->toArray();
         }
 
-        throw new Exception\InvalidEntityException('Wrong article update request');
+        $render = $this->view->render('cpanel/article_create.twig', array_merge($form, [
+            'section' => 'Update article',
+            'action_url' => '/cpanel/article/update/' . $form['id'],
+            'upload_dir' => '/uploads',
+            'languages' => Enum\Utils::toArray(Enum\Language::class),
+            'statuses' => Enum\Utils::toArray(Enum\ArticleStatus::class),
+            'errors' => $formInspector->getValidateErrors(),
+        ]));
+
+        $this->response->getBody()->write($render);
+        return $this->response;
     }
 }
