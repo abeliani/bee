@@ -27,7 +27,7 @@ class Save extends Manipulate
         return ManipulateEnum::save->name;
     }
 
-    public function getPath(): string
+    public function getFilePath(): string
     {
         return sprintf('%s.%s', $this->path, $this->format);
     }
@@ -40,7 +40,7 @@ class Save extends Manipulate
     public function getValue(): array
     {
         return [
-            'path' => $this->getPath(),
+            'path' => $this->getFilePath(),
             'format' => $this->getFormat(),
         ];
     }

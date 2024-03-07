@@ -16,7 +16,7 @@ class SaveGdImage implements ProcessorInterface
      */
     public function __invoke(mixed $image, mixed $action): mixed
     {
-        if (!call_user_func(sprintf('image%s', $action->getFormat()), $image, $action->getPath())) {
+        if (!call_user_func(sprintf('image%s', $action->getFormat()), $image, $action->getFilePath())) {
             throw new \RuntimeException('Failed to save image');
         }
 

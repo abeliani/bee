@@ -18,7 +18,7 @@ class SaveImagick implements ProcessorInterface
      */
     public function __invoke(mixed $image, BuilderActionInterface $action): \Imagick
     {
-        if (!$image->setImageFormat($action->getFormat()) || !$image->writeImage($action->getPath())) {
+        if (!$image->setImageFormat($action->getFormat()) || !$image->writeImage($action->getFilePath())) {
             throw new \RuntimeException('Failed to save image');
         }
 

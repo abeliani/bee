@@ -114,7 +114,7 @@
                                 </div>
                                 {{ form.inputField('media[image]', image, errors, {class: 'form-control', type: 'file', id: 'imageInput', accept: 'image/*'}) }}
                         <div id="imageContainer">
-                            <img id="image" src="{{ image_loaded }}" alt="{{ imageTitle }}" style="max-width: 100%;">
+                            <img id="image" src="{{ upload_dir }}{{ image_loaded }}" alt="{{ imageTitle }}" style="max-width: 100%;">
                         </div>
                         {{ form.inputField('media[imageData]', imageData, errors, {class: 'form-control', type: 'hidden', id: 'imageData'}) }}
                     </div>

@@ -64,7 +64,7 @@ return [
     },
     ConfigDi::ArticleImageProcessor->name => function(Container $c): ImageQueryProcessor {
         return new ImageQueryProcessor(
-            $c->get(ConfigDi::CategoryImageBuilder->name),
+            $c->get(ConfigDi::ArticleImageBuilder->name),
             \Imagick::class,
             \GdImage::class,
         );
