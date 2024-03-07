@@ -18,27 +18,30 @@ readonly class UpdateRepository implements UpdateRepositoryInterface
      */
     public function update(Article $a): void
     {
-       try {
-        $this->pdo->beginTransaction();
+        try {
+            $this->pdo->beginTransaction();
 
-        $sql = 'UPDATE articles SET status = ?, published_at = ?, updated_at = ?, edited_by = ? WHERE id = ?';
-        $this->pdo->prepare($sql)->execute([
+            $sql = 'UPDATE articles SET status = ?, published_at = ?, updated_at = ?, edited_by = ? WHERE id = ?';
+            $this->pdo->prepare($sql)->execute([
                 $a->getStatus()->value,
                 $a->getPublishedAt()->format('Y-m-d H:i:s'),
                 $a->getUpdatedAt()->format('Y-m-d H:i:s'),
                 $a->getEditedBy(),
                 $a->getId(),
             ]);
-        
-        $sql = <<<SQL
-UPDATE article_translations 
-    SET title = ?, slug = ?, content = ?, seo_meta = ?, seo_og = ?, media_image = ?, media_image_alt = ?,
-        media_video = ?, status = ?
-    WHERE article_id = ? AND lang = ?
-SQL;
 
-        $this->pdo->prepare($sql)
-            ->execute([
+            $stmt = $this->pdo->prepare('SELECT id FROM article_translations WHERE article_id = ? AND lang = ?');
+            $stmt->execute([$a->getId(), $a->getLanguage()->value]);
+            $translationId = $stmt->fetchColumn();
+
+            $sql = <<<SQL
+            UPDATE article_translations 
+                SET title = ?, slug = ?, content = ?, seo_meta = ?, seo_og = ?, media_image = ?, media_image_alt = ?,
+                media_video = ?, status = ?
+            WHERE id = ?
+            SQL;
+
+            $this->pdo->prepare($sql)->execute([
                 $a->getTitle(),
                 $a->getSlug(),
                 $a->getContent(),
@@ -48,11 +51,39 @@ SQL;
                 $a->getImageAlt(),
                 $a->getVideo(),
                 $a->getStatus()->value,
-                $a->getId(),
-                $a->getLanguage()->value,
+                $translationId
             ]);
 
-        $this->pdo->commit();
+            $this->pdo->prepare('DELETE FROM article_tags WHERE article_translate_id = ?')
+                ->execute([$translationId]);
+
+            if (!empty($a->getTags())) {
+                $placeholders = array_fill(0, count($a->getTags()), '?');
+
+                $sql = sprintf('INSERT IGNORE INTO tags (name) VALUES %s', sprintf(
+                    '(%s)', implode('), (', $placeholders)
+                ));
+                $this->pdo->prepare($sql)->execute($a->getTags());
+
+                $sql = sprintf('SELECT id FROM tags WHERE name IN (%s)', implode(',', $placeholders));
+                $stm = $this->pdo->prepare($sql);
+                $stm->execute($a->getTags());
+
+                $values = [];
+                foreach ($stm->fetchAll(\PDO::FETCH_COLUMN, 0) as $id) {
+                    $values[] = $translationId;
+                    $values[] = $id;
+                }
+
+                $sql = sprintf(
+                    'INSERT INTO article_tags (article_translate_id, tag_id) VALUES %s',
+                    implode(',', array_fill(0, count($a->getTags()), '(?, ?)'))
+                );
+
+                $this->pdo->prepare($sql)->execute($values);
+            }
+
+            $this->pdo->commit();
         } catch (\Exception $e) {
             $this->pdo->rollBack() and throw $e;
         }
