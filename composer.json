@@ -9,7 +9,6 @@
         "ext-fileinfo": "*",
         "guzzlehttp/guzzle": "7.8.1",
         "php-di/php-di": "7.0.6",
-        "vlucas/phpdotenv": "5.6.0",
         "relay/relay": "2.1.2",
         "middlewares/request-handler": "2.0.2",
         "middlewares/fast-route": "2.0.1",
@@ -28,6 +27,11 @@
         "codeception/codeception": "5.1",
         "robmorgan/phinx": "0.16.0"
     },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
     "license": "MIT",
     "autoload": {
         "psr-4": {
@@ -37,7 +41,7 @@
     "authors": [
         {
             "name": "Anatoli Beliani",
-            "email": "blog@treecode.ru"
+            "email": "feedback@treecode.ru"
         }
     ],
     "minimum-stability": "stable"
