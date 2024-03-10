@@ -50,6 +50,7 @@ final readonly class ArticleService
             $form->getCategoryId(),
             $form->getTitle(),
             $form->getSlug(),
+            $form->getPreview(),
             $form->getContent(),
             $form->getTags(),
             (string) $this->getImagesData(),

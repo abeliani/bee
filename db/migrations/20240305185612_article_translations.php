@@ -12,8 +12,9 @@ final class ArticleTranslations extends AbstractMigration
         $table = $this->table('article_translations', ['engine' => 'InnoDB', 'collation' => 'utf8mb4_unicode_ci']);
         $table->addColumn('article_id', MysqlAdapter::PHINX_TYPE_INTEGER, ['signed' => false, 'null' => false])
             ->addColumn('lang', MysqlAdapter::PHINX_TYPE_STRING, ['limit' => 2, 'null' => false])
-            ->addColumn('title', MysqlAdapter::PHINX_TYPE_STRING, ['limit' => 150])
-            ->addColumn('slug', MysqlAdapter::PHINX_TYPE_STRING, ['limit' => 150])
+            ->addColumn('title', MysqlAdapter::PHINX_TYPE_STRING, ['limit' => 100])
+            ->addColumn('slug', MysqlAdapter::PHINX_TYPE_STRING, ['limit' => 100])
+            ->addColumn('preview', MysqlAdapter::PHINX_TYPE_STRING, ['limit' => MysqlAdapter::TEXT_SMALL, 'null' => false])
             ->addColumn('content', MysqlAdapter::PHINX_TYPE_TEXT, ['null' => false])
             ->addColumn('seo_meta', MysqlAdapter::PHINX_TYPE_JSON, ['null' => true])
             ->addColumn('seo_og', MysqlAdapter::PHINX_TYPE_JSON, ['null' => true])

@@ -18,6 +18,7 @@ class Article
         private readonly int $categoryId,
         private readonly string $title,
         private readonly string $slug,
+        private readonly string $preview,
         private readonly string $content,
         private readonly array $tags,
         private readonly Concrete\ImageCollection $images,
@@ -60,6 +61,11 @@ class Article
     public function getSlug(): string
     {
         return $this->slug;
+    }
+
+    public function getPreview(): string
+    {
+        return $this->preview;
     }
 
     public function getContent(): string

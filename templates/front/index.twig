@@ -6,8 +6,8 @@
 <article class="blog-post">
     <img src="{{ uploadsDir }}/{{ image.url }}" class="img-fluid w-100" alt="{{ article.imageAlt }}">
     <h2 class="blog-post-title">{{ article.title }}</h2>
-    <p class="blog-post-meta">January 1, 2021 by <a href="#">Mark</a></p>
-    <p>This blog post shows a few different types of content that’s supported and styled with Bootstrap. Basic typography, lists, tables, images, code, and more are all supported as expected.</p>
+    <p class="blog-post-meta">{{ article.publishedAt|date('m.d.Y') }} <a href="javascript::void(0)">Admin</a></p>
+    {{ article.preview|raw }}
     <a href="article/{{ article.id }}/{{ article.slug }}" target="_self">Читать</a>
 </article>
 {% endfor %}

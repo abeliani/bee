@@ -13,7 +13,7 @@ readonly class ReadRepository implements ReadRepositoryInterface
 {
     private const BASE_SQL = <<<SQL
         SELECT a.id, a.category_id, a.created_at, a.published_at, a.updated_at, a.author_id, a.edited_by,
-               at.lang, at.title, at.slug, at.content, at.seo_meta, at.seo_og, at.media_image,
+               at.lang, at.title, at.slug, at.preview, at.content, at.seo_meta, at.seo_og, at.media_image,
                at.media_image_alt, at.media_image, at.media_video, at.status, at.view_count,
                GROUP_CONCAT(t.name SEPARATOR ', ') AS tags
         FROM articles a
@@ -42,7 +42,24 @@ SQL;
      */
     public function findAll(): ArticleCollection
     {
-        $stmt = $this->pdo->prepare(self::BASE_SQL . ' GROUP BY a.id ORDER BY a.published_at DESC');
+        $stmt = $this->pdo->prepare(self::BASE_SQL . ' GROUP BY a.id ORDER BY a.published_at');
+        $stmt->execute();
+        $collection = new ArticleCollection;
+
+        while ($category = $stmt->fetch()) {
+            $collection->add($this->mapper->map($category));
+        }
+
+        return $collection;
+    }
+
+    /**
+     * @throws \JsonException
+     */
+    public function findLast(int $count = 5): ArticleCollection
+    {
+        $stmt = $this->pdo
+            ->prepare(sprintf("%s GROUP BY a.id ORDER BY a.published_at DESC LIMIT %d", self::BASE_SQL, $count));
         $stmt->execute();
         $collection = new ArticleCollection;
 

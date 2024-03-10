@@ -27,8 +27,8 @@ readonly class CreateRepository implements CreateRepositoryInterface
                 ->prepare('INSERT INTO articles (status, category_id, published_at, author_id) VALUES (?, ?, ?, ?)')
                 ->execute([
                     $a->getStatus()->value,
-                    $a->getPublishedAt()->format('Y-m-d H:i:s'),
                     $a->getCategoryId(),
+                    $a->getPublishedAt()->format('Y-m-d H:i:s'),
                     $a->getCreatedBy()
                 ]);
 
@@ -36,8 +36,8 @@ readonly class CreateRepository implements CreateRepositoryInterface
 
             $sql = <<<SQL
             INSERT INTO article_translations 
-            (article_id, lang, title, slug, content, seo_meta, seo_og, media_image, media_image_alt, media_video, status)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (article_id, lang, title, slug, preview, content, seo_meta, seo_og, media_image, media_image_alt, media_video, status)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             SQL;
 
             $this->pdo->prepare($sql)
@@ -46,6 +46,7 @@ readonly class CreateRepository implements CreateRepositoryInterface
                     $a->getLanguage()->value,
                     $a->getTitle(),
                     $a->getSlug(),
+                    $a->getPreview(),
                     $a->getContent(),
                     $a->getSeoMeta(),
                     $a->getSeoOg(),

@@ -38,6 +38,11 @@ final class ArticleForm implements ToArrayInterface
     #[Assert\Type('string')]
     private string $tags;
 
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 50)]
+    private string $preview;
+
+    #[Assert\NotBlank]
     #[Assert\Length(min: 50)]
     private string $content;
 
@@ -95,6 +100,11 @@ final class ArticleForm implements ToArrayInterface
     public function getStatus(): Enum\ArticleStatus
     {
         return $this->status;
+    }
+
+    public function getPreview(): string
+    {
+        return $this->preview;
     }
 
     public function getContent(): string

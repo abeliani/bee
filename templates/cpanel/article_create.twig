@@ -126,6 +126,17 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
+                        <h5 class="card-title mb-0">Preview</h5>
+                            {{ form.textAreaField('preview', preview, errors, {class: 'form-control', type: 'text', id: 'preview'}) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                        <h5 class="card-title mb-0">Content</h5>
                             {{ form.textAreaField('content', content, errors, {class: 'form-control', type: 'text', id: 'editor'}) }}
                         </div>
                     </div>

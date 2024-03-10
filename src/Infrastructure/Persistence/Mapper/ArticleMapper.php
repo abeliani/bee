@@ -36,6 +36,7 @@ class ArticleMapper implements AggregateMapperInterface
             'imageTitle' => $article->getImageAlt(),
             'image_loaded' => $image?->getUrl(),
             'video' => $article->getVideo(),
+            'preview' => $article->getPreview(),
             'content' => $article->getContent(),
             'tags' => implode(',', $article->getTags()),
             'status' => $article->getStatus()->value,

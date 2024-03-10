@@ -23,6 +23,7 @@ final class ArticleFactory
         int                 $categoryId,
         string              $title,
         string              $slug,
+        string              $preview,
         string              $content,
         string              $tags,
         string              $images,
@@ -39,6 +40,7 @@ final class ArticleFactory
             $categoryId,
             $title,
             $slug,
+            $preview,
             $content,
             $tags,
             $images,
@@ -70,6 +72,7 @@ final class ArticleFactory
             $form->getCategoryId(),
             $form->getTitle(),
             $form->getSlug(),
+            $form->getPreview(),
             $form->getContent(),
             $form->getTags(),
             (string) $images,
@@ -96,6 +99,7 @@ final class ArticleFactory
         int                 $categoryId,
         string              $title,
         string              $slug,
+        string              $preview,
         string              $content,
         string              $tags,
         string              $images,
@@ -120,6 +124,9 @@ final class ArticleFactory
         }
         if ($slug === $title) {
             throw new ArticleException('Slug cannot be the same as title');
+        }
+        if ($preview === $content) {
+            throw new ArticleException('Preview cannot be the same as content');
         }
 
         $tagsParsed = array_map('trim', explode(',', $tags));
@@ -147,6 +154,7 @@ final class ArticleFactory
             $categoryId,
             $title,
             $slug,
+            $preview,
             $content,
             $tagsParsed,
             $imagesCollection,
@@ -176,6 +184,7 @@ final class ArticleFactory
             $data['category_id'],
             $data['title'],
             $data['slug'],
+            $data['preview'],
             $data['content'],
             $data['tags'],
             $data['media_image'],
