@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Abeliani\Blog\Domain\Repository\Tag;
 use Abeliani\Blog\Domain\Repository\Article;
 use Abeliani\Blog\Domain\Repository\Category;
 use Abeliani\Blog\Infrastructure\Persistence\Mapper\ArticleMapper;
@@ -26,6 +27,8 @@ return [
             $c->get(Environment::class),
             new Response(),
             $c->get(Article\ReadRepositoryInterface::class),
+            $c->get(Category\ReadRepositoryInterface::class),
+            $c->get(Tag\ReadRepositoryInterface::class),
         );
     },
     ItIsBackendController::class => function(Container $c): ItIsBackendController {

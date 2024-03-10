@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Abeliani\Blog\Domain\Repository\Article;
 use Abeliani\Blog\Domain\Repository\Category;
+use Abeliani\Blog\Domain\Repository\Tag;
 use Abeliani\Blog\Domain\Repository\User\CreateUserRepositoryInterface;
 use Abeliani\Blog\Domain\Repository\User\ReadUserRepositoryInterface;
 use Abeliani\Blog\Infrastructure\Persistence\Mapper;
@@ -40,5 +41,8 @@ return [
     },
     Article\ReadRepositoryInterface::class => function(Container $c): Article\ReadRepositoryInterface {
         return new Repository\Article\ReadRepository($c->get(PDO::class), $c->get(Mapper\ArticleMapper::class));
+    },
+    Tag\ReadRepositoryInterface::class => function(Container $c): Tag\ReadRepositoryInterface {
+        return new Repository\Tag\ReadRepository($c->get(PDO::class));
     },
 ];
