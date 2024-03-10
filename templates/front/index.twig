@@ -1,6 +1,32 @@
-{% extends "main.twig" %}
+{% extends "front/main.twig" %}
 
 {% block content %}
-    <h1>Home</h1>
-    <p>Welcome to the home page</p>
+{% for article in articles %}
+{% set image = article.getImages()|filter_image_type('view') %}
+<article class="blog-post">
+    <img src="{{ uploadsDir }}/{{ image.url }}" class="img-fluid w-100" alt="{{ article.imageAlt }}">
+    <h2 class="blog-post-title">{{ article.title }}</h2>
+    <p class="blog-post-meta">January 1, 2021 by <a href="#">Mark</a></p>
+    <p>This blog post shows a few different types of content that’s supported and styled with Bootstrap. Basic typography, lists, tables, images, code, and more are all supported as expected.</p>
+    <a href="article/{{ article.id }}/{{ article.slug }}" target="_self">Читать</a>
+</article>
+{% endfor %}
+
+<nav aria-label="Page navigation">
+  <ul class="pagination justify-content-center">
+    <li class="page-item">
+      <a class="page-link" href="#" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    <li class="page-item"><a class="page-link" href="#">1</a></li>
+    <li class="page-item"><a class="page-link" href="#">2</a></li>
+    <li class="page-item"><a class="page-link" href="#">3</a></li>
+    <li class="page-item">
+      <a class="page-link" href="#" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
 {% endblock %}

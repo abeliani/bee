@@ -2,13 +2,15 @@
 
 declare(strict_types=1);
 
-use Abeliani\Blog\Infrastructure\Delivery\Web\Controller\ItWorksController;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel;
+use Abeliani\Blog\Infrastructure\UI\Web\Frontend;
 use FastRoute\RouteCollector;
 use function FastRoute\simpleDispatcher;
 
 return simpleDispatcher(function (RouteCollector $r) {
-    $r->get('/', ItWorksController::class);
+    $r->addGroup('/', function (RouteCollector $r) {
+        $r->get('', Frontend\Controller\Article\IndexController::class);
+    });
 
     $r->addGroup('/cpanel', function (RouteCollector $r) {
         $r->post('/login', CPanel\LoginBackendController::class);

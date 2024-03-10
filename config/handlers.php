@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 use Abeliani\Blog\Domain\Repository\Article\ReadRepositoryInterface;
 use Abeliani\Blog\Domain\Repository\Category\ReadCategoryRepositoryInterface;
-use Abeliani\Blog\Infrastructure\Delivery\Web\Controller\ItWorksController;
 use Abeliani\Blog\Infrastructure\Persistence\Mapper\ArticleMapper;
 use Abeliani\Blog\Infrastructure\Persistence\Mapper\CategoryMapper;
 use Abeliani\Blog\Infrastructure\Service;
+use Abeliani\Blog\Infrastructure\UI\Web\Frontend\Controller\Article as FrontArticle;
 use Abeliani\Blog\Infrastructure\Service\Form\FormService;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\Article;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\Category;
@@ -21,8 +21,12 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Twig\Environment;
 
 return [
-    ItWorksController::class => function(Container $c): ItWorksController {
-        return new ItWorksController($c->get(Environment::class));
+    FrontArticle\IndexController::class => function(Container $c): FrontArticle\IndexController {
+        return new FrontArticle\IndexController(
+            $c->get(Environment::class),
+            new Response(),
+            $c->get(ReadRepositoryInterface::class),
+        );
     },
     ItIsBackendController::class => function(Container $c): ItIsBackendController {
         return new ItIsBackendController($c->get(Environment::class));
