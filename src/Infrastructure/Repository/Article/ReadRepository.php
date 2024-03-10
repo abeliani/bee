@@ -14,7 +14,7 @@ readonly class ReadRepository implements ReadRepositoryInterface
     private const BASE_SQL = <<<SQL
         SELECT a.id, a.category_id, a.created_at, a.published_at, a.updated_at, a.author_id, a.edited_by,
                at.lang, at.title, at.slug, at.preview, at.content, at.seo_meta, at.seo_og, at.media_image,
-               at.media_image_alt, at.media_image, at.media_video, at.status, at.view_count,
+               at.media_image_alt, at.media_image, at.media_video, at.status, at.view_count, at.id as translate_id,
                GROUP_CONCAT(t.name SEPARATOR ', ') AS tags
         FROM articles a
         INNER JOIN article_translations at ON a.id = at.article_id AND at.lang='ru'
@@ -29,7 +29,15 @@ SQL;
     /**
      * @throws \JsonException
      */
-    public function find(int $id, int $creatorId): ?Article
+    public function find(int $id): ?Article
+    {
+        $stmt = $this->pdo->prepare(sprintf('%s WHERE a.id = ? GROUP BY a.id LIMIT 1', self::BASE_SQL));
+        $stmt->execute([$id]);
+
+        return ($row = $stmt->fetch()) ? $this->mapper->map($row) : null;
+    }
+
+    public function findByAuthor(int $id, int $creatorId): ?Article
     {
         $stmt = $this->pdo->prepare(sprintf('%s WHERE a.id = ? AND a.author_id = ? GROUP BY a.id LIMIT 1', self::BASE_SQL));
         $stmt->execute([$id, $creatorId]);

@@ -28,4 +28,23 @@ class ReadRepository implements ReadRepositoryInterface
 
         return $collection;
     }
+
+    public function findByArticle(int $articleId): CollectionInterface
+    {
+        $sql = <<<SQL
+        SELECT id, name, frequency FROM tags t
+            INNER JOIN article_tags at on t.id = at.tag_id
+                WHERE at.article_translate_id = ?
+        SQL;
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$articleId]);
+        $collection = new TagCollection;
+
+        while ($tag = $stmt->fetch()) {
+            $collection->add(new Tag($tag['id'], $tag['name'], $tag['frequency']));
+        }
+
+        return $collection;
+    }
 }

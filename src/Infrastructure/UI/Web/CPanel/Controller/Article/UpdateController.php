@@ -54,7 +54,7 @@ final readonly class UpdateController implements RequestHandlerInterface
         $actor = $request->getAttribute(AuthRequestAttrs::CurrentUser->value);
 
         if (!$formInspector->validate('id')
-            || !($article = $this->repository->find($form->getId(), $actor->getId()))) {
+            || !($article = $this->repository->findByAuthor($form->getId(), $actor->getId()))) {
             throw new Exception\NotFoundException('Article not found');
         }
 
