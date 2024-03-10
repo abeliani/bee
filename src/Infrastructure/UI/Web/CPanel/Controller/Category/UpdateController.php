@@ -8,7 +8,7 @@ use Abeliani\Blog\Domain\Enum;
 use Abeliani\Blog\Domain\Exception\CategoryException;
 use Abeliani\Blog\Domain\Exception\NotFoundException;
 use Abeliani\Blog\Domain\Model\User;
-use Abeliani\Blog\Domain\Repository\Category\ReadCategoryRepositoryInterface;
+use Abeliani\Blog\Domain\Repository\Category\ReadRepositoryInterface;
 use Abeliani\Blog\Infrastructure\Middleware\WithMiddleware;
 use Abeliani\Blog\Infrastructure\Persistence\Mapper\CategoryMapper;
 use Abeliani\Blog\Infrastructure\Service\CategoryService;
@@ -24,12 +24,12 @@ use Twig\Error;
 final readonly class UpdateController implements RequestHandlerInterface
 {
     public function __construct(
-        private Environment                     $view,
-        private FormService                     $formService,
-        private ResponseInterface               $response,
-        private CategoryService                 $category,
-        private ReadCategoryRepositoryInterface $repository,
-        private CategoryMapper                  $mapper,
+        private Environment             $view,
+        private FormService             $formService,
+        private ResponseInterface       $response,
+        private CategoryService         $category,
+        private ReadRepositoryInterface $repository,
+        private CategoryMapper          $mapper,
     ) {
     }
 

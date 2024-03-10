@@ -3,7 +3,7 @@
 namespace Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller;
 
 use Abeliani\Blog\Application\Middleware\JwtAuthenticationMiddleware;
-use Abeliani\Blog\Domain\Repository\Category\ReadCategoryRepositoryInterface;
+use Abeliani\Blog\Domain\Repository\Category\ReadRepositoryInterface;
 use Abeliani\Blog\Infrastructure\Middleware\WithMiddleware;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -14,9 +14,9 @@ use Twig\Environment;
 final readonly class CategoryIndexController implements RequestHandlerInterface
 {
     public function __construct(
-        private Environment $view,
-        private ResponseInterface $response,
-        private ReadCategoryRepositoryInterface $repository,
+        private Environment             $view,
+        private ResponseInterface       $response,
+        private ReadRepositoryInterface $repository,
     ) {
     }
 

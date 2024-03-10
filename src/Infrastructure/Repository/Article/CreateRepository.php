@@ -23,10 +23,12 @@ readonly class CreateRepository implements CreateRepositoryInterface
         try {
             $this->pdo->beginTransaction();
 
-            $this->pdo->prepare('INSERT INTO articles (status, published_at, author_id) VALUES (?, ?, ?)')
+            $this->pdo
+                ->prepare('INSERT INTO articles (status, category_id, published_at, author_id) VALUES (?, ?, ?, ?)')
                 ->execute([
                     $a->getStatus()->value,
                     $a->getPublishedAt()->format('Y-m-d H:i:s'),
+                    $a->getCategoryId(),
                     $a->getCreatedBy()
                 ]);
 

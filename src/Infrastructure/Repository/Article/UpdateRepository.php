@@ -21,8 +21,9 @@ readonly class UpdateRepository implements UpdateRepositoryInterface
         try {
             $this->pdo->beginTransaction();
 
-            $sql = 'UPDATE articles SET status = ?, published_at = ?, updated_at = ?, edited_by = ? WHERE id = ?';
+            $sql = 'UPDATE articles SET category_id = ?, status = ?, published_at = ?, updated_at = ?, edited_by = ? WHERE id = ?';
             $this->pdo->prepare($sql)->execute([
+                $a->getCategoryId(),
                 $a->getStatus()->value,
                 $a->getPublishedAt()->format('Y-m-d H:i:s'),
                 $a->getUpdatedAt()->format('Y-m-d H:i:s'),
@@ -49,7 +50,7 @@ readonly class UpdateRepository implements UpdateRepositoryInterface
                 $a->getSeoOg(),
                 $a->getImages(),
                 $a->getImageAlt(),
-                $a->getVideo(),
+                $a->getVideo() ?: null,
                 $a->getStatus()->value,
                 $translationId
             ]);

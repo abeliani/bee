@@ -26,8 +26,8 @@ return [
     Category\CreateCategoryRepositoryInterface::class => function(Container $c): Category\CreateCategoryRepositoryInterface {
         return new Repository\CreateCategoryRepository($c->get(PDO::class));
     },
-    Category\ReadCategoryRepositoryInterface::class => function(Container $c): Category\ReadCategoryRepositoryInterface {
-        return new Repository\ReadCategoryRepository($c->get(PDO::class), $c->get(Mapper\CategoryMapper::class));
+    Category\ReadRepositoryInterface::class => function(Container $c): Category\ReadRepositoryInterface {
+        return new Repository\Category\ReadRepository($c->get(PDO::class), $c->get(Mapper\CategoryMapper::class));
     },
     Category\UpdateCategoryRepositoryInterface::class => function(Container $c): Category\UpdateCategoryRepositoryInterface {
         return new Repository\UpdateCategoryRepository($c->get(PDO::class));

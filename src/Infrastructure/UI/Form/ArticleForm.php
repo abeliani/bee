@@ -15,6 +15,10 @@ final class ArticleForm implements ToArrayInterface
     private int $id;
 
     #[Assert\NotBlank]
+    #[Assert\Type('integer')]
+    private int $category_id;
+
+    #[Assert\NotBlank]
     #[Assert\Length(min: 5, max: 100)]
     private string $title;
 
@@ -51,6 +55,11 @@ final class ArticleForm implements ToArrayInterface
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function getCategoryId(): int
+    {
+        return $this->category_id;
     }
 
     public function getTitle(): string

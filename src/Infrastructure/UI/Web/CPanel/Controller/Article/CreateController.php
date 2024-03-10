@@ -8,6 +8,7 @@ use Abeliani\Blog\Application\Enum\AuthRequestAttrs;
 use Abeliani\Blog\Application\Middleware\JwtAuthenticationMiddleware;
 use Abeliani\Blog\Domain\Enum;
 use Abeliani\Blog\Domain\Model\User;
+use Abeliani\Blog\Domain\Repository\Category;
 use Abeliani\Blog\Infrastructure\Middleware\WithMiddleware;
 use Abeliani\Blog\Infrastructure\Service\ArticleService;
 use Abeliani\Blog\Infrastructure\Service\Form\FormService;
@@ -27,7 +28,8 @@ final readonly class CreateController implements RequestHandlerInterface
         private Environment $view,
         private FormService $formService,
         private ResponseInterface $response,
-        private ArticleService $category,
+        private ArticleService $article,
+        private Category\ReadRepositoryInterface $categoryRepository,
     ) {
     }
 
@@ -48,11 +50,15 @@ final readonly class CreateController implements RequestHandlerInterface
             $form = $formInspector->getForm();
             /** @var User $actor */
             $actor = $request->getAttribute(AuthRequestAttrs::CurrentUser->value);
-            $this->category->create($actor, $form);
+            $this->article->create($actor, $form);
 
             return $this->response
                 ->withStatus(302)
                 ->withHeader('Location', '/cpanel/article');
+        }
+
+        foreach ($this->categoryRepository->findAll() as $category) {
+            $categories[sprintf('%s (%s)', $category->getTitle(), $category->getStatus()->name)] = $category->getId();
         }
 
         $render = $this->view->render('cpanel/article_create.twig', array_merge($formInspector->formToArray(), [
@@ -60,6 +66,7 @@ final readonly class CreateController implements RequestHandlerInterface
             'action_url' => '/cpanel/article/create',
             'languages' => Enum\Utils::toArray(Enum\Language::class),
             'statuses' => Enum\Utils::toArray(Enum\ArticleStatus::class),
+            'categories' => $categories ?? [],
             'errors' => $formInspector->getValidateErrors(),
         ]));
 

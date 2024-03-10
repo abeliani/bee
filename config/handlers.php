@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-use Abeliani\Blog\Domain\Repository\Article\ReadRepositoryInterface;
-use Abeliani\Blog\Domain\Repository\Category\ReadCategoryRepositoryInterface;
+use Abeliani\Blog\Domain\Repository\Article;
+use Abeliani\Blog\Domain\Repository\Category;
 use Abeliani\Blog\Infrastructure\Persistence\Mapper\ArticleMapper;
 use Abeliani\Blog\Infrastructure\Persistence\Mapper\CategoryMapper;
 use Abeliani\Blog\Infrastructure\Service;
 use Abeliani\Blog\Infrastructure\UI\Web\Frontend\Controller\Article as FrontArticle;
+use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\Article as CpanelArticle;
 use Abeliani\Blog\Infrastructure\Service\Form\FormService;
-use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\Article;
-use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\Category;
+use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\Category as CpanelCategory;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\CategoryCreateController;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\CategoryIndexController;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\ItIsBackendController;
@@ -25,7 +25,7 @@ return [
         return new FrontArticle\IndexController(
             $c->get(Environment::class),
             new Response(),
-            $c->get(ReadRepositoryInterface::class),
+            $c->get(Article\ReadRepositoryInterface::class),
         );
     },
     ItIsBackendController::class => function(Container $c): ItIsBackendController {
@@ -39,29 +39,32 @@ return [
             $c->get(Service\CategoryService::class)
         );
     },
-    Article\CreateController::class => function(Container $c): Article\CreateController {
-        return new Article\CreateController(
-            $c->get(Environment::class),
-            $c->get(FormService::class),
-            new Response(),
-            $c->get(Service\ArticleService::class)
-        );
-    },
-    Article\UpdateController::class => function(Container $c): Article\UpdateController {
-        return new Article\UpdateController(
+    CpanelArticle\CreateController::class => function(Container $c): CpanelArticle\CreateController {
+        return new CpanelArticle\CreateController(
             $c->get(Environment::class),
             $c->get(FormService::class),
             new Response(),
             $c->get(Service\ArticleService::class),
-            $c->get(ReadRepositoryInterface::class),
+            $c->get(Category\ReadRepositoryInterface::class),
+
+        );
+    },
+    CpanelArticle\UpdateController::class => function(Container $c): CpanelArticle\UpdateController {
+        return new CpanelArticle\UpdateController(
+            $c->get(Environment::class),
+            $c->get(FormService::class),
+            new Response(),
+            $c->get(Service\ArticleService::class),
+            $c->get(Article\ReadRepositoryInterface::class),
+            $c->get(Category\ReadRepositoryInterface::class),
             $c->get(ArticleMapper::class),
         );
     },
-    Article\IndexController::class => function(Container $c): Article\IndexController {
-        return new Article\IndexController(
+    CpanelArticle\IndexController::class => function(Container $c): CpanelArticle\IndexController {
+        return new CpanelArticle\IndexController(
             $c->get(Environment::class),
             new Response(),
-            $c->get(ReadRepositoryInterface::class),
+            $c->get(Article\ReadRepositoryInterface::class),
         );
     },
     LoginBackendController::class => function(Container $c): LoginBackendController {
@@ -78,16 +81,16 @@ return [
         return new CategoryIndexController(
             $c->get(Environment::class),
             new Response(),
-            $c->get(ReadCategoryRepositoryInterface::class),
+            $c->get(Category\ReadRepositoryInterface::class),
         );
     },
-    Category\UpdateController::class => function(Container $c): Category\UpdateController {
-        return new Category\UpdateController(
+    CpanelCategory\UpdateController::class => function(Container $c): CpanelCategory\UpdateController {
+        return new CpanelCategory\UpdateController(
             $c->get(Environment::class),
             $c->get(FormService::class),
             new Response(),
             $c->get(Service\CategoryService::class),
-            $c->get(ReadCategoryRepositoryInterface::class),
+            $c->get(Category\ReadRepositoryInterface::class),
             $c->get(CategoryMapper::class),
         );
     },

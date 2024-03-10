@@ -19,7 +19,7 @@ final class ArticleTranslations extends AbstractMigration
             ->addColumn('seo_og', MysqlAdapter::PHINX_TYPE_JSON, ['null' => true])
             ->addColumn('media_image_alt', MysqlAdapter::PHINX_TYPE_STRING, ['limit' => 150])
             ->addColumn('media_image', MysqlAdapter::PHINX_TYPE_JSON, ['null' => true])
-            ->addColumn('media_video', MysqlAdapter::PHINX_TYPE_STRING, ['null' => true, 'limit' => MysqlAdapter::TEXT_SMALL])
+            ->addColumn('media_video', MysqlAdapter::PHINX_TYPE_JSON, ['null' => true])
             ->addColumn('status', MysqlAdapter::PHINX_TYPE_INTEGER, ['default' => 0, 'signed' => false, 'limit' => MysqlAdapter::INT_TINY])
             ->addColumn('view_count', MysqlAdapter::PHINX_TYPE_INTEGER, ['default' => 0, 'signed' => false, 'limit' => MysqlAdapter::INT_BIG])
 

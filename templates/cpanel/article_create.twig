@@ -40,6 +40,8 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label class="mt-3">Category</label>
+                                {{ form.selectField('category_id', category, categories, errors, 'select2 form-select shadow-none', 'width: 100%; height: 36px') }}
                                 <label class="mt-3">Status</label>
                                 {{ form.selectField('status', status, statuses, errors, 'select2 form-select shadow-none', 'width: 100%; height: 36px') }}
                             </div>

@@ -9,7 +9,8 @@ use Abeliani\Blog\Application\Middleware\JwtAuthenticationMiddleware;
 use Abeliani\Blog\Domain\Enum;
 use Abeliani\Blog\Domain\Exception;
 use Abeliani\Blog\Domain\Model\User;
-use Abeliani\Blog\Domain\Repository\Article\ReadRepositoryInterface;
+use Abeliani\Blog\Domain\Repository\Article;
+use Abeliani\Blog\Domain\Repository\Category;
 use Abeliani\Blog\Infrastructure\Middleware\WithMiddleware;
 use Abeliani\Blog\Infrastructure\Persistence\Mapper\ArticleMapper;
 use Abeliani\Blog\Infrastructure\Service\ArticleService;
@@ -28,7 +29,8 @@ final readonly class UpdateController implements RequestHandlerInterface
         private FormService               $formService,
         private Message\ResponseInterface $response,
         private ArticleService            $article,
-        private ReadRepositoryInterface   $repository,
+        private Article\ReadRepositoryInterface $repository,
+        private Category\ReadRepositoryInterface $categoryRepository,
         private ArticleMapper             $mapper,
     ) {
     }
@@ -70,10 +72,15 @@ final readonly class UpdateController implements RequestHandlerInterface
             $form = $form->toArray();
         }
 
+        foreach ($this->categoryRepository->findAll() as $category) {
+            $categories[sprintf('%s (%s)', $category->getTitle(), $category->getStatus()->name)] = $category->getId();
+        }
+
         $render = $this->view->render('cpanel/article_create.twig', array_merge($form, [
             'section' => 'Update article',
             'action_url' => '/cpanel/article/update/' . $form['id'],
             'upload_dir' => '/uploads',
+            'categories' => $categories ?? [],
             'languages' => Enum\Utils::toArray(Enum\Language::class),
             'statuses' => Enum\Utils::toArray(Enum\ArticleStatus::class),
             'errors' => $formInspector->getValidateErrors(),

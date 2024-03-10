@@ -47,6 +47,7 @@ final readonly class ArticleService
 
         $article = ArticleFactory::create(
             $actor->getId(),
+            $form->getCategoryId(),
             $form->getTitle(),
             $form->getSlug(),
             $form->getContent(),

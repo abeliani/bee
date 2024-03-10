@@ -20,6 +20,7 @@ final class ArticleFactory
      */
     public static function create(
         int                 $actorId,
+        int                 $categoryId,
         string              $title,
         string              $slug,
         string              $content,
@@ -35,6 +36,7 @@ final class ArticleFactory
     ): Article {
         return self::createFull(
             $id,
+            $categoryId,
             $title,
             $slug,
             $content,
@@ -65,6 +67,7 @@ final class ArticleFactory
     ): Article {
         return ArticleFactory::createFull(
             $form->getId(),
+            $form->getCategoryId(),
             $form->getTitle(),
             $form->getSlug(),
             $form->getContent(),
@@ -90,6 +93,7 @@ final class ArticleFactory
      */
     public static function createFull(
         ?int                $id,
+        int                 $categoryId,
         string              $title,
         string              $slug,
         string              $content,
@@ -140,6 +144,7 @@ final class ArticleFactory
 
         return new Article(
             $id,
+            $categoryId,
             $title,
             $slug,
             $content,
@@ -168,6 +173,7 @@ final class ArticleFactory
     {
         return self::createFull(
             $data['id'],
+            $data['category_id'],
             $data['title'],
             $data['slug'],
             $data['content'],

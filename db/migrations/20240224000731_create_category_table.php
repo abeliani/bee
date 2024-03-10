@@ -16,7 +16,7 @@ final class CreateCategoryTable extends AbstractMigration
             ->addColumn('author_id', 'integer', ['signed' => false])
             ->addColumn('edited_by', 'integer', ['null' => true, 'signed' => false,])
 
-            ->addIndex(['status', 'published_at'])
+            ->addIndex(['status'])
 
             ->addForeignKey('author_id', 'users', 'id', ['delete' => 'RESTRICT', 'update' => 'NO_ACTION'])
             ->addForeignKey('edited_by', 'users', 'id', ['delete' => 'NO_ACTION', 'update' => 'NO_ACTION'])

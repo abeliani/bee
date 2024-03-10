@@ -15,8 +15,9 @@ class Article
 
     public function __construct(
         ?int $id,
+        private readonly int $categoryId,
         private readonly string $title,
-        private readonly string $slug, 
+        private readonly string $slug,
         private readonly string $content,
         private readonly array $tags,
         private readonly Concrete\ImageCollection $images,
@@ -44,6 +45,11 @@ class Article
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getCategoryId(): int
+    {
+        return $this->categoryId;
     }
 
     public function getTitle(): string
