@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Abeliani\Blog\Infrastructure\UI\Web\Frontend\Controller\Article;
 
-use Abeliani\Blog\Domain\Repository\Article\ReadRepositoryInterface;
+use Abeliani\Blog\Domain\Repository\Article;
+use Abeliani\Blog\Domain\Repository\Category;
+use Abeliani\Blog\Domain\Repository\Tag;
 use Psr\Http\Message;
 use Psr\Http\Server\RequestHandlerInterface;
 use Twig\Environment;
@@ -15,7 +17,9 @@ readonly class IndexController implements RequestHandlerInterface
     public function __construct(
         private Environment $view,
         private Message\ResponseInterface $response,
-        private ReadRepositoryInterface $repository,
+        private Article\ReadRepositoryInterface $repository,
+        private Category\ReadRepositoryInterface $categoryRepository,
+        private Tag\ReadRepositoryInterface $tagRepository,
     ) {
     }
 
@@ -33,6 +37,9 @@ readonly class IndexController implements RequestHandlerInterface
             'meta_title' => 'Hello, world!',
             'meta_author' => 'Me',
             'articles' => $this->repository->findAll(),
+            'last_articles' => $this->repository->findLast(),
+            'categories' => $this->categoryRepository->findAll(),
+            'tags' => $this->tagRepository->findAll(),
             'uploadsDir' => 'uploads',
         ]));
         return $this->response;

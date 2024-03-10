@@ -9,4 +9,5 @@ interface ReadRepositoryInterface
 {
     public function find(int $id, int $creatorId): ?Article;
     public function findAll(): CollectionInterface;
+    public function findLast(int $count = 5): CollectionInterface;
 }
