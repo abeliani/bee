@@ -22,12 +22,14 @@ $request = ServerRequest::fromGlobals();
 define('TEMPLATES_DIR', sprintf('%s%s%s', ROOT_DIR, DS, 'templates'));
 
 $containerBuilder = (new ContainerBuilder())->useAutowiring(false);
-$containerBuilder->addDefinitions('config/definitions.php');
-$containerBuilder->addDefinitions('config/event_dispatcher.php');
-$containerBuilder->addDefinitions('config/handlers.php');
-$containerBuilder->addDefinitions('config/middlewares.php');
-$containerBuilder->addDefinitions('config/repositories.php');
-$containerBuilder->addDefinitions('config/services.php');
+$containerBuilder->addDefinitions(
+    'config/definitions.php',
+    'config/event_dispatcher.php',
+    'config/handlers.php',
+    'config/middlewares.php',
+    'config/repositories.php',
+    'config/services.php',
+);
 $container = $containerBuilder->build();
 
 $routes = require 'config/routes.php';

@@ -76,7 +76,9 @@ final readonly class CategoryService
                 file_exists($file) and unlink($file);
             }
 
-            register_shutdown_function(fn () =>
+            $imageData = $this->getImagesData();
+
+           register_shutdown_function(fn () =>
                 $this->imageQueryProcessor->process(new ProcessorContext([
                     'width' => $form->getMedia()->getImageData()->getWidth(),
                     'height' => $form->getMedia()->getImageData()->getHeight(),
@@ -84,16 +86,16 @@ final readonly class CategoryService
                     'y' => $form->getMedia()->getImageData()->getY(),
                 ]),  new UploadedFileHandler($form->getMedia()->getImage())
             ));
-
-            $imageData = $this->getImagesData();
         }
+
+
 
         $updated = CategoryFactory::createFromForm(
             $user->getId(),
             $category->getCreatedBy(),
             $category->getCreatedAt(),
             $form,
-            $imageData ?? $category->getImages()
+            $form->getMedia()->getImage()->getError() === UPLOAD_ERR_OK ? $imageData : $category->getImages()
         );
 
         $this->updateRepository->update($updated);

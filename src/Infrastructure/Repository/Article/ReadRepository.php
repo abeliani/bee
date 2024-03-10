@@ -42,18 +42,13 @@ SQL;
      */
     public function findAll(): ArticleCollection
     {
-        try {
-            $stmt = $this->pdo->prepare(self::BASE_SQL . ' GROUP BY a.id');
-            $stmt->execute();
-            $collection = new ArticleCollection;
+        $stmt = $this->pdo->prepare(self::BASE_SQL . ' GROUP BY a.id ORDER BY a.published_at DESC');
+        $stmt->execute();
+        $collection = new ArticleCollection;
 
-            while ($category = $stmt->fetch()) {
-                $collection->add($this->mapper->map($category));
-            }
-        } catch (\Throwable $e) {
-            dd($e);
+        while ($category = $stmt->fetch()) {
+            $collection->add($this->mapper->map($category));
         }
-
 
         return $collection;
     }
