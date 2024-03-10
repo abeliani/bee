@@ -21,10 +21,9 @@ readonly class UpdateCategoryRepository implements UpdateCategoryRepositoryInter
        try {
         $this->pdo->beginTransaction();
 
-        $sql = 'UPDATE categories SET status = ?, published_at = ?, updated_at = ?, edited_by = ? WHERE id = ?';
-        $this->pdo->prepare($sql)->execute([
+        $this->pdo->prepare('UPDATE categories SET status = ?, updated_at = ?, edited_by = ? WHERE id = ?')
+            ->execute([
                 $c->getStatus()->value,
-                $c->getPublishedAt()->format('Y-m-d H:i:s'),
                 $c->getUpdatedAt()->format('Y-m-d H:i:s'),
                 $c->getEditedBy(),
                 $c->getId(),

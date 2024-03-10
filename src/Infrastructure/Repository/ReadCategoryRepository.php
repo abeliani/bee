@@ -12,7 +12,7 @@ use Abeliani\Blog\Infrastructure\Persistence\Mapper\CategoryMapper;
 readonly class ReadCategoryRepository implements ReadCategoryRepositoryInterface
 {
     private const BASE_SQL = <<<SQL
-        SELECT c.id, c.created_at, c.published_at, c.updated_at, c.author_id, c.edited_by,
+        SELECT c.id, c.created_at, c.updated_at, c.author_id, c.edited_by,
                ct.lang, ct.title, ct.slug, ct.content, ct.seo_meta, ct.seo_og, ct.media_image,
                ct.media_image_alt, ct.media_image, ct.status, ct.view_count
         FROM categories c

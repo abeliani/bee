@@ -37,7 +37,6 @@ class CategoryMapper implements AggregateMapperInterface
             'image_loaded' => $image?->getUrl(),
             'content' => $category->getContent(),
             'status' => $category->getStatus()->value,
-            'publish_at' => $category->getPublishedAt()->format('m/d/Y H:i:s'),
             'language' => $category->getLanguage()->value,
         ];
     }

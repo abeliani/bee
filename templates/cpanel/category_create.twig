@@ -26,15 +26,6 @@
                             {{ form.inputField('slug', slug, errors, {class: 'form-control', type: 'text', id: 'slug'}) }}
                         </div>
                         <div class="form-group">
-                            <label class="mt-3">Published at</label>
-                            <div class="input-group">
-                                <input type="text" name="published_at" class="form-control" id="datepicker-autoclose" placeholder="mm/dd/yyyy" />
-                                <div class="input-group-append">
-                                    <span class="input-group-text h-100"><i class="mdi mdi-calendar"></i></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
                             <label class="mt-3">Status</label>
                             {{ form.selectField('status', status, statuses, errors, 'select2 form-select shadow-none', 'width: 100%; height: 36px') }}
                         </div>
@@ -131,7 +122,6 @@
     {% block bottom %}
     {% include 'cpanel/froala/scripts.twig' with {'editorId': 'editor'} %}
     {% include 'cpanel/cropper/scripts.twig' with {'cropperId': 'imageInput', 'formId': 'create_category', 'dataId': 'imageData', 'imageId': 'image'} %}
-    {% include 'cpanel/datetimepicker/scripts.twig' with {'pickerId': 'datepicker-autoclose'} %}
 
     <!--
     <script type="text/javascript"

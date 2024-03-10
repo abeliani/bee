@@ -73,7 +73,6 @@ final class CategoryFactory
             $actorId,
             $form->getStatus(),
             $createdAt,
-            new \DateTimeImmutable($form->getPublishedAt()),
             new \DateTimeImmutable(),
         );
     }
@@ -95,7 +94,6 @@ final class CategoryFactory
         ?int                $editedBy,
         Enum\CategoryStatus $status,
         \DateTimeImmutable  $createdAt,
-        ?\DateTimeImmutable $publishedAt = null,
         ?\DateTimeImmutable $updatedAt = null,
     ): Category
     {
@@ -141,7 +139,6 @@ final class CategoryFactory
             $editedBy,
             $status,
             $createdAt,
-            $publishedAt,
             $updatedAt,
         );
     }
@@ -166,7 +163,6 @@ final class CategoryFactory
             $data['edited_by'],
             Enum\CategoryStatus::tryFrom($data['status']),
             new \DateTimeImmutable($data['created_at']),
-            new \DateTimeImmutable($data['published_at']),
             $data['updated_at'] === null ? null : new \DateTimeImmutable($data['updated_at']),
         );
     }

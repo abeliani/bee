@@ -27,14 +27,10 @@ class Category
         private readonly ?int $editedBy,
         private readonly Enum\CategoryStatus $status,
         private readonly \DateTimeImmutable $createdAt,
-        private ?\DateTimeImmutable $publishedAt = null,
         private readonly ?\DateTimeImmutable $updatedAt = null,
     ) {
         if ($id) {
             $this->id = $id;
-        }
-        if (!$publishedAt) {
-            $this->publishedAt = $createdAt;
         }
     }
 
@@ -101,11 +97,6 @@ class Category
     public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
-    }
-
-    public function getPublishedAt(): ?\DateTimeImmutable
-    {
-        return $this->publishedAt;
     }
 
     public function getUpdatedAt(): ?\DateTimeImmutable

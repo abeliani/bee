@@ -22,9 +22,8 @@ readonly class CreateCategoryRepository implements CreateCategoryRepositoryInter
        try {
         $this->pdo->beginTransaction();
 
-        $sql = 'INSERT INTO categories (status, published_at, author_id) VALUES (?, ?, ?)';
-        $this->pdo->prepare($sql)
-            ->execute([$c->getStatus()->value, $c->getPublishedAt()->format('Y-m-d H:i:s'), $c->getCreatedBy()]);
+        $this->pdo->prepare('INSERT INTO categories (status, author_id) VALUES (?, ?)')
+            ->execute([$c->getStatus()->value, $c->getCreatedBy()]);
         
         $c->setId((int) $this->pdo->lastInsertId());
 
