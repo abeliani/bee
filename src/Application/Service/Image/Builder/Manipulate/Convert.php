@@ -16,7 +16,7 @@ class Convert extends Manipulate
         return $this->mimeType;
     }
 
-    public static function getName(): string
+    public static function type(): string
     {
         return ManipulateEnum::convert->name;
     }

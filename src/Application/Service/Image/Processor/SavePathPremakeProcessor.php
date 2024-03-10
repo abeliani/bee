@@ -32,7 +32,7 @@ class SavePathPremakeProcessor
                     continue;
                 }
                 /** @var $action Save */
-                if ($action::getName() === ManipulateEnum::save->name) {
+                if ($action::type() === ManipulateEnum::save->name) {
                     $filePath = $action->getFilePath();
                     $this->result[$builder->getLabel()] = $filePath;
 

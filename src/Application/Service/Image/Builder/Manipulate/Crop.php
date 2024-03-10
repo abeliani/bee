@@ -27,7 +27,7 @@ class Crop extends Manipulate
 
     }
 
-    public static function getName(): string
+    public static function type(): string
     {
         return ManipulateEnum::crop->name;
     }

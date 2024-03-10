@@ -3,6 +3,10 @@ declare(strict_types=1);
 
 use Abeliani\Blog\Application\Enum\ConfigDi;
 use Abeliani\Blog\Application\Service\Image\Args\Size;
+use Abeliani\Blog\Application\Service\Image\Builder\Filter\Brightness;
+use Abeliani\Blog\Application\Service\Image\Builder\Filter\Contrast;
+use Abeliani\Blog\Application\Service\Image\Builder\Filter\Grayscale;
+use Abeliani\Blog\Application\Service\Image\Builder\Filter\Negate;
 use Abeliani\Blog\Application\Service\Image\Builder\ImageQueryBuilder;
 use Abeliani\Blog\Application\Service\Image\Builder\Manipulate\Crop;
 use Abeliani\Blog\Application\Service\Image\Builder\Manipulate\Resize;
@@ -39,41 +43,40 @@ return [
     ConfigDi::CategoryImageBuilder->name => function(): ImageQueryBuilder {
         $upload =  ROOT_DIR . DS . getenv('FILE_UPLOAD_DIR') . DS . 'category';
 
-        $thumb = new ImageQueryBuilder('thumb');
-        $thumb->append(new Resize(new Size(60.0, 40.0)))
-            ->append(new Save($upload . DS . date('Y') . DS . uniqid(), IMAGETYPE_WEBP));
-
-        $resized = new ImageQueryBuilder('view');
-        $resized->append(function (ProcessorContext $c) {
-            return Crop::build($c->get('width'), $c->get('height'), $c->get('x'), $c->get('y'));
-        }, Crop::getName())
-            ->append(new Resize(new Size(600.0,400.0)))
-            ->append(new Save($upload . DS . date('Y') . DS . uniqid(), IMAGETYPE_WEBP));
+        $resized = (new ImageQueryBuilder('view'))
+            ->append(new Brightness(-30))
+            ->append(new Contrast(10))
+            ->append(new Negate(false))
+            ->append(new Grayscale())
+            ->lazy(fn (ProcessorContext $c) => Crop::build($c->get('width'), $c->get('height'), $c->get('x'), $c->get('y')), Crop::type())
+            ->append(new Resize(new Size(700.0,0)))
+            ->append(new Save($upload . DS . 'images/' . date('Y') . DS . uniqid(), IMAGETYPE_WEBP));
 
         return (new ImageQueryBuilder('original'))
             ->append(new Strip())
             ->append(new Save($upload . DS . 'images/original' . DS . uniqid(), IMAGETYPE_WEBP))
-            ->branch($resized)
-            ->branch($thumb);
+            ->branch($resized);
     },
     ConfigDi::ArticleImageBuilder->name => function(): ImageQueryBuilder {
         $upload =  ROOT_DIR . DS . getenv('FILE_UPLOAD_DIR') . DS . 'article';
 
-        $thumb = new ImageQueryBuilder('thumb');
-        $thumb->append(new Resize(new Size(60.0, 40.0)))
+        $thumb = (new ImageQueryBuilder('thumb'))
+            ->append(new Resize(new Size(200.0, 0)))
             ->append(new Save($upload . DS . date('Y') . DS . uniqid(), IMAGETYPE_WEBP));
 
-        $resized = new ImageQueryBuilder('view');
-        $resized->append(function (ProcessorContext $c) {
-            return Crop::build($c->get('width'), $c->get('height'), $c->get('x'), $c->get('y'));
-        }, Crop::getName())
-            ->append(new Resize(new Size(600.0,400.0)))
-            ->append(new Save($upload . DS . date('Y') . DS . uniqid(), IMAGETYPE_WEBP));
+        $resized = (new ImageQueryBuilder('view'))
+            ->append(new Brightness(-30))
+            ->append(new Contrast(10))
+            ->append(new Negate(false))
+            ->append(new Grayscale())
+            ->lazy(fn (ProcessorContext $c) => Crop::build($c->get('width'), $c->get('height'), $c->get('x'), $c->get('y')), Crop::type())
+            ->append(new Resize(new Size(700.0,0)))
+            ->append(new Save($upload . DS . date('Y') . DS . uniqid(), IMAGETYPE_WEBP))
+            ->branch($thumb);
 
         return (new ImageQueryBuilder('original'))
             ->append(new Strip())
             ->append(new Save($upload . DS . 'images/original' . DS . uniqid(), IMAGETYPE_WEBP))
-            ->branch($resized)
-            ->branch($thumb);
+            ->branch($resized);
     },
 ];

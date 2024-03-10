@@ -18,9 +18,9 @@ class StripImagick implements ProcessorInterface
      */
     public function __invoke(mixed $image, BuilderActionInterface $action): \Imagick
     {
-        $icc = $image->getImageProfiles();
-        if (!empty($icc['icc'])) {
-            $icc = $icc['icc'];
+        $profiles = $image->getImageProfiles();
+        if (!empty($profiles['icc'])) {
+            $icc = $profiles['icc'];
         }
 
         if (!$image->stripImage()) {

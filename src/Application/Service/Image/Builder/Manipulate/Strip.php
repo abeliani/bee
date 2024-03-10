@@ -16,7 +16,7 @@ class Strip extends Manipulate
         parent::__construct($library);
     }
 
-    public static function getName(): string
+    public static function type(): string
     {
         return ManipulateEnum::strip->name;
     }

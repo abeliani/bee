@@ -56,7 +56,6 @@ class ImageQueryProcessor
                 $processor = $this->fetchActionProcessor($action, $library);
                 LibControl::make($stream, $image, $library);
                 $image = $processor($image, $action);
-                LibControl::reset($stream);
             }
         }
 
@@ -126,16 +125,37 @@ class ImageQueryProcessor
             });
 
             if (count($attributes) === 1 && !str_ends_with($attributes[0]->getName(), $this->preferredLibrary)) {
-                throw new \RuntimeException("Fail to fetch preferred library for `{BuilderActionInterface::getName()}` processor");
+                if (!str_ends_with($attributes[0]->getName(), $this->secondaryLibrary)) {
+                    throw new \RuntimeException("Fail to fetch preferred library for `{BuilderActionInterface::getName()}` processor");
+                }
+                $library = $this->secondaryLibrary;
+            } else {
+                $library = $this->preferredLibrary;
+                // preferred library will be on top of the array
+                array_pop($attributes);
             }
-            $library = $this->preferredLibrary;
-            // preferred library will be on top of the array
-            array_pop($attributes);
         } else {
-            $library = $action->getLibrary();
-            $attributes = array_filter($attributes, fn(\ReflectionAttribute $attr) =>
-                str_ends_with($attr->getName(), $action->getLibrary())
+            $targetLibrary = $action->getLibrary() ?: $library;
+            $preferredProcessor = array_filter($attributes, fn(\ReflectionAttribute $attr) =>
+                str_ends_with($attr->getName(), $targetLibrary)
             );
+
+            if (count($preferredProcessor) === 0) {
+                $library = $targetLibrary === $this->preferredLibrary
+                    ? $this->secondaryLibrary
+                    : $this->preferredLibrary;
+
+                /* fixme set_error_handler
+                 $warning = sprintf(
+                    'Action %s doesn\'t match with preferred library. Switch library to %s',
+                    get_class($action),
+                    $library
+                );
+
+                trigger_error($warning, E_USER_WARNING);*/
+            } else {
+                $attributes = $preferredProcessor;
+            }
         }
 
         if (count($attributes) !== 1) {

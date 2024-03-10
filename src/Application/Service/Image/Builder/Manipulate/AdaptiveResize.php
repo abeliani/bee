@@ -12,7 +12,7 @@ class AdaptiveResize extends Manipulate
         parent::__construct($library);
     }
 
-    public static function getName(): string
+    public static function type(): string
     {
         return ManipulateEnum::adaptiveResize->name;
     }

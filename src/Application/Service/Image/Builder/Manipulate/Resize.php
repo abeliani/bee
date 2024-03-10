@@ -17,7 +17,7 @@ class Resize extends Manipulate
         parent::__construct($library);
     }
 
-    public static function getName(): string
+    public static function type(): string
     {
         return ManipulateEnum::resize->name;
     }

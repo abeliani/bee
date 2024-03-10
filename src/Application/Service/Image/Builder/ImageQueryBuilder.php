@@ -21,9 +21,16 @@ class ImageQueryBuilder implements IteratorAggregate
         $this->id = sprintf('image_builder_%d', spl_object_id($this));
     }
 
-    public function append(BuilderActionInterface|callable $action, ?string $type = null): self
+    public function append(BuilderActionInterface $action): self
     {
-        $this->builder[$type ?: $action->getType()][] = $action;
+        $this->builder[$action->getType()][] = $action;
+
+        return $this;
+    }
+
+    public function lazy(callable $action, ?string $callableType = null): self
+    {
+        $this->builder[$callableType][] = $action;
 
         return $this;
     }

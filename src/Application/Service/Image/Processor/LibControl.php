@@ -16,11 +16,19 @@ class LibControl
     {
         if ($image) {
             if ($lib === \GdImage::class && $image instanceof \Imagick) {
+                $image->writeImageFile($stream);
+                $image->destroy();
                 $image = null;
             }
 
             if ($lib === \Imagick::class && $image instanceof \GdImage) {
+                imagewebp($image, $stream, 100);
+                imagedestroy($image);
                 $image = null;
+            }
+
+            if ($image === null) {
+                rewind($stream);
             }
         }
 
@@ -40,12 +48,7 @@ class LibControl
             }
         }
 
-        self::reset($stream);
-    }
-
-    public static function reset(mixed $stream): bool
-    {
-        return rewind($stream);
+        rewind($stream);
     }
 
     /**

@@ -17,16 +17,18 @@ class ResizeGdImage implements ProcessorInterface
      */
     public function __invoke(mixed $image, BuilderActionInterface $action): \GdImage
     {
-        $image = imagescale(
+        $resized = imagescale(
             $image,
             (int)$action->getSize()->getWidth(),
             (int)$action->getSize()->getHeight()
         );
 
-        if (!$image) {
+        imagedestroy($image);
+
+        if (!$resized) {
             throw new \RuntimeException('Failed to resize image');
         }
 
-        return $image;
+        return $resized;
     }
 }

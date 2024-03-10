@@ -16,17 +16,19 @@ class CropGdImage implements ProcessorInterface
      */
     public function __invoke(mixed $image, BuilderActionInterface $action): \GdImage
     {
-        $image = imagecrop($image, [
+        $cropped = imagecrop($image, [
             'width' => (int)$action->getSize()->getWidth(),
             'height' => (int)$action->getSize()->getHeight(),
             'x' => (int)$action->getCoords()->getX(),
             'y' => (int)$action->getCoords()->getY(),
         ]);
 
-        if (!$image) {
+        imagedestroy($image);
+
+        if (!$cropped) {
             throw new \RuntimeException('Failed to crop image');
         }
 
-        return $image;
+        return $cropped;
     }
 }

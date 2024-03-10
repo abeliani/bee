@@ -6,10 +6,10 @@ namespace Abeliani\Blog\Application\Service\Image\Builder\Filter;
 use Abeliani\Blog\Application\Service\Image\Builder\BuilderActionInterface;
 use Abeliani\Blog\Application\Service\Image\TypeEnum;
 
-abstract class Filter implements BuilderActionInterface
+abstract readonly class Filter implements BuilderActionInterface
 {
     abstract public function getValue(): mixed;
-    abstract public static function getName(): string;
+    abstract public static function type(): string;
 
     public function getType(): string
     {
@@ -23,6 +23,6 @@ abstract class Filter implements BuilderActionInterface
 
     public function toArray(): array
     {
-        return [static::getName() => $this->getValue()];
+        return [static::type() => $this->getValue()];
     }
 }
