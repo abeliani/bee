@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use Abeliani\Blog\Application\Middleware\ErrorHandlerMiddleware;
@@ -10,9 +11,7 @@ use FastRoute\Dispatcher;
 use GuzzleHttp\Psr7\ServerRequest;
 use Relay\Relay;
 
-define('ROOT_DIR', dirname(__DIR__));
-define('DS', DIRECTORY_SEPARATOR);
-chdir(ROOT_DIR);
+define('ROOT_DIR', dirname(__DIR__)) and define('DS', DIRECTORY_SEPARATOR) and chdir(ROOT_DIR);
 
 require_once 'vendor/autoload.php';
 
