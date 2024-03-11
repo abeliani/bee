@@ -66,12 +66,20 @@ final class ArticleFactory
         int $actorId,
         int $authorId,
         \DateTimeImmutable $createdAt,
+        Enum\ArticleStatus $articleStatus,
         int $viewCount,
         ArticleForm $form,
         Concrete\ImageCollection $images
     ): Article {
         if (!$form->getTranslateId()) {
             throw new ArticleException('Translate id cannot be empty');
+        }
+
+        if ($form->getPublishedAt() === null) {
+            $publishedAt = $articleStatus === Enum\ArticleStatus::Draft
+                && $form->getStatus() === Enum\ArticleStatus::Published
+                    ? new \DateTimeImmutable()
+                    : $createdAt;
         }
 
         return ArticleFactory::createFull(
@@ -93,7 +101,7 @@ final class ArticleFactory
             $actorId,
             $form->getStatus(),
             $createdAt,
-            new \DateTimeImmutable($form->getPublishedAt()),
+            $publishedAt ?? new \DateTimeImmutable($form->getPublishedAt()),
             new \DateTimeImmutable(),
             $viewCount
         );
@@ -136,6 +144,9 @@ final class ArticleFactory
         }
         if ($preview === $content) {
             throw new ArticleException('Preview cannot be the same as content');
+        }
+        if ($publishedAt === null) {
+            $publishedAt = $createdAt;
         }
 
         $tagsParsed = array_map('trim', explode(',', $tags));

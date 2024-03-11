@@ -3,9 +3,8 @@
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
     new tempusDominus.TempusDominus(document.getElementById('{{ pickerId }}'), {
-        defaultDate: new Date(),
         localization: {
-            format: 'yyyy/dd/MM HH:mm:ss'
+            format: 'yyyy/MM/dd HH:mm:ss'
         }
     });
 });

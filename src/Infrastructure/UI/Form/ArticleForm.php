@@ -54,7 +54,7 @@ final class ArticleForm implements ToArrayInterface
     private Enum\ArticleStatus $status;
 
     #[Assert\Type('string')]
-    private string $published_at;
+    private ?string $published_at;
 
     #[Assert\NotBlank]
     #[EnumV(enumClass: Enum\Language::class)]
@@ -120,7 +120,7 @@ final class ArticleForm implements ToArrayInterface
         return $this->content;
     }
 
-    public function getPublishedAt(): string
+    public function getPublishedAt(): ?string
     {
         return $this->published_at;
     }
