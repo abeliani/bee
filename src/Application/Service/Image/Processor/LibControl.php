@@ -52,6 +52,24 @@ class LibControl
     }
 
     /**
+     * @throws \ImagickException
+     */
+    public static function update(mixed $stream, mixed $image)
+    {
+        rewind($stream);
+
+        if ($image instanceof \Imagick) {
+            $image->writeImageFile($stream);
+        }
+
+        if ($image instanceof \GdImage) {
+            imagewebp($image, $stream, 100);
+        }
+
+        rewind($stream);
+    }
+
+    /**
      * @param \Imagick|\GdImage|null $image
      * @return bool
      */

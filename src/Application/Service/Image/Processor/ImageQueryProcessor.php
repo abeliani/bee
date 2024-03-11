@@ -56,6 +56,7 @@ class ImageQueryProcessor
                 $processor = $this->fetchActionProcessor($action, $library);
                 LibControl::make($stream, $image, $library);
                 $image = $processor($image, $action);
+                LibControl::update($stream, $image);
             }
         }
 
