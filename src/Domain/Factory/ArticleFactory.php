@@ -21,7 +21,6 @@ final class ArticleFactory
     public static function create(
         int                 $actorId,
         int                 $categoryId,
-        int                 $translateId,
         string              $title,
         string              $slug,
         string              $preview,
@@ -33,13 +32,14 @@ final class ArticleFactory
         array               $seoMeta,
         array               $seoOg,
         Enum\Language       $language,
-        Enum\ArticleStatus $status,
+        Enum\ArticleStatus  $status,
         ?int                $id = null,
+        ?int                $translateId = null,
     ): Article {
         return self::createFull(
             $id,
-            $categoryId,
             $translateId,
+            $categoryId,
             $title,
             $slug,
             $preview,
@@ -60,6 +60,7 @@ final class ArticleFactory
 
     /**
      * @throws ArticleException
+     * @throws \Exception
      */
     public static function createFromForm(
         int $actorId,
@@ -69,10 +70,14 @@ final class ArticleFactory
         ArticleForm $form,
         Concrete\ImageCollection $images
     ): Article {
+        if (!$form->getTranslateId()) {
+            throw new ArticleException('Translate id cannot be empty');
+        }
+
         return ArticleFactory::createFull(
             $form->getId(),
+            $form->getTranslateId(),
             $form->getCategoryId(),
-            0,
             $form->getTitle(),
             $form->getSlug(),
             $form->getPreview(),
@@ -99,8 +104,8 @@ final class ArticleFactory
      */
     public static function createFull(
         ?int                $id,
+        ?int                $translateId,
         int                 $categoryId,
-        int                 $translateId,
         string              $title,
         string              $slug,
         string              $preview,
@@ -155,8 +160,8 @@ final class ArticleFactory
 
         return new Article(
             $id,
-            $categoryId,
             $translateId,
+            $categoryId,
             $title,
             $slug,
             $preview,
@@ -186,8 +191,8 @@ final class ArticleFactory
     {
         return self::createFull(
             $data['id'],
-            $data['category_id'],
             $data['translate_id'],
+            $data['category_id'],
             $data['title'],
             $data['slug'],
             $data['preview'],

@@ -14,6 +14,9 @@ final class ArticleForm implements ToArrayInterface
     #[Assert\Type('integer')]
     private int $id;
 
+    #[Assert\Type('integer')]
+    private ?int $translate_id;
+
     #[Assert\NotBlank]
     #[Assert\Type('integer')]
     private int $category_id;
@@ -60,6 +63,11 @@ final class ArticleForm implements ToArrayInterface
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function getTranslateId(): ?int
+    {
+        return $this->translate_id;
     }
 
     public function getCategoryId(): int

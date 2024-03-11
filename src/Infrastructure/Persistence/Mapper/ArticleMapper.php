@@ -29,6 +29,7 @@ class ArticleMapper implements AggregateMapperInterface
 
         return [
             'id' => $article->getId(),
+            'translate_id' => $article->getTranslateId(),
             'category_id' => $article->getCategoryId(),
             'title' => $article->getTitle(),
             'slug' => $article->getSlug(),

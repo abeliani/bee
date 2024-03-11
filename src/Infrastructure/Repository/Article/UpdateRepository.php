@@ -31,10 +31,6 @@ readonly class UpdateRepository implements UpdateRepositoryInterface
                 $a->getId(),
             ]);
 
-            $stmt = $this->pdo->prepare('SELECT id FROM article_translations WHERE article_id = ? AND lang = ?');
-            $stmt->execute([$a->getId(), $a->getLanguage()->value]);
-            $translationId = $stmt->fetchColumn();
-
             $sql = <<<SQL
             UPDATE article_translations 
                 SET title = ?, slug = ?, content = ?, seo_meta = ?, seo_og = ?, media_image = ?, media_image_alt = ?,
@@ -52,11 +48,11 @@ readonly class UpdateRepository implements UpdateRepositoryInterface
                 $a->getImageAlt(),
                 $a->getVideo() ?: null,
                 $a->getStatus()->value,
-                $translationId
+                $a->getTranslateId(),
             ]);
 
             $this->pdo->prepare('DELETE FROM article_tags WHERE article_translate_id = ?')
-                ->execute([$translationId]);
+                ->execute([$a->getTranslateId()]);
 
             if (!empty($a->getTags())) {
                 $placeholders = array_fill(0, count($a->getTags()), '?');
@@ -72,7 +68,7 @@ readonly class UpdateRepository implements UpdateRepositoryInterface
 
                 $values = [];
                 foreach ($stm->fetchAll(\PDO::FETCH_COLUMN, 0) as $id) {
-                    $values[] = $translationId;
+                    $values[] = $a->getTranslateId();
                     $values[] = $id;
                 }
 

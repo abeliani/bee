@@ -15,8 +15,8 @@ class Article
 
     public function __construct(
         ?int $id,
+        private readonly ?int $translateId,
         private readonly int $categoryId,
-        private readonly int $translateId,
         private readonly string $title,
         private readonly string $slug,
         private readonly string $preview,
@@ -49,7 +49,7 @@ class Article
         return $this->id;
     }
 
-    public function getCategoryId(): int
+    public function getCategoryId(): ?int
     {
         return $this->categoryId;
     }

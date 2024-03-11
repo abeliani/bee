@@ -84,7 +84,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="og_type">Type</label>
-                                {{ form.inputField('og[type]', og.type.value, errors, {class: 'form-control', 'data-control': 'og_type', type: 'text', id: 'og_type'}) }}
+                                {{ form.selectField('og[type]', og.type.value, og_types, errors, 'select2 form-select shadow-none', 'width: 100%; height: 36px') }}
                             </div>
                             <div class="form-group">
                                 <label for="og_url">Url</label>
@@ -100,7 +100,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="og_locale">Locale</label>
-                                {{ form.inputField('og[locale]', og.locale.value, errors, {class: 'form-control', 'data-control': 'og_locale', type: 'text', id: 'og_locale'}) }}
+                                {{ form.selectField('og[locale]', og.locale.value, og_locales, errors, 'select2 form-select shadow-none', 'width: 100%; height: 36px') }}
                             </div>
                         </div>
                     </div>
@@ -154,6 +154,7 @@
                     </div>
                 </div>
             </div>
+        {{ form.inputField('translate_id', translate_id, errors, {class: 'form-control', type: 'hidden', id: 'translateId'}) }}
         </form>
     {% block bottom %}
     {% include 'cpanel/froala/scripts.twig' with {'editorId': 'editor'} %}
