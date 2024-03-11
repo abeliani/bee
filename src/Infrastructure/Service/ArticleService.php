@@ -101,6 +101,7 @@ final readonly class ArticleService
             $user->getId(),
             $article->getCreatedBy(),
             $article->getCreatedAt(),
+            $article->getStatus(),
             $article->getViewCount(),
             $form,
             $imageData ?? $article->getImages(),

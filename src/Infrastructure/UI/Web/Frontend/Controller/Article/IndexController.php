@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Abeliani\Blog\Infrastructure\UI\Web\Frontend\Controller\Article;
 
+use Abeliani\Blog\Domain\Enum\ArticleStatus;
 use Abeliani\Blog\Domain\Repository\Article;
 use Abeliani\Blog\Domain\Repository\Category;
 use Abeliani\Blog\Domain\Repository\Tag;
@@ -36,7 +37,7 @@ readonly class IndexController implements RequestHandlerInterface
             'meta_desc' => 'meta description',
             'meta_title' => 'Hello, world!',
             'meta_author' => 'Me',
-            'articles' => $this->repository->findAll(),
+            'articles' => $this->repository->findAll(ArticleStatus::Published),
             'last_articles' => $this->repository->findLast(),
             'categories' => $this->categoryRepository->findAll(),
             'tags' => $this->tagRepository->findAll(),

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Abeliani\Blog\Infrastructure\Repository\Article;
 
 use Abeliani\Blog\Domain\Collection\Concrete\ArticleCollection;
+use Abeliani\Blog\Domain\Enum\ArticleStatus;
 use Abeliani\Blog\Domain\Model\Article;
 use Abeliani\Blog\Domain\Repository\Article\ReadRepositoryInterface;
 use Abeliani\Blog\Infrastructure\Persistence\Mapper\ArticleMapper;
@@ -31,8 +32,9 @@ SQL;
      */
     public function find(int $id): ?Article
     {
-        $stmt = $this->pdo->prepare(sprintf('%s WHERE a.id = ? GROUP BY a.id LIMIT 1', self::BASE_SQL));
-        $stmt->execute([$id]);
+        $sql = sprintf('%s WHERE a.id = ? AND a.status = ? GROUP BY a.id LIMIT 1', self::BASE_SQL);
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$id, ArticleStatus::Published->value]);
 
         return ($row = $stmt->fetch()) ? $this->mapper->map($row) : null;
     }
@@ -48,9 +50,14 @@ SQL;
     /**
      * @throws \JsonException
      */
-    public function findAll(): ArticleCollection
+    public function findAll(?ArticleStatus $status = null): ArticleCollection
     {
-        $stmt = $this->pdo->prepare(self::BASE_SQL . ' GROUP BY a.id ORDER BY a.published_at');
+        $sql = sprintf(
+            '%s %s GROUP BY a.id ORDER BY a.published_at DESC',
+            self::BASE_SQL,
+            ($status !== null ? "WHERE a.status={$status->value}" : '')
+        );
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
         $collection = new ArticleCollection;
 
@@ -66,9 +73,9 @@ SQL;
      */
     public function findLast(int $count = 5): ArticleCollection
     {
-        $stmt = $this->pdo
-            ->prepare(sprintf("%s GROUP BY a.id ORDER BY a.published_at DESC LIMIT %d", self::BASE_SQL, $count));
-        $stmt->execute();
+        $sql = sprintf("%s WHERE a.status = ? GROUP BY a.id ORDER BY a.published_at DESC LIMIT %d", self::BASE_SQL, $count);
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([ArticleStatus::Published->value]);
         $collection = new ArticleCollection;
 
         while ($category = $stmt->fetch()) {
