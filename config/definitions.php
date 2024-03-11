@@ -6,7 +6,6 @@ use Abeliani\Blog\Application\Service\Image\Args\Size;
 use Abeliani\Blog\Application\Service\Image\Builder\Filter\Brightness;
 use Abeliani\Blog\Application\Service\Image\Builder\Filter\Contrast;
 use Abeliani\Blog\Application\Service\Image\Builder\Filter\Grayscale;
-use Abeliani\Blog\Application\Service\Image\Builder\Filter\Negate;
 use Abeliani\Blog\Application\Service\Image\Builder\ImageQueryBuilder;
 use Abeliani\Blog\Application\Service\Image\Builder\Manipulate\Crop;
 use Abeliani\Blog\Application\Service\Image\Builder\Manipulate\Resize;

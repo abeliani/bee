@@ -1,12 +1,19 @@
 {% extends "front/main.twig" %}
 
+{% block head %}
+<link rel="stylesheet" href="/assets/prism/prism.css">
+{% endblock %}
+
 {% block content %}
 {% set image = article.getImages()|filter_image_type('view') %}
 <article class="blog-post">
     <img src="/{{ uploadsDir }}{{ image.url }}" class="img-fluid w-100" alt="{{ article.imageAlt }}">
     <h2 class="blog-post-title">{{ article.title }}</h2>
-    <p class="blog-post-meta">{{ article.publishedAt|date('m.d.Y') }} <a href="javascript::void(0)">Admin</a></p>
+    <p class="blog-post-meta">{{ article.publishedAt|date('m.d.Y') }}</p>
     {{ article.content|raw }}
-    <a href="article/{{ article.id }}/{{ article.slug }}" target="_self">Читать</a>
 </article>
+{% endblock %}
+
+{% block bottom %}
+<script src="/assets/prism/prism.js"></script>
 {% endblock %}

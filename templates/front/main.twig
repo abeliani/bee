@@ -30,6 +30,8 @@
     <link href="https://fonts.googleapis.com/css?family=Playfair&#43;Display:700,900&amp;display=swap" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="/assets/blog.css" rel="stylesheet">
+
+    {% block head %}{% endblock %}
   </head>
   <body>
 
@@ -79,7 +81,7 @@
         <h4 class="fst-italic">Последние записи</h4>
         {% for last in last_articles %}
         {% set image = last.getImages()|filter_image_type('thumb') %}
-         <div class="row g-2">
+         <div class="row">
             <div class="col-4">
                <img src="/uploads/{{ image.url }}" class="img-fluid rounded" alt="{{ last.imageAlt }}">
             </div>
@@ -111,6 +113,6 @@
     <a href="#">Back to top</a>
   </p>
 </footer>
-
+    {% block bottom %}{% endblock %}
   </body>
 </html>
