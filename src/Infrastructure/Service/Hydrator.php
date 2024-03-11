@@ -42,6 +42,15 @@ final readonly class Hydrator
                     $property->setValue($object, $nestedObject);
                 }
             } else {
+                $value = $value === '' && $propertyType->allowsNull() ? null : $value;
+
+                if ($value !== null) {
+                    $value = match ($propertyType->getName()) {
+                        'int' => (int) $value,
+                        default => $value,
+                    };
+                }
+
                 $property->setValue($object, $value);
             }
         }
