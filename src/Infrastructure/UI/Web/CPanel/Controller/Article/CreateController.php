@@ -66,6 +66,8 @@ final readonly class CreateController implements RequestHandlerInterface
             'action_url' => '/cpanel/article/create',
             'languages' => Enum\Utils::toArray(Enum\Language::class),
             'statuses' => Enum\Utils::toArray(Enum\ArticleStatus::class),
+            'og_types' => Enum\Utils::toArray(Enum\OgType::class),
+            'og_locales' => Enum\Utils::toArray(Enum\Locale::class),
             'categories' => $categories ?? [],
             'errors' => $formInspector->getValidateErrors(),
         ]));

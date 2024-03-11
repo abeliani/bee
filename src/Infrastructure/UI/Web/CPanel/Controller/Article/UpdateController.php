@@ -83,6 +83,8 @@ final readonly class UpdateController implements RequestHandlerInterface
             'categories' => $categories ?? [],
             'languages' => Enum\Utils::toArray(Enum\Language::class),
             'statuses' => Enum\Utils::toArray(Enum\ArticleStatus::class),
+            'og_types' => Enum\Utils::toArray(Enum\OgType::class),
+            'og_locales' => Enum\Utils::toArray(Enum\Locale::class),
             'errors' => $formInspector->getValidateErrors(),
         ]));
 
