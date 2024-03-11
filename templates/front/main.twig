@@ -95,9 +95,9 @@
 
         <aside class="p-4">
           <h4 class="fst-italic">Теги</h4>
-          <ol class="list-unstyled">
+          <ul class="list-inline">
             {% for tag in tags %}
-                <li><a href="/tag/{{ tag.id }}/{{ tag.name }}">{{ tag.name }}</a></li>
+                <li class="list-inline-item"><a href="/tag/{{ tag.id }}/{{ tag.name }}">{{ tag.name }}</a></li>
             {% endfor %}
           </ol>
         </aside>
