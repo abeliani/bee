@@ -7,6 +7,7 @@ enum FiltersEnum
     case brightness;
     case contrast;
     case grayscale;
+    case discolor;
     case negate;
     case quality;
 }

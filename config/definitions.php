@@ -5,6 +5,7 @@ use Abeliani\Blog\Application\Enum\ConfigDi;
 use Abeliani\Blog\Application\Service\Image\Args\Size;
 use Abeliani\Blog\Application\Service\Image\Builder\Filter\Brightness;
 use Abeliani\Blog\Application\Service\Image\Builder\Filter\Contrast;
+use Abeliani\Blog\Application\Service\Image\Builder\Filter\Discolor;
 use Abeliani\Blog\Application\Service\Image\Builder\Filter\Grayscale;
 use Abeliani\Blog\Application\Service\Image\Builder\ImageQueryBuilder;
 use Abeliani\Blog\Application\Service\Image\Builder\Manipulate\Crop;
@@ -68,7 +69,7 @@ return [
         $resized = (new ImageQueryBuilder('view'))
             ->append(new Brightness(-30))
             ->append(new Contrast(10))
-            ->append(new Grayscale())
+            ->append(new Discolor(0.105))
             ->lazy(fn (ProcessorContext $c) => Crop::build($c->get('width'), $c->get('height'), $c->get('x'), $c->get('y')), Crop::type())
             ->append(new Resize(new Size(700.0,0)))
             ->append(new Save($upload . DS . date('Y') . DS . uniqid(), IMAGETYPE_WEBP))
