@@ -1,0 +1,42 @@
+{% extends "front/main.twig" %}
+
+{% block right_menu %}
+<aside class="p-4 mb-3 bg-light rounded">
+  <h4 class="fst-italic">About</h4>
+  <p class="mb-0">Customize this section to tell your visitors a little bit about your publication, writers, content, or something else entirely. Totally up to you.</p>
+</aside>
+
+<aside class="p-4">
+  <h4 class="fst-italic">Категории</h4>
+  <ol class="list-unstyled mb-0">
+    {% for category in categories %}
+        <li><a href="/category/{{ category.id }}/{{ category.slug }}">{{ category.title }}</a></li>
+    {% endfor %}
+  </ol>
+</aside>
+
+<aside class="p-4">
+<h4 class="fst-italic">Последние записи</h4>
+{% for last in last_articles %}
+{% set image = last.getImages()|filter_image_type('thumb') %}
+ <div class="row">
+    <div class="col-4">
+       <img src="/uploads/{{ image.url }}" class="img-fluid rounded" alt="{{ last.imageAlt }}">
+    </div>
+    <div class="col">
+       <p><a href="/article/{{ last.id }}/{{ last.slug }}" >{{ last.title }}</a></p>
+       <p><small class="text-muted">{{ last.publishedAt|date('m.d.Y') }}</small></p>
+    </div>
+  </div>
+{% endfor %}
+</aside>
+
+<aside class="p-4">
+  <h4 class="fst-italic">Теги</h4>
+  <ul class="list-inline">
+    {% for tag in tags %}
+        <li class="list-inline-item"><a href="/tag/{{ tag.id }}/{{ tag.name }}">{{ tag.name }}</a></li>
+    {% endfor %}
+  </ol>
+</aside>
+{% endblock %}

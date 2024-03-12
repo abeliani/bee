@@ -26,7 +26,18 @@ SQL;
     /**
      * @throws \JsonException
      */
-    public function find(int $id, int $creatorId): ?Category
+    public function find(int $id): ?Category
+    {
+        $stmt = $this->pdo->prepare(sprintf('%s WHERE c.id = ? LIMIT 1', self::BASE_SQL));
+        $stmt->execute([$id]);
+
+        return ($row = $stmt->fetch()) ? $this->mapper->map($row) : null;
+    }
+
+    /**
+     * @throws \JsonException
+     */
+    public function findByAuthor(int $id, int $creatorId): ?Category
     {
         $stmt = $this->pdo->prepare(sprintf('%s WHERE c.id = ? AND c.author_id = ? LIMIT 1', self::BASE_SQL));
         $stmt->execute([$id, $creatorId]);

@@ -42,6 +42,7 @@ readonly class ViewController implements RequestHandlerInterface
             'meta_title' => $article->getTitle(),
             'meta_author' => 'Me',
             'article' => $article,
+            'time_to_read' => round(str_word_count($article->getContent()) / 200),
             'last_articles' => $this->repository->findLast(),
             'categories' => $this->categoryRepository->findAll(),
             'tags' => $this->tagRepository->findByArticle($article->getTranslateId()),

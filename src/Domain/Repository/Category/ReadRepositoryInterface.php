@@ -7,6 +7,7 @@ use Abeliani\Blog\Domain\Model\Category;
 
 interface ReadRepositoryInterface
 {
-    public function find(int $id, int $creatorId): ?Category;
+    public function find(int $id): ?Category;
+    public function findByAuthor(int $id, int $creatorId): ?Category;
     public function findAll(): CollectionInterface;
 }
