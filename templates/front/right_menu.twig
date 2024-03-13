@@ -21,7 +21,7 @@
 {% set image = last.getImages()|filter_image_type('thumb') %}
  <div class="row">
     <div class="col-4">
-       <img src="/uploads/{{ image.url }}" class="img-fluid rounded" alt="{{ last.imageAlt }}">
+       <img src="/uploads/{{ image.url }}" class="img-fluid rounded" alt="{{ last.imageAlt }}" loading="lazy">
     </div>
     <div class="col">
        <p><a href="/article/{{ last.id }}/{{ last.slug }}" >{{ last.title }}</a></p>

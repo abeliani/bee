@@ -18,8 +18,8 @@ final class StreamCollection implements StreamCollectionInterface
         $collection = $this->stream;
         $this->stream = new Collection($this->stream->getType());
 
-        foreach ($collection as $item) {
-            if ($condition($item)) {
+        foreach ($collection as $key => $item) {
+            if ($condition($item, $key)) {
                 $this->stream->add($item);
             }
         }
