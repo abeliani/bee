@@ -31,16 +31,47 @@ readonly class IndexController implements RequestHandlerInterface
      */
     public function handle(Message\ServerRequestInterface $request): Message\ResponseInterface
     {
+        $limit = 10;
+        $cursor = $request->getQueryParams();
+        $forwardLimitId = $backwardLimitId = 0;
+
+        if (isset($cursor['id']) && isset($cursor['sign'])) {
+            $direction = $cursor['sign'] === '+' ? 1 : 0;
+            $articles = $this->repository->findByCursor(
+                (int) $cursor['id'], $direction, $limit, ArticleStatus::Published
+            );
+
+            if ($direction) {
+                $forwardLimitId = $this->repository->findFirstId();
+            } else {
+                $backwardLimitId = $this->repository->findLastId();
+            }
+        } else {
+            $articles = $this->repository->findAll($limit, ArticleStatus::Published);
+        }
+
+        $pager = new \SplFixedArray(2);
+        foreach ($articles as $article) {
+            if (!empty($cursor) && $pager[0] === null) {
+                $pager[0] = $backwardLimitId === $article->getId() ? 0 : $article->getId();
+                continue;
+            }
+            if ($articles->count() === $articles->key() + 1) {
+                $pager[1] = $forwardLimitId === $article->getId() ? 0 : $article->getId();
+            }
+        }
+
         $this->response->getBody()->write($this->view->render('front/index.twig', [
             'meta_lang' => 'en',
             'canonical' => 'https://localhost',
             'meta_desc' => 'meta description',
             'meta_title' => 'Hello, world!',
             'meta_author' => 'Me',
-            'articles' => $this->repository->findAll(ArticleStatus::Published),
+            'articles' => $articles,
             'last_articles' => $this->repository->findLast(),
             'categories' => $this->categoryRepository->findAll(),
             'tags' => $this->tagRepository->findAll(),
+            'pager' => $pager,
             'uploadsDir' => 'uploads',
         ]));
         return $this->response;

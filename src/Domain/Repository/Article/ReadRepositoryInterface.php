@@ -9,7 +9,10 @@ use Abeliani\Blog\Domain\Collection\CollectionInterface;
 interface ReadRepositoryInterface
 {
     public function find(int $id): ?Article;
+    public function findFirstId(): int;
+    public function findLastId(): int;
     public function findByAuthor(int $id, int $creatorId): ?Article;
-    public function findAll(?ArticleStatus $status = null): CollectionInterface;
+    public function findAll(int $limit, ?ArticleStatus $status = null): CollectionInterface;
+    public function findByCursor(int $cursor, int $direction, int $limit, ?ArticleStatus $status = null): CollectionInterface;
     public function findLast(int $count = 5): CollectionInterface;
 }

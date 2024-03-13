@@ -4,7 +4,9 @@
 {% for article in articles %}
 {% set image = article.getImages()|filter_image_type('view') %}
 <article class="blog-post">
-    <img src="{{ uploadsDir }}/{{ image.url }}" class="img-fluid w-100" alt="{{ article.imageAlt }}">
+    <div class="image-container">
+        <img src="{{ uploadsDir }}/{{ image.url }}" class="img-fluid w-100" alt="{{ article.imageAlt }}" loading="lazy">
+    </div>
     <h2 class="blog-post-title">{{ article.title }}</h2>
     <p class="blog-post-meta">{{ article.publishedAt|date('m.d.Y') }} <a href="javascript::void(0)">Admin</a></p>
     {{ article.preview|raw }}
@@ -13,20 +15,58 @@
 {% endfor %}
 
 <nav aria-label="Page navigation">
-  <ul class="pagination justify-content-center">
-    <li class="page-item">
-      <a class="page-link" href="#" aria-label="Previous">
+  <ul class="pagination justify-content-between gap-2">
+    <li class="col-3 page-item{{ pager[0] == 0 ? ' disabled' : '' }}">
+      <a class="page-link text-center" href="/cursor-{{ pager[0] }}" aria-label="Previous">
         <span aria-hidden="true">&laquo;</span>
       </a>
     </li>
-    <li class="page-item"><a class="page-link" href="#">1</a></li>
-    <li class="page-item"><a class="page-link" href="#">2</a></li>
-    <li class="page-item"><a class="page-link" href="#">3</a></li>
-    <li class="page-item">
-      <a class="page-link" href="#" aria-label="Next">
+    <li class="col-3 page-item{{ pager[1] == 0 ? ' disabled' : '' }}">
+      <a class="page-link text-center" href="/cursor+{{ pager[1] }}" aria-label="Next">
         <span aria-hidden="true">&raquo;</span>
       </a>
     </li>
   </ul>
 </nav>
+{% endblock %}
+
+{% block right_menu %}
+<aside class="p-4 mb-3 bg-light rounded">
+  <h4 class="fst-italic">About</h4>
+  <p class="mb-0">Customize this section to tell your visitors a little bit about your publication, writers, content, or something else entirely. Totally up to you.</p>
+</aside>
+
+<aside class="p-4">
+  <h4 class="fst-italic">Категории</h4>
+  <ol class="list-unstyled mb-0">
+    {% for category in categories %}
+        <li><a href="/category/{{ category.id }}/{{ category.slug }}">{{ category.title }}</a></li>
+    {% endfor %}
+  </ol>
+</aside>
+
+<aside class="p-4">
+<h4 class="fst-italic">Последние записи</h4>
+{% for last in last_articles %}
+{% set image = last.getImages()|filter_image_type('thumb') %}
+ <div class="row">
+    <div class="col-4">
+       <img src="/uploads/{{ image.url }}" class="img-fluid rounded" alt="{{ last.imageAlt }}">
+    </div>
+    <div class="col">
+       <p><a href="/article/{{ last.id }}/{{ last.slug }}" >{{ last.title }}</a></p>
+       <p><small class="text-muted">{{ last.publishedAt|date('m.d.Y') }}</small></p>
+    </div>
+  </div>
+{% endfor %}
+</aside>
+
+<aside class="p-4">
+  <h4 class="fst-italic">Теги</h4>
+  <ul class="list-inline">
+    {% for tag in tags %}
+        <li class="list-inline-item"><a href="/tag/{{ tag.id }}/{{ tag.name }}">{{ tag.name }}</a></li>
+    {% endfor %}
+  </ol>
+</aside>
 {% endblock %}

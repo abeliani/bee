@@ -9,7 +9,7 @@ use function FastRoute\simpleDispatcher;
 
 return simpleDispatcher(function (RouteCollector $r) {
     $r->addGroup('/', function (RouteCollector $r) {
-        $r->get('', Frontend\Controller\Article\IndexController::class);
+        $r->get('[cursor{sign:\+|\-}{id:\d+}]', Frontend\Controller\Article\IndexController::class);
         $r->get('article/{id:\d+}/{slug:\S+}', Frontend\Controller\Article\ViewController::class);
     });
 

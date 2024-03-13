@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Abeliani\Blog\Infrastructure\Repository\Article;
 
+use Abeliani\Blog\Domain\Collection\CollectionInterface;
 use Abeliani\Blog\Domain\Collection\Concrete\ArticleCollection;
 use Abeliani\Blog\Domain\Enum\ArticleStatus;
 use Abeliani\Blog\Domain\Model\Article;
@@ -15,7 +16,7 @@ readonly class ReadRepository implements ReadRepositoryInterface
     private const BASE_SQL = <<<SQL
         SELECT a.id, a.category_id, a.created_at, a.published_at, a.updated_at, a.author_id, a.edited_by,
                at.lang, at.title, at.slug, at.preview, at.content, at.seo_meta, at.seo_og, at.media_image,
-               at.media_image_alt, at.media_image, at.media_video, at.status, at.view_count, at.id as translate_id,
+               at.media_image_alt, at.media_video, at.status, at.view_count, at.id as translate_id,
                GROUP_CONCAT(t.name SEPARATOR ', ') AS tags
         FROM articles a
         INNER JOIN article_translations at ON a.id = at.article_id AND at.lang='ru'
@@ -50,15 +51,16 @@ SQL;
     /**
      * @throws \JsonException
      */
-    public function findAll(?ArticleStatus $status = null): ArticleCollection
+    public function findAll(int $limit, ?ArticleStatus $status = null): ArticleCollection
     {
         $sql = sprintf(
-            '%s %s GROUP BY a.id ORDER BY a.published_at DESC',
+            '%s %s GROUP BY a.id ORDER BY a.id DESC, a.published_at DESC LIMIT ?',
             self::BASE_SQL,
             ($status !== null ? "WHERE a.status={$status->value}" : '')
         );
+
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
+        $stmt->execute([$limit]);
         $collection = new ArticleCollection;
 
         while ($category = $stmt->fetch()) {
@@ -66,6 +68,48 @@ SQL;
         }
 
         return $collection;
+    }
+
+    public function findByCursor(int $cursor, int $direction, int $limit, ?ArticleStatus $status = null): CollectionInterface
+    {
+        $sql = sprintf(
+            '%s WHERE %s %s GROUP BY a.id, a.published_at, a.status ORDER BY a.id %s, a.published_at %s LIMIT ?',
+            self::BASE_SQL,
+            $direction ? 'a.id < ?' : 'a.id > ?',
+            ($status !== null ? "AND a.status={$status->value}" : ''),
+            $direction ? 'DESC' : '',
+            $direction ? 'DESC' : '',
+        );
+
+        if (!$direction) {
+            $sql = sprintf('SELECT * FROM (%s) AS o ORDER BY o.id DESC, o.published_at DESC', $sql);
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$cursor, $limit]);
+        $collection = new ArticleCollection;
+
+        while ($category = $stmt->fetch()) {
+            $collection->add($this->mapper->map($category));
+        }
+
+        return $collection;
+    }
+
+    public function findFirstId(): int
+    {
+        $stmt = $this->pdo->prepare('SELECT id FROM articles ORDER BY id LIMIT 1');
+        $stmt->execute();
+
+        return (int) $stmt->fetchColumn();
+    }
+
+    public function findLastId(): int
+    {
+        $stmt = $this->pdo->prepare('SELECT id FROM articles ORDER BY id DESC LIMIT 1');
+        $stmt->execute();
+
+        return (int) $stmt->fetchColumn();
     }
 
     /**
