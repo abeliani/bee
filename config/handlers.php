@@ -31,6 +31,15 @@ return [
             $c->get(Tag\ReadRepositoryInterface::class),
         );
     },
+    FrontArticle\SearchController::class => function(Container $c): FrontArticle\SearchController {
+        return new FrontArticle\SearchController(
+            $c->get(Environment::class),
+            new Response(),
+            $c->get(Article\ReadRepositoryInterface::class),
+            $c->get(Category\ReadRepositoryInterface::class),
+            $c->get(Tag\ReadRepositoryInterface::class),
+        );
+    },
     FrontArticle\ViewController::class => function(Container $c): FrontArticle\ViewController {
         return new FrontArticle\ViewController(
             $c->get(Environment::class),

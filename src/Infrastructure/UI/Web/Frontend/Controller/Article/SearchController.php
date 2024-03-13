@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Abeliani\Blog\Infrastructure\UI\Web\Frontend\Controller\Article;
 
-use Abeliani\Blog\Domain\Enum\ArticleStatus;
 use Abeliani\Blog\Domain\Repository\Article;
 use Abeliani\Blog\Domain\Repository\Category;
 use Abeliani\Blog\Domain\Repository\Tag;
@@ -13,7 +12,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Twig\Environment;
 use Twig\Error;
 
-readonly class IndexController implements RequestHandlerInterface
+readonly class SearchController implements RequestHandlerInterface
 {
     public function __construct(
         private Environment $view,
@@ -31,34 +30,8 @@ readonly class IndexController implements RequestHandlerInterface
      */
     public function handle(Message\ServerRequestInterface $request): Message\ResponseInterface
     {
-        $limit = 10;
-        $cursor = $request->getQueryParams();
-        $forwardLimitId = $backwardLimitId = 0;
-
-        if (isset($cursor['id']) && isset($cursor['sign'])) {
-            $direction = $cursor['sign'] === '+' ? 1 : 0;
-            $articles = $this->repository->findByCursor(
-                (int) $cursor['id'], $direction, $limit, ArticleStatus::Published
-            );
-
-            if ($direction) {
-                $forwardLimitId = $this->repository->findFirstId();
-            } else {
-                $backwardLimitId = $this->repository->findLastId();
-            }
-        } else {
-            $articles = $this->repository->findAll($limit, ArticleStatus::Published);
-        }
-
-        $pager = new \SplFixedArray(2);
-        foreach ($articles as $article) {
-            if (!empty($cursor) && $pager[0] === null) {
-                $pager[0] = $backwardLimitId === $article->getId() ? 0 : $article->getId();
-                continue;
-            }
-            if ($articles->count() === $articles->key() + 1) {
-                $pager[1] = $forwardLimitId === $article->getId() ? 0 : $article->getId();
-            }
+        if ($term = $request->getQueryParams()['term'] ?? null) {
+            $articles = $this->repository->search($term, 10);
         }
 
         $this->response->getBody()->write($this->view->render('front/index.twig', [
@@ -67,11 +40,10 @@ readonly class IndexController implements RequestHandlerInterface
             'meta_desc' => 'meta description',
             'meta_title' => 'Hello, world!',
             'meta_author' => 'Me',
-            'articles' => $articles,
+            'articles' => $articles ?? [],
             'last_articles' => $this->repository->findLast(),
             'categories' => $this->categoryRepository->findAll(),
             'tags' => $this->tagRepository->findAll(),
-            'pager' => $pager,
             'uploadsDir' => 'uploads',
         ]));
         return $this->response;

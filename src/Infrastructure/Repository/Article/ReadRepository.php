@@ -128,4 +128,25 @@ SQL;
 
         return $collection;
     }
+
+    /**
+     * @throws \JsonException
+     */
+    public function search(string $therm, int $limit, ArticleStatus $status = ArticleStatus::Published): ArticleCollection
+    {
+        $sql = sprintf(
+            '%s WHERE a.status = ? AND MATCH(title, preview, content) AGAINST(? IN NATURAL LANGUAGE MODE) GROUP BY a.id, a.published_at, a.status ORDER BY a.id DESC, a.published_at DESC LIMIT ?',
+            self::BASE_SQL
+        );
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$status->value, $therm, $limit]);
+        $collection = new ArticleCollection;
+
+        while ($category = $stmt->fetch()) {
+            $collection->add($this->mapper->map($category));
+        }
+
+        return $collection;
+    }
 }
