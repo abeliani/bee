@@ -25,8 +25,9 @@ use Twig\Loader\FilesystemLoader;
 return [
     Environment::class => function(): Environment {
         $twig = (new Environment(new FilesystemLoader(TEMPLATES_DIR)));
-        $twig->addExtension(new Extension\ImageTypeFilter());
-        $twig->addExtension(new Extension\TimeToRead());
+        $twig->addExtension(new Extension\ImageTypeFilter);
+        $twig->addExtension(new Extension\TimeToRead);
+        $twig->addExtension(new Extension\CsrfToken);
         return $twig;
     },
     PDO::class => function (): PDO {
@@ -50,7 +51,7 @@ return [
         $resized = (new ImageQueryBuilder('view'))
             ->append(new Brightness(-30))
             ->append(new Contrast(10))
-            ->append(new Grayscale())
+            ->append(new Discolor(0.105))
             ->lazy(fn (ProcessorContext $c) => Crop::build($c->get('width'), $c->get('height'), $c->get('x'), $c->get('y')), Crop::type())
             ->append(new Resize(new Size(700.0,0)))
             ->append(new Save($upload . DS . 'images/' . date('Y') . DS . uniqid(), IMAGETYPE_WEBP));

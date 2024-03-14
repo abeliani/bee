@@ -118,6 +118,8 @@
                 </div>
             </div>
         </div>
+
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}" />
     </form>
     {% block bottom %}
     {% include 'cpanel/froala/scripts.twig' with {'editorId': 'editor'} %}
