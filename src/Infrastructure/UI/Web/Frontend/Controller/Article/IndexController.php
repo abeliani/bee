@@ -41,13 +41,15 @@ readonly class IndexController implements RequestHandlerInterface
                 (int) $cursor['id'], $direction, $limit, ArticleStatus::Published
             );
 
-            if ($direction) {
-                $forwardLimitId = $this->repository->findFirstId();
-            } else {
+            if (!$direction) {
                 $backwardLimitId = $this->repository->findLastId();
             }
         } else {
             $articles = $this->repository->findAll($limit, ArticleStatus::Published);
+        }
+
+        if (!empty($direction) || empty($cursor)) {
+            $forwardLimitId = $this->repository->findFirstId();
         }
 
         $pager = new \SplFixedArray(2);

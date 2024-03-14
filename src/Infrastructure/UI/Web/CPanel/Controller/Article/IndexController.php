@@ -24,7 +24,7 @@ final readonly class IndexController implements RequestHandlerInterface
     {
         $render = $this->view->render('cpanel/article_index.twig', [
             'section' => 'Article index',
-            'articles' => $this->repository->findAll(),
+            'articles' => $this->repository->findAll(25),
         ]);
 
         $this->response->getBody()->write($render);
