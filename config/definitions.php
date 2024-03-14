@@ -13,7 +13,7 @@ use Abeliani\Blog\Application\Service\Image\Builder\Manipulate\Resize;
 use Abeliani\Blog\Application\Service\Image\Builder\Manipulate\Save;
 use Abeliani\Blog\Application\Service\Image\Builder\Manipulate\Strip;
 use Abeliani\Blog\Application\Service\Image\Processor\ProcessorContext;
-use Abeliani\Blog\Infrastructure\Service\Twig\Extension\ImageTypeFilter;
+use Abeliani\Blog\Infrastructure\Service\Twig\Extension;
 use Monolog\Handler\FilterHandler;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Level;
@@ -25,7 +25,8 @@ use Twig\Loader\FilesystemLoader;
 return [
     Environment::class => function(): Environment {
         $twig = (new Environment(new FilesystemLoader(TEMPLATES_DIR)));
-        $twig->addExtension(new ImageTypeFilter());
+        $twig->addExtension(new Extension\ImageTypeFilter());
+        $twig->addExtension(new Extension\TimeToRead());
         return $twig;
     },
     PDO::class => function (): PDO {
