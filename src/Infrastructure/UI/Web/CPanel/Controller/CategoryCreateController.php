@@ -1,9 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller;
 
 use Abeliani\Blog\Application\Enum\AuthRequestAttrs;
-use Abeliani\Blog\Application\Middleware\JwtAuthenticationMiddleware;
+use Abeliani\Blog\Application\Middleware;
 use Abeliani\Blog\Domain\Enum;
 use Abeliani\Blog\Domain\Exception\CategoryException;
 use Abeliani\Blog\Domain\Model\User;
@@ -11,35 +13,33 @@ use Abeliani\Blog\Infrastructure\Middleware\WithMiddleware;
 use Abeliani\Blog\Infrastructure\Service\CategoryService;
 use Abeliani\Blog\Infrastructure\Service\Form\FormService;
 use Abeliani\Blog\Infrastructure\UI\Form\CategoryForm;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message;
 use Psr\Http\Server\RequestHandlerInterface;
 use Twig\Environment;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
+use Twig\Error;
 
-#[WithMiddleware(JwtAuthenticationMiddleware::class)]
+#[WithMiddleware(Middleware\CsrfCheckMiddleware::class)]
+#[WithMiddleware(Middleware\JwtAuthenticationMiddleware::class)]
 final readonly class CategoryCreateController implements RequestHandlerInterface
 {
     public function __construct(
         private Environment $view,
         private FormService $formService,
-        private ResponseInterface $response,
+        private Message\ResponseInterface $response,
         private CategoryService $category,
     ) {
     }
 
     /**
      * @throws \ImagickException
-     * @throws SyntaxError
-     * @throws RuntimeError
-     * @throws LoaderError
+     * @throws Error\SyntaxError
+     * @throws Error\RuntimeError
+     * @throws Error\LoaderError
      * @throws \JsonException
      * @throws \ReflectionException
      * @throws CategoryException
      */
-    public function handle(ServerRequestInterface $request): ResponseInterface
+    public function handle(Message\ServerRequestInterface $request): Message\ResponseInterface
     {
         $formInspector = $this->formService->buildInspector($request, CategoryForm::class);
 
