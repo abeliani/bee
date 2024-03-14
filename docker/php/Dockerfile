@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y \
     libmagickwand-dev \
     libonig-dev \
     libzip-dev \
+    zlib1g-dev libssl-dev libmemcached-dev \
     && rm -rf /var/lib/apt/lists/*
 
 RUN echo "ru_RU.UTF-8 UTF-8" > /etc/locale.gen \
@@ -30,7 +31,8 @@ RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl \
     && docker-php-ext-configure gd --with-jpeg=/usr/include/ --with-freetype=/usr/include/ --with-webp=/usr/include/ \
     && docker-php-ext-install gd \
     && pecl install imagick xdebug \
-    && docker-php-ext-enable imagick xdebug
+    && pecl install -f memcached-3.2.0 \
+    && docker-php-ext-enable imagick xdebug memcached
 
 RUN { \
         echo "zend_extension=xdebug.so"; \

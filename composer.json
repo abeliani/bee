@@ -7,6 +7,7 @@
         "ext-imagick": "*",
         "ext-gd": "*",
         "ext-fileinfo": "*",
+        "ext-memcached": "*",
         "guzzlehttp/guzzle": "7.8.1",
         "php-di/php-di": "7.0.6",
         "relay/relay": "2.1.2",
