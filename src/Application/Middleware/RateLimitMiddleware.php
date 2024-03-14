@@ -30,8 +30,9 @@ final readonly class RateLimitMiddleware implements MiddlewareInterface
             $this->mc->set($key, 1, $this->period);
         } else {
             if ($current >= $this->limit) {
-                $r = new Response();
-                return $r->withStatus(429)->withBody(Utils::streamFor('Too Many Requests'));
+                return (new Response())
+                    ->withStatus(429)
+                    ->withBody(Utils::streamFor('Too Many Requests'));
             } else {
                 $this->mc->increment($key);
             }
