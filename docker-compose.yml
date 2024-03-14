@@ -18,6 +18,15 @@ services:
       - ./docker/php/php.ini:/usr/local/etc/php/conf.d/my-php.ini:ro
     networks:
       - app-network
+    depends_on:
+      - memcached
+
+  memcached:
+    image: memcached
+    ports:
+      - "11211:11211"
+    networks:
+      - app-network
 
   db:
     image: mysql:5.7.22

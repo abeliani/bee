@@ -26,4 +26,9 @@ return [
     Middleware\CsrfCheckMiddleware::class => function(Container $c): Middleware\CsrfCheckMiddleware {
         return new Middleware\CsrfCheckMiddleware();
     },
+    Middleware\RateLimitMiddleware::class => function(Container $c): Middleware\RateLimitMiddleware {
+        $memcached = new Memcached();
+        $memcached->addServer(getenv('MEMCACHED_SERVER'), (int) getenv('MEMCACHED_PORT'));
+        return new Middleware\RateLimitMiddleware($memcached, 10, 60);
+    },
 ];
