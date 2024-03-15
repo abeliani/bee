@@ -6,13 +6,14 @@ use Abeliani\Blog\Application\Service\Image\Args\Size;
 use Abeliani\Blog\Application\Service\Image\Builder\Filter\Brightness;
 use Abeliani\Blog\Application\Service\Image\Builder\Filter\Contrast;
 use Abeliani\Blog\Application\Service\Image\Builder\Filter\Discolor;
-use Abeliani\Blog\Application\Service\Image\Builder\Filter\Grayscale;
 use Abeliani\Blog\Application\Service\Image\Builder\ImageQueryBuilder;
 use Abeliani\Blog\Application\Service\Image\Builder\Manipulate\Crop;
 use Abeliani\Blog\Application\Service\Image\Builder\Manipulate\Resize;
 use Abeliani\Blog\Application\Service\Image\Builder\Manipulate\Save;
 use Abeliani\Blog\Application\Service\Image\Builder\Manipulate\Strip;
 use Abeliani\Blog\Application\Service\Image\Processor\ProcessorContext;
+use Abeliani\Blog\Domain\Service\Mailer\MailerInterface;
+use Abeliani\Blog\Infrastructure\Service\Mailer;
 use Abeliani\Blog\Infrastructure\Service\Twig\Extension;
 use Monolog\Handler\FilterHandler;
 use Monolog\Handler\RotatingFileHandler;
@@ -82,4 +83,12 @@ return [
             ->append(new Save($upload . DS . 'images/original' . DS . uniqid(), IMAGETYPE_WEBP))
             ->branch($resized);
     },
+    MailerInterface::class => function(): Mailer {
+        return new Mailer(
+            getenv('SMTP_HOST'),
+            (int) getenv('SMTP_PORT'),
+            getenv('SMTP_USERNAME'),
+            getenv('SMTP_PASSWORD'),
+        );
+    }
 ];

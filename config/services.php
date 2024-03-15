@@ -4,19 +4,24 @@ declare(strict_types=1);
 use Abeliani\Blog\Application\Enum\ConfigDi;
 use Abeliani\Blog\Application\Service\Image\Processor\ImageQueryProcessor;
 use Abeliani\Blog\Application\Service\Image\Processor\SavePathPremakeProcessor;
+use Abeliani\Blog\Application\Service\Subscription\SubscriptionService;
 use Abeliani\Blog\Application\Service\UserRegistration\UserRegistrationService;
 use Abeliani\Blog\Domain\Factory\UserFactory;
 use Abeliani\Blog\Domain\Repository\Article;
 use Abeliani\Blog\Domain\Repository\Category\CreateCategoryRepositoryInterface;
 use Abeliani\Blog\Domain\Repository\Category\UpdateCategoryRepositoryInterface;
+use Abeliani\Blog\Domain\Repository\Subscription\CreateRepositoryInterface;
+use Abeliani\Blog\Domain\Repository\Subscription\ReadRepositoryInterface;
 use Abeliani\Blog\Domain\Repository\User\CreateUserRepositoryInterface;
 use Abeliani\Blog\Domain\Repository\User\ReadUserRepositoryInterface;
+use Abeliani\Blog\Domain\Service\Mailer\MailerInterface;
 use Abeliani\Blog\Domain\Service\PasswordHasher\PasswordHasherInterface;
 use Abeliani\Blog\Infrastructure\Service;
 use Abeliani\Blog\Infrastructure\Service\Form\FormService;
 use Abeliani\Blog\Infrastructure\Service\RequestValidator\RequestValidatorService;
 use DI\Container;
 use Symfony\Component\Validator\Validation;
+use Twig\Environment;
 
 return [
     UserFactory::class => function(Container $c): UserFactory {
@@ -85,6 +90,18 @@ return [
             $c->get(ConfigDi::ArticleImageProcessor->name),
             new SavePathPremakeProcessor($c->get(ConfigDi::ArticleImageBuilder->name)),
             ROOT_DIR . DS . getenv('FILE_UPLOAD_DIR') . DS . 'article'
+        );
+    },
+    SubscriptionService::class => function(Container $c): SubscriptionService {
+        return new SubscriptionService(
+            getenv('MAILER_TOKEN_SECRET'),
+            getenv('APP_DOMAIN'),
+            getenv('APP_NAME'),
+            '+3 hour',
+            $c->get(Environment::class),
+            $c->get(MailerInterface::class),
+            $c->get(CreateRepositoryInterface::class),
+            $c->get(ReadRepositoryInterface::class),
         );
     },
 ];
