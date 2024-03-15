@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Abeliani\Blog\Application\Service\UserRegistration;
 
 use Abeliani\Blog\Domain\Enum\Role;

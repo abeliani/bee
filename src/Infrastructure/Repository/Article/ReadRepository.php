@@ -70,6 +70,25 @@ SQL;
         return $collection;
     }
 
+    public function finaByCategory(int $creatorId, int $limit, ?ArticleStatus $status = null): ArticleCollection
+    {
+        $sql = sprintf(
+            '%s %s GROUP BY a.id ORDER BY a.id DESC, a.published_at DESC LIMIT ?',
+            self::BASE_SQL,
+            ($status !== null ? 'WHERE a.status= ? AND a.category_id = ?' : '')
+        );
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$status->value, $creatorId, $limit]);
+        $collection = new ArticleCollection;
+
+        while ($category = $stmt->fetch()) {
+            $collection->add($this->mapper->map($category));
+        }
+
+        return $collection;
+    }
+
     public function findByCursor(int $cursor, int $direction, int $limit, ?ArticleStatus $status = null): CollectionInterface
     {
         $sql = sprintf(

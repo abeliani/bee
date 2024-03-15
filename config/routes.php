@@ -11,7 +11,13 @@ return simpleDispatcher(function (RouteCollector $r) {
     $r->addGroup('/', function (RouteCollector $r) {
         $r->get('[cursor{sign:\+|\-}{id:\d+}]', Frontend\Controller\Article\IndexController::class);
         $r->get('article/{id:\d+}/{slug:\S+}', Frontend\Controller\Article\ViewController::class);
-        $r->get('search', Frontend\Controller\Article\SearchController::class);
+        $r->get('article/search', Frontend\Controller\Article\SearchController::class);
+
+        $r->get('category/{id:\d+}/{slug:\S+}', Frontend\Controller\Category\ViewController::class);
+
+        $r->get('subscribe', Frontend\Controller\Subscription\SubscribeController::class);
+        $r->post('subscribe', Frontend\Controller\Subscription\SubscribeController::class);
+        $r->get('subscribe/confirm/{token:\S+}', Frontend\Controller\Subscription\SubscribeConfirmController::class);
     });
 
     $r->addGroup('/cpanel', function (RouteCollector $r) {

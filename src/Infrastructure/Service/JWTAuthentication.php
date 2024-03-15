@@ -63,7 +63,7 @@ class JWTAuthentication
             'path' => '/',
             'domain' => $this->token->claims()->get('iss'),
             'expires' => $this->token->claims()->get('exp')->getTimestamp(),
-            #'secure' => true,
+            #'secure' => true, // todo make localhost secure
             'httponly' => true,
             'samesite' => 'Lax'
         ]);

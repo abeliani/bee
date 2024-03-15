@@ -1,5 +1,18 @@
 {% extends "front/main.twig" %}
 
+{% block content %}
+<div class="col-md-6">
+    <form action="/subscribe" method="POST">
+      <div class="mb-3">
+        <label for="email" class="visually-hidden">Email</label>
+        <input type="email" name="subscriber" class="form-control" id="email" placeholder="Адрес email" required autocomplete="email">
+        <div class="invalid-feedback">Введите корректный email адрес, пожалуйста.</div>
+      </div>
+      <button type="submit" class="btn btn-secondary">Подписаться</button>
+    </form>
+</div>
+{% endblock %}
+
 {% block right_menu %}
 <aside class="p-4 mb-3 bg-light rounded">
   <h4 class="fst-italic">About</h4>
@@ -21,7 +34,7 @@
 {% set image = last.getImages()|filter_image_type('thumb') %}
  <div class="row">
     <div class="col-4">
-       <img src="/uploads/{{ image.url }}" class="img-fluid rounded" alt="{{ last.imageAlt }}" loading="lazy">
+       <img src="/uploads/{{ image.url }}" class="img-fluid rounded" alt="{{ last.imageAlt }}">
     </div>
     <div class="col">
        <p><a href="/article/{{ last.id }}/{{ last.slug }}" >{{ last.title }}</a></p>
@@ -33,7 +46,7 @@
 
 <aside class="p-4">
   <h4 class="fst-italic">Теги</h4>
-  <ul class="list-inline tags">
+  <ul class="list-inline">
     {% for tag in tags %}
         <li class="list-inline-item"><a href="/tag/{{ tag.id }}/{{ tag.name }}">{{ tag.name }}</a></li>
     {% endfor %}

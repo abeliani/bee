@@ -1,12 +1,15 @@
 <?php
 declare(strict_types=1);
 
+use Abeliani\Blog\Application\Service\Subscription\SubscriptionService;
 use Abeliani\Blog\Domain\Repository\Tag;
 use Abeliani\Blog\Domain\Repository\Article;
 use Abeliani\Blog\Domain\Repository\Category;
 use Abeliani\Blog\Infrastructure\Persistence\Mapper\ArticleMapper;
 use Abeliani\Blog\Infrastructure\Persistence\Mapper\CategoryMapper;
 use Abeliani\Blog\Infrastructure\Service;
+use Abeliani\Blog\Infrastructure\UI\Web\Frontend\Controller\Category as FrontCategory;
+use Abeliani\Blog\Infrastructure\UI\Web\Frontend\Controller\Subscription as Subscribe;
 use Abeliani\Blog\Infrastructure\UI\Web\Frontend\Controller\Article as FrontArticle;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\Article as CpanelArticle;
 use Abeliani\Blog\Infrastructure\Service\Form\FormService;
@@ -40,6 +43,15 @@ return [
             $c->get(Tag\ReadRepositoryInterface::class),
         );
     },
+    FrontCategory\ViewController::class => function(Container $c): FrontCategory\ViewController {
+        return new FrontCategory\ViewController(
+            $c->get(Environment::class),
+            new Response(),
+            $c->get(Article\ReadRepositoryInterface::class),
+            $c->get(Category\ReadRepositoryInterface::class),
+            $c->get(Tag\ReadRepositoryInterface::class),
+        );
+    },
     FrontArticle\ViewController::class => function(Container $c): FrontArticle\ViewController {
         return new FrontArticle\ViewController(
             $c->get(Environment::class),
@@ -47,6 +59,28 @@ return [
             $c->get(Article\ReadRepositoryInterface::class),
             $c->get(Category\ReadRepositoryInterface::class),
             $c->get(Tag\ReadRepositoryInterface::class),
+        );
+    },
+    Subscribe\SubscribeController::class => function(Container $c): Subscribe\SubscribeController {
+        return new Subscribe\SubscribeController(
+            $c->get(Environment::class),
+            $c->get(FormService::class),
+            new Response(),
+            $c->get(Article\ReadRepositoryInterface::class),
+            $c->get(Category\ReadRepositoryInterface::class),
+            $c->get(Tag\ReadRepositoryInterface::class),
+            $c->get(SubscriptionService::class),
+        );
+    },
+    Subscribe\SubscribeConfirmController::class => function(Container $c): Subscribe\SubscribeConfirmController {
+        return new Subscribe\SubscribeConfirmController(
+            $c->get(Environment::class),
+            $c->get(FormService::class),
+            new Response(),
+            $c->get(Article\ReadRepositoryInterface::class),
+            $c->get(Category\ReadRepositoryInterface::class),
+            $c->get(Tag\ReadRepositoryInterface::class),
+            $c->get(SubscriptionService::class),
         );
     },
     ItIsBackendController::class => function(Container $c): ItIsBackendController {

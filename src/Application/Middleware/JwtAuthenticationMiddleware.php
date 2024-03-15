@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Abeliani\Blog\Application\Middleware;
 
 use Abeliani\Blog\Application\Enum\AuthRequestAttrs;
-use Abeliani\Blog\Application\Event\LogDebugEvent;
 use Abeliani\Blog\Application\Event\RequestEvent;
 use Abeliani\Blog\Domain\Repository\User\ReadUserRepositoryInterface;
 use Abeliani\Blog\Infrastructure\Service\JWTAuthentication;
