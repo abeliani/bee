@@ -2,7 +2,8 @@
 
 declare(strict_types=1);
 
-use Phinx\Db\Adapter\MysqlAdapter;
+use Phinx\Db\Adapter\MysqlAdapter as Mysql;
+use Phinx\Db\Adapter\AdapterInterface as Adapter;
 use Phinx\Migration\AbstractMigration;
 
 final class ArticleTranslations extends AbstractMigration
@@ -10,19 +11,19 @@ final class ArticleTranslations extends AbstractMigration
     public function change(): void
     {
         $table = $this->table('article_translations', ['engine' => 'InnoDB', 'collation' => 'utf8mb4_unicode_ci']);
-        $table->addColumn('article_id', MysqlAdapter::PHINX_TYPE_INTEGER, ['signed' => false, 'null' => false])
-            ->addColumn('lang', MysqlAdapter::PHINX_TYPE_STRING, ['limit' => 2, 'null' => false])
-            ->addColumn('title', MysqlAdapter::PHINX_TYPE_STRING, ['limit' => 100])
-            ->addColumn('slug', MysqlAdapter::PHINX_TYPE_STRING, ['limit' => 100])
-            ->addColumn('preview', MysqlAdapter::PHINX_TYPE_STRING, ['limit' => MysqlAdapter::TEXT_SMALL, 'null' => false])
-            ->addColumn('content', MysqlAdapter::PHINX_TYPE_TEXT, ['null' => false])
-            ->addColumn('seo_meta', MysqlAdapter::PHINX_TYPE_JSON, ['null' => true])
-            ->addColumn('seo_og', MysqlAdapter::PHINX_TYPE_JSON, ['null' => true])
-            ->addColumn('media_image_alt', MysqlAdapter::PHINX_TYPE_STRING, ['limit' => 150])
-            ->addColumn('media_image', MysqlAdapter::PHINX_TYPE_JSON, ['null' => true])
-            ->addColumn('media_video', MysqlAdapter::PHINX_TYPE_JSON, ['null' => true])
-            ->addColumn('status', MysqlAdapter::PHINX_TYPE_INTEGER, ['default' => 0, 'signed' => false, 'limit' => MysqlAdapter::INT_TINY])
-            ->addColumn('view_count', MysqlAdapter::PHINX_TYPE_INTEGER, ['default' => 0, 'signed' => false, 'limit' => MysqlAdapter::INT_BIG])
+        $table->addColumn('article_id', Adapter::PHINX_TYPE_INTEGER, ['signed' => false, 'null' => false])
+            ->addColumn('lang', Adapter::PHINX_TYPE_STRING, ['limit' => 2, 'null' => false])
+            ->addColumn('title', Adapter::PHINX_TYPE_STRING, ['limit' => 100])
+            ->addColumn('slug', Adapter::PHINX_TYPE_STRING, ['limit' => 100])
+            ->addColumn('preview', Adapter::PHINX_TYPE_STRING, ['limit' => Mysql::TEXT_SMALL, 'null' => false])
+            ->addColumn('content', Adapter::PHINX_TYPE_TEXT, ['null' => false])
+            ->addColumn('seo_meta', Adapter::PHINX_TYPE_JSON, ['null' => true])
+            ->addColumn('seo_og', Adapter::PHINX_TYPE_JSON, ['null' => true])
+            ->addColumn('media_image_alt', Adapter::PHINX_TYPE_STRING, ['limit' => 150])
+            ->addColumn('media_image', Adapter::PHINX_TYPE_JSON, ['null' => true])
+            ->addColumn('media_video', Adapter::PHINX_TYPE_JSON, ['null' => true])
+            ->addColumn('status', Adapter::PHINX_TYPE_INTEGER, ['default' => 0, 'signed' => false, 'limit' => Mysql::INT_TINY])
+            ->addColumn('view_count', Adapter::PHINX_TYPE_INTEGER, ['default' => 0, 'signed' => false, 'limit' => Mysql::INT_BIG])
 
             ->addIndex(['status'])
             ->addIndex(['slug'], ['unique' => true])

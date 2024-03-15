@@ -2,7 +2,8 @@
 
 declare(strict_types=1);
 
-use Phinx\Db\Adapter\MysqlAdapter;
+use Phinx\Db\Adapter\MysqlAdapter as Mysql;
+use Phinx\Db\Adapter\AdapterInterface as Adapter;
 use Phinx\Migration\AbstractMigration;
 
 final class CreateCategoryTable extends AbstractMigration
@@ -10,11 +11,11 @@ final class CreateCategoryTable extends AbstractMigration
     public function change(): void
     {
         $table = $this->table('categories', ['engine' => 'InnoDB', 'collation' => 'utf8mb4_unicode_ci']);
-        $table->addColumn('status', 'integer', ['default' => 0, 'signed' => false, 'limit' => MysqlAdapter::INT_TINY])
-            ->addColumn('created_at', 'datetime', ['default' => 'CURRENT_TIMESTAMP'])
-            ->addColumn('updated_at', 'datetime')
-            ->addColumn('author_id', 'integer', ['signed' => false])
-            ->addColumn('edited_by', 'integer', ['null' => true, 'signed' => false,])
+        $table->addColumn('status', Adapter::PHINX_TYPE_INTEGER, ['default' => 0, 'signed' => false, 'limit' => Mysql::INT_TINY])
+            ->addColumn('created_at', Adapter::PHINX_TYPE_DATETIME, ['default' => 'CURRENT_TIMESTAMP'])
+            ->addColumn('updated_at', Adapter::PHINX_TYPE_DATETIME)
+            ->addColumn('author_id', Adapter::PHINX_TYPE_INTEGER, ['signed' => false])
+            ->addColumn('edited_by', Adapter::PHINX_TYPE_INTEGER, ['null' => true, 'signed' => false,])
 
             ->addIndex(['status'])
 
