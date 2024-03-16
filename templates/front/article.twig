@@ -1,7 +1,25 @@
 {% extends "front/main.twig" %}
 
 {% block head %}
-<link rel="stylesheet" href="/assets/prism/prism.css">
+    <link rel="stylesheet" href="/assets/prism/prism.css">
+
+    <meta property="og:title" content="{{ article.seoOg.title }}" />
+    <meta property="og:type" content="{{ article.seoOg.type.value }}" />
+    <meta property="og:url" content="{{ canonical }}" />
+    <meta property="og:description" content="{{ article.seoOg.description|default(article.seoMeta.description) }}" />
+    <meta property="og:site_name" content="{{ site_name }}" />
+    <meta property="article:published_time" content="{{ article.publishedAt|date('Y-m-d\TH:i:sP') }}" />
+    <meta property="article:modified_time" content="{{ article.updatedAt|date('Y-m-d\TH:i:sP') }}" />
+    <meta property="article:author" content="{{ author_url }}" />
+    <meta property="article:section" content="{{ category.title }}" />
+    <meta property="article:tag" content="{{ tags|map(tag => tag.name)|join(', ') }}" />
+    <meta property="og:locale" content="{{ article.seoOg.locale.value}}" />
+
+{% set image = article.getImages()|filter_image_type('view') %}
+{% if image is not null %}
+    <meta property="og:image" content="{{ upload_path }}{{ image.url }}" />
+    <meta property="og:image:alt" content="{{ article.imageAlt }}" />
+{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -15,11 +33,7 @@
                  </svg>
              </li>
             <li class="list-inline-item">
-                {% for category in categories %}
-                  {% if category.id == article.categoryId %}
-                    <a href="/category/{{ category.id }}/{{ category.slug }}">{{ category.title|lower }}</a>
-                  {% endif %}
-                {% endfor %}
+                <a href="/category/{{ category.id }}/{{ category.slug }}">{{ category.title|lower }}</a>
             </li>
             <li class="list-inline-item">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-tags" viewBox="0 0 16 16">
@@ -33,11 +47,11 @@
             </ul>
         </p>
 
-    <img src="/{{ uploadsDir }}{{ image.url }}" class="img-fluid w-100" alt="{{ article.imageAlt }}">
+    <img src="/{{ uploads_dir }}{{ image.url }}" class="img-fluid w-100" alt="{{ article.imageAlt }}">
     <div class="d-flex blog-post-meta justify-content-between">
       <div class="p-2">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-hourglass-bottom mb-1" viewBox="0 0 16 16"><path d="M2 1.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1h-11a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1-.5-.5m2.5.5v1a3.5 3.5 0 0 0 1.989 3.158c.533.256 1.011.791 1.011 1.491v.702s.18.149.5.149.5-.15.5-.15v-.7c0-.701.478-1.236 1.011-1.492A3.5 3.5 0 0 0 11.5 3V2z"/></svg>
-                                {{ time_to_read }} мин
+                                {{ article.content|time_to_read }}   мин
         </div>
       <div class="p-2">{{ article.publishedAt|date('m.d.Y H:i') }}</div>
     </div>

@@ -18,7 +18,7 @@ class ImageTypeFilter extends AbstractExtension
         ];
     }
 
-    public function filterImageType(ImageCollection $images, string $type): Image
+    public function filterImageType(ImageCollection $images, string $type): ?Image
     {
         return $images->stream()
             ->filter(fn (Image $i) => $i->getType() === $type)

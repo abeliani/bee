@@ -26,6 +26,12 @@ use Twig\Loader\FilesystemLoader;
 return [
     Environment::class => function(): Environment {
         $twig = (new Environment(new FilesystemLoader(TEMPLATES_DIR)));
+        $twig->addGlobal('app_host', getenv('APP_HOST'));
+        $twig->addGlobal('upload_dir', 'uploads');
+        $twig->addGlobal('upload_path', sprintf('%s/%s', getenv('APP_HOST'), 'uploads'));
+        $twig->addGlobal('site_name', getenv('SITE_NAME'));
+        $twig->addGlobal('author_url', 'https://localhost/author');
+
         $twig->addExtension(new Extension\ImageTypeFilter);
         $twig->addExtension(new Extension\TimeToRead);
         $twig->addExtension(new Extension\CsrfToken);
@@ -65,11 +71,15 @@ return [
     ConfigDi::ArticleImageBuilder->name => function(): ImageQueryBuilder {
         $upload =  ROOT_DIR . DS . getenv('FILE_UPLOAD_DIR') . DS . 'article';
 
+        $og = (new ImageQueryBuilder('og'))
+            ->lazy(fn (ProcessorContext $c) => Crop::build($c->get('width'), $c->get('height'), $c->get('x'), $c->get('y')), Crop::type())
+            ->append(new Save($upload . DS . date('Y') . DS . uniqid(), IMAGETYPE_WEBP));
+
         $thumb = (new ImageQueryBuilder('thumb'))
             ->append(new Resize(new Size(200.0, 0)))
             ->append(new Save($upload . DS . date('Y') . DS . uniqid(), IMAGETYPE_WEBP));
 
-        $resized = (new ImageQueryBuilder('view'))
+        $view = (new ImageQueryBuilder('view'))
             ->append(new Brightness(-30))
             ->append(new Contrast(10))
             ->append(new Discolor(0.105))
@@ -81,7 +91,8 @@ return [
         return (new ImageQueryBuilder('original'))
             ->append(new Strip())
             ->append(new Save($upload . DS . 'images/original' . DS . uniqid(), IMAGETYPE_WEBP))
-            ->branch($resized);
+            ->branch($og)
+            ->branch($view);
     },
     MailerInterface::class => function(): Mailer {
         return new Mailer(

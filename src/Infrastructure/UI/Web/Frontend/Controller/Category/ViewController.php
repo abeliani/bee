@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Abeliani\Blog\Infrastructure\UI\Web\Frontend\Controller\Category;
 
 use Abeliani\Blog\Domain\Enum\ArticleStatus;
+use Abeliani\Blog\Domain\Enum\Language;
 use Abeliani\Blog\Domain\Exception\NotFoundException;
 use Abeliani\Blog\Domain\Repository\Article;
 use Abeliani\Blog\Domain\Repository\Category;
@@ -40,16 +41,14 @@ readonly class ViewController implements RequestHandlerInterface
         }
 
         $this->response->getBody()->write($this->view->render('front/index.twig', [
-            'meta_lang' => 'ru',
-            'canonical' => 'https://localhost',
-            'meta_desc' => 'meta description',
-            'meta_title' => 'Hello, world!',
-            'meta_author' => 'Me',
+            'meta_lang' => $category->getLanguage()->value,
+            'canonical' => sprintf('https://localhost/category/%d/%s', $category->getId(), $category->getSlug()),
+            'meta_title' => $category->getSeoMeta()->getTitle(),
+            'meta_desc' => $category->getSeoMeta()->getDescription(),
             'articles' => $this->repository->finaByCategory($category->getId(), 25, ArticleStatus::Published),
             'last_articles' => $this->repository->findLast(),
             'categories' => $this->categoryRepository->findAll(),
             'tags' => $this->tagRepository->findAll(),
-            'uploadsDir' => 'uploads',
         ]));
         return $this->response;
     }

@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Abeliani\Blog\Infrastructure\UI\Web\Frontend\Controller\Article;
 
 use Abeliani\Blog\Domain\Exception\NotFoundException;
-use Abeliani\Blog\Domain\Repository\Article;
-use Abeliani\Blog\Domain\Repository\Category;
-use Abeliani\Blog\Domain\Repository\Tag;
+use Abeliani\Blog\Domain\Repository;
+use Abeliani\Blog\Domain\Model\Category;
 use Psr\Http\Message;
 use Psr\Http\Server\RequestHandlerInterface;
 use Twig\Environment;
@@ -18,16 +17,15 @@ readonly class ViewController implements RequestHandlerInterface
     public function __construct(
         private Environment $view,
         private Message\ResponseInterface $response,
-        private Article\ReadRepositoryInterface $repository,
-        private Category\ReadRepositoryInterface $categoryRepository,
-        private Tag\ReadRepositoryInterface $tagRepository,
+        private Repository\Article\ReadRepositoryInterface $repository,
+        private Repository\Category\ReadRepositoryInterface $categoryRepository,
+        private Repository\Tag\ReadRepositoryInterface $tagRepository,
     ) {
     }
 
     /**
-     * @throws Error\SyntaxError
-     * @throws Error\RuntimeError
-     * @throws Error\LoaderError
+     * @throws Error\SyntaxError|Error\RuntimeError|Error\LoaderError
+     * @throws NotFoundException
      */
     public function handle(Message\ServerRequestInterface $request): Message\ResponseInterface
     {
@@ -35,18 +33,21 @@ readonly class ViewController implements RequestHandlerInterface
             throw new NotFoundException();
         }
 
+        $categories = $this->categoryRepository->findAll();
+
         $this->response->getBody()->write($this->view->render('front/article.twig', [
-            'meta_lang' => 'en',
-            'canonical' => 'https://localhost',
-            'meta_desc' => 'meta description',
-            'meta_title' => $article->getTitle(),
-            'meta_author' => 'Me',
+            'meta_lang' => $article->getLanguage()->value,
+            'meta_title' => $article->getSeoMeta()->getTitle(),
+            'meta_desc' => $article->getSeoMeta()->getDescription(),
+            'canonical' => sprintf('https://localhost/article/%d/%s', $article->getId(), $article->getSlug()),
             'article' => $article,
-            'time_to_read' => round(str_word_count($article->getContent()) / 200),
             'last_articles' => $this->repository->findLast(),
-            'categories' => $this->categoryRepository->findAll(),
+            'category' => $categories->stream()
+                ->filter(fn (Category $c) => $c->getId() === $article->getCategoryId())
+                ->getCollection()
+                ->current(),
+            'categories' => $categories,
             'tags' => $this->tagRepository->findByArticle($article->getTranslateId()),
-            'uploadsDir' => 'uploads',
         ]));
         return $this->response;
     }
