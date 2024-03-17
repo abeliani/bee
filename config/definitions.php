@@ -77,11 +77,11 @@ return [
 
         $og = (new ImageQueryBuilder('og'))
             ->lazy(fn (ProcessorContext $c) => Crop::build($c->get('width'), $c->get('height'), $c->get('x'), $c->get('y')), Crop::type())
-            ->append(new Save($upload . DS . date('Y') . DS . uniqid(), IMAGETYPE_WEBP));
+            ->append(new Save($upload . DS . 'images/' . date('Y') . DS . uniqid(), IMAGETYPE_WEBP));
 
         $thumb = (new ImageQueryBuilder('thumb'))
             ->append(new Resize(new Size(200.0, 0)))
-            ->append(new Save($upload . DS . date('Y') . DS . uniqid(), IMAGETYPE_WEBP));
+            ->append(new Save($upload . DS . 'images/' . date('Y') . DS . uniqid(), IMAGETYPE_WEBP));
 
         $view = (new ImageQueryBuilder('view'))
             ->append(new Brightness(-30))
@@ -89,7 +89,7 @@ return [
             ->append(new Discolor(0.105))
             ->lazy(fn (ProcessorContext $c) => Crop::build($c->get('width'), $c->get('height'), $c->get('x'), $c->get('y')), Crop::type())
             ->append(new Resize(new Size(700.0,0)))
-            ->append(new Save($upload . DS . date('Y') . DS . uniqid(), IMAGETYPE_WEBP))
+            ->append(new Save($upload . DS . 'images/' . date('Y') . DS . uniqid(), IMAGETYPE_WEBP))
             ->branch($thumb);
 
         return (new ImageQueryBuilder('original'))
