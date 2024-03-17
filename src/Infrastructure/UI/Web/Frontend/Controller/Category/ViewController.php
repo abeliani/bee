@@ -42,7 +42,7 @@ readonly class ViewController implements RequestHandlerInterface
 
         $this->response->getBody()->write($this->view->render('front/index.twig', [
             'meta_lang' => $category->getLanguage()->value,
-            'canonical' => sprintf('https://localhost/category/%d/%s', $category->getId(), $category->getSlug()),
+            'canonical' => sprintf('%s/category/%d/%s', getenv('APP_HOST'), $category->getId(), $category->getSlug()),
             'meta_title' => $category->getSeoMeta()->getTitle(),
             'meta_desc' => $category->getSeoMeta()->getDescription(),
             'articles' => $this->repository->finaByCategory($category->getId(), 25, ArticleStatus::Published),

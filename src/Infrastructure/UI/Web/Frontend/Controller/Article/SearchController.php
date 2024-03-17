@@ -35,16 +35,14 @@ readonly class SearchController implements RequestHandlerInterface
         }
 
         $this->response->getBody()->write($this->view->render('front/index.twig', [
-            'meta_lang' => 'ru',
-            'canonical' => 'https://localhost',
-            'meta_desc' => 'meta description',
-            'meta_title' => 'Hello, world!',
-            'meta_author' => 'Me',
+            'meta_lang' => getenv('APP_LANG'),
+            'canonical' => sprintf('%s/article/search?term=%s', getenv('APP_HOST'), $term),
+            'meta_desc' => getenv('SITE_NAME'),
+            'meta_title' => sprintf('%s | статьи по фразе', $metaName = ucfirst(strtolower($term))),
             'articles' => $articles ?? [],
             'last_articles' => $this->repository->findLast(),
             'categories' => $this->categoryRepository->findAll(),
             'tags' => $this->tagRepository->findAll(),
-            'uploadsDir' => 'uploads',
         ]));
         return $this->response;
     }

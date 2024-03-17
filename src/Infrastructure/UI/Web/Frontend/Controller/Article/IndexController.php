@@ -64,17 +64,15 @@ readonly class IndexController implements RequestHandlerInterface
         }
 
         $this->response->getBody()->write($this->view->render('front/index.twig', [
-            'meta_lang' => 'ru',
-            'canonical' => 'https://localhost',
-            'meta_desc' => 'meta description',
-            'meta_title' => 'Hello, world!',
-            'meta_author' => 'Me',
+            'meta_lang' => getenv('APP_LANG'),
+            'canonical' => getenv('APP_HOST'),
+            'meta_title' => getenv('SITE_NAME'),
+            'meta_desc' => getenv('SITE_NAME'),
             'articles' => $articles,
             'last_articles' => $this->repository->findLast(),
             'categories' => $this->categoryRepository->findAll(),
             'tags' => $this->tagRepository->findAll(),
             'pager' => $pager,
-            'uploadsDir' => 'uploads',
         ]));
         return $this->response;
     }

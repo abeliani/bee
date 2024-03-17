@@ -40,8 +40,8 @@ readonly class ViewController implements RequestHandlerInterface
         }
 
         $this->response->getBody()->write($this->view->render('front/index.twig', [
-            'meta_lang' => 'ru',
-            'canonical' => sprintf('https://localhost/tag/%d/%s', $tag->getId(), $name),
+            'meta_lang' => getenv('APP_LANG'),
+            'canonical' => sprintf('%s/tag/%d/%s', getenv('APP_HOST'), $tag->getId(), $name),
             'meta_title' => sprintf('%s | статьи по тегу', $metaName = ucfirst($tag->getName())),
             'meta_desc' => sprintf('Список статей по тегу %s', $metaName),
             'articles' => $this->repository->findByTagId($tag->getId()),

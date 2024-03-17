@@ -39,7 +39,7 @@ readonly class ViewController implements RequestHandlerInterface
             'meta_lang' => $article->getLanguage()->value,
             'meta_title' => $article->getSeoMeta()->getTitle(),
             'meta_desc' => $article->getSeoMeta()->getDescription(),
-            'canonical' => sprintf('https://localhost/article/%d/%s', $article->getId(), $article->getSlug()),
+            'canonical' => sprintf('%s/article/%d/%s', getenv('APP_HOST'), $article->getId(), $article->getSlug()),
             'article' => $article,
             'last_articles' => $this->repository->findLast(),
             'category' => $categories->stream()
