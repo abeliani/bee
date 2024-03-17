@@ -14,6 +14,7 @@ interface ReadRepositoryInterface
     public function findByAuthor(int $id, int $creatorId): ?Article;
     public function findAll(int $limit, ?ArticleStatus $status = null): CollectionInterface;
     public function finaByCategory(int $creatorId, int $limit, ?ArticleStatus $status = null): CollectionInterface;
+    public function findByTagId(int $tagId, ?ArticleStatus $status = null): CollectionInterface;
     public function findByCursor(int $cursor, int $direction, int $limit, ?ArticleStatus $status = null): CollectionInterface;
     public function findLast(int $count = 5): CollectionInterface;
     public function search(string $therm, int $limit, ArticleStatus $status = ArticleStatus::Published): CollectionInterface;

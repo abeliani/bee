@@ -16,6 +16,7 @@ use Abeliani\Blog\Domain\Repository\User\CreateUserRepositoryInterface;
 use Abeliani\Blog\Domain\Repository\User\ReadUserRepositoryInterface;
 use Abeliani\Blog\Domain\Service\Mailer\MailerInterface;
 use Abeliani\Blog\Domain\Service\PasswordHasher\PasswordHasherInterface;
+use Abeliani\Blog\Domain\Service\TransliteratorBijective;
 use Abeliani\Blog\Infrastructure\Service;
 use Abeliani\Blog\Infrastructure\Service\Form\FormService;
 use Abeliani\Blog\Infrastructure\Service\RequestValidator\RequestValidatorService;
@@ -104,4 +105,7 @@ return [
             $c->get(ReadRepositoryInterface::class),
         );
     },
+    TransliteratorBijective::class => function(Container $c): TransliteratorBijective {
+        return new TransliteratorBijective();
+    }
 ];

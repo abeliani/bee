@@ -14,6 +14,7 @@ return simpleDispatcher(function (RouteCollector $r) {
         $r->get('article/search', Frontend\Controller\Article\SearchController::class);
 
         $r->get('category/{id:\d+}/{slug:\S+}', Frontend\Controller\Category\ViewController::class);
+        $r->get('tag/{id:\d+}/{name:\S+}', Frontend\Controller\Tag\ViewController::class);
 
         $r->get('subscribe', Frontend\Controller\Subscription\SubscribeController::class);
         $r->post('subscribe', Frontend\Controller\Subscription\SubscribeController::class);

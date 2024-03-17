@@ -13,8 +13,10 @@ use Abeliani\Blog\Application\Service\Image\Builder\Manipulate\Save;
 use Abeliani\Blog\Application\Service\Image\Builder\Manipulate\Strip;
 use Abeliani\Blog\Application\Service\Image\Processor\ProcessorContext;
 use Abeliani\Blog\Domain\Service\Mailer\MailerInterface;
+use Abeliani\Blog\Domain\Service\TransliteratorBijective;
 use Abeliani\Blog\Infrastructure\Service\Mailer;
 use Abeliani\Blog\Infrastructure\Service\Twig\Extension;
+use DI\Container;
 use Monolog\Handler\FilterHandler;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Level;
@@ -24,7 +26,7 @@ use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
 return [
-    Environment::class => function(): Environment {
+    Environment::class => function(Container $c): Environment {
         $twig = (new Environment(new FilesystemLoader(TEMPLATES_DIR)));
         $twig->addGlobal('app_host', getenv('APP_HOST'));
         $twig->addGlobal('upload_dir', 'uploads');
@@ -35,6 +37,7 @@ return [
         $twig->addExtension(new Extension\ImageTypeFilter);
         $twig->addExtension(new Extension\TimeToRead);
         $twig->addExtension(new Extension\CsrfToken);
+        $twig->addExtension(new Extension\Translator($c->get(TransliteratorBijective::class)));
         return $twig;
     },
     PDO::class => function (): PDO {

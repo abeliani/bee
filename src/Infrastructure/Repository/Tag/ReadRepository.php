@@ -11,9 +11,20 @@ use Abeliani\Blog\Domain\Repository\Tag\ReadRepositoryInterface;
 
 class ReadRepository implements ReadRepositoryInterface
 {
-
     public function __construct(private \PDO $pdo)
     {
+    }
+
+    public function find(int $id): ?Tag
+    {
+        $stmt = $this->pdo->prepare('SELECT id, name, frequency FROM tags WHERE id = ?');
+        $stmt->execute([$id]);
+
+        if (!$tag = $stmt->fetch()) {
+           return null;
+        }
+
+        return new Tag($tag['id'], $tag['name'], $tag['frequency']);
     }
 
     public function findAll(): CollectionInterface

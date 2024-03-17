@@ -89,6 +89,35 @@ SQL;
         return $collection;
     }
 
+    public function findByTagId(int $tagId, ?ArticleStatus $status = ArticleStatus::Published): CollectionInterface
+    {
+        $sql = <<<SQL
+   SELECT a.id, a.category_id, a.created_at, a.published_at, a.updated_at, a.author_id, a.edited_by,
+               at.lang, at.title, at.slug, at.preview, at.content, at.seo_meta, at.seo_og, at.media_image,
+               at.media_image_alt, at.media_video, at.status, at.view_count, at.id as translate_id,
+               GROUP_CONCAT(t.name SEPARATOR ', ') AS tags
+        FROM articles a
+        INNER JOIN article_translations at ON a.id = at.article_id AND at.lang='ru'
+SQL;
+
+        $sql = sprintf(
+            '%s %s %s WHERE atag.tag_id = ? AND a.status = ? GROUP BY a.id',
+            $sql,
+            'INNER JOIN article_tags atag ON at.id = atag.article_translate_id',
+            'INNER JOIN tags t ON t.id = atag.tag_id'
+        );
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$tagId, $status->value]);
+        $collection = new ArticleCollection;
+
+        while ($category = $stmt->fetch()) {
+            $collection->add($this->mapper->map($category));
+        }
+
+        return $collection;
+    }
+
     public function findByCursor(int $cursor, int $direction, int $limit, ?ArticleStatus $status = null): CollectionInterface
     {
         $sql = sprintf(

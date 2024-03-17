@@ -5,12 +5,14 @@ use Abeliani\Blog\Application\Service\Subscription\SubscriptionService;
 use Abeliani\Blog\Domain\Repository\Tag;
 use Abeliani\Blog\Domain\Repository\Article;
 use Abeliani\Blog\Domain\Repository\Category;
+use Abeliani\Blog\Domain\Service\TransliteratorBijective;
 use Abeliani\Blog\Infrastructure\Persistence\Mapper\ArticleMapper;
 use Abeliani\Blog\Infrastructure\Persistence\Mapper\CategoryMapper;
 use Abeliani\Blog\Infrastructure\Service;
 use Abeliani\Blog\Infrastructure\UI\Web\Frontend\Controller\Category as FrontCategory;
 use Abeliani\Blog\Infrastructure\UI\Web\Frontend\Controller\Subscription as Subscribe;
 use Abeliani\Blog\Infrastructure\UI\Web\Frontend\Controller\Article as FrontArticle;
+use Abeliani\Blog\Infrastructure\UI\Web\Frontend\Controller\Tag as FrontTag;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\Article as CpanelArticle;
 use Abeliani\Blog\Infrastructure\Service\Form\FormService;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\Category as CpanelCategory;
@@ -59,6 +61,16 @@ return [
             $c->get(Article\ReadRepositoryInterface::class),
             $c->get(Category\ReadRepositoryInterface::class),
             $c->get(Tag\ReadRepositoryInterface::class),
+        );
+    },
+    FrontTag\ViewController::class => function(Container $c): FrontTag\ViewController {
+        return new FrontTag\ViewController(
+            $c->get(Environment::class),
+            new Response(),
+            $c->get(Article\ReadRepositoryInterface::class),
+            $c->get(Category\ReadRepositoryInterface::class),
+            $c->get(Tag\ReadRepositoryInterface::class),
+            $c->get(TransliteratorBijective::class),
         );
     },
     Subscribe\SubscribeController::class => function(Container $c): Subscribe\SubscribeController {
