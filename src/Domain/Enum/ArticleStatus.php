@@ -6,6 +6,7 @@ enum ArticleStatus: int
 {
     case Draft = 0;
     case Published = 1;
-    case Archived = 2;
-    case Deleted = 3;
+    case Outdated = 2;
+    case Archived = 3;
+    case Deleted = 4;
 }

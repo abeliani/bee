@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Abeliani\Blog\Infrastructure\Service\EnvLoader;
 use DI\ContainerBuilder;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
@@ -12,6 +13,8 @@ chdir(ROOT_DIR);
 define('TEMPLATES_DIR', sprintf('%s%s%s%s%s', ROOT_DIR, DS, 'templates', DS, 'cpanel'));
 
 require_once 'vendor/autoload.php';
+
+(new EnvLoader())->load();
 
 $containerBuilder = (new ContainerBuilder())->useAutowiring(false);
 $containerBuilder->addDefinitions('config/definitions.php');
