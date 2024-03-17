@@ -14,6 +14,7 @@ use Abeliani\Blog\Application\Service\Image\Builder\Manipulate\Strip;
 use Abeliani\Blog\Application\Service\Image\Processor\ProcessorContext;
 use Abeliani\Blog\Domain\Service\Mailer\MailerInterface;
 use Abeliani\Blog\Domain\Service\TransliteratorBijective;
+use Abeliani\Blog\Infrastructure\Service\EnvLoader;
 use Abeliani\Blog\Infrastructure\Service\Mailer;
 use Abeliani\Blog\Infrastructure\Service\Twig\Extension;
 use DI\Container;
@@ -28,10 +29,10 @@ use Twig\Loader\FilesystemLoader;
 return [
     Environment::class => function(Container $c): Environment {
         $twig = (new Environment(new FilesystemLoader(TEMPLATES_DIR)));
-        $twig->addGlobal('app_host', getenv('APP_HOST'));
+        $twig->addGlobal('app_host', EnvLoader::get('APP_HOST'));
         $twig->addGlobal('upload_dir', 'uploads');
-        $twig->addGlobal('upload_path', sprintf('%s/%s', getenv('APP_HOST'), 'uploads'));
-        $twig->addGlobal('site_name', getenv('SITE_NAME'));
+        $twig->addGlobal('upload_path', sprintf('%s/%s', EnvLoader::get('APP_HOST'), 'uploads'));
+        $twig->addGlobal('site_name', EnvLoader::get('SITE_NAME'));
         $twig->addGlobal('author_url', 'https://localhost/author');
 
         $twig->addExtension(new Extension\ImageTypeFilter);
@@ -41,7 +42,7 @@ return [
         return $twig;
     },
     PDO::class => function (): PDO {
-        return new PDO('mysql:host=db;dbname=bee;charset=utf8mb4', 'root', 'root', [
+        return new PDO(EnvLoader::get('DB_DSN'), EnvLoader::get('DB_NAME'), EnvLoader::get('DB_PASSWORD'), [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES   => false,
@@ -49,14 +50,14 @@ return [
         ]);
     },
     LoggerInterface::class => function(): LoggerInterface {
-        $debugHandler = new RotatingFileHandler(ROOT_DIR . DS . getenv('APP_LOG_PATH'), 3, Level::Debug, false);
-        $restHandler = new RotatingFileHandler( ROOT_DIR . DS . getenv('DEBUG_LOG_PATH'), 3, Level::Warning, false);
+        $debugHandler = new RotatingFileHandler(ROOT_DIR . DS . EnvLoader::get('APP_LOG_PATH'), 3, Level::Debug, false);
+        $restHandler = new RotatingFileHandler( ROOT_DIR . DS . EnvLoader::get('DEBUG_LOG_PATH'), 3, Level::Warning, false);
         return (new Logger('app'))
             ->pushHandler(new FilterHandler($debugHandler, Level::Debug, Level::Notice))
             ->pushHandler(new FilterHandler($restHandler, Level::Warning, Level::Emergency));
     },
     ConfigDi::CategoryImageBuilder->name => function(): ImageQueryBuilder {
-        $upload =  ROOT_DIR . DS . getenv('FILE_UPLOAD_DIR') . DS . 'category';
+        $upload =  ROOT_DIR . DS . EnvLoader::get('FILE_UPLOAD_DIR') . DS . 'category';
 
         $resized = (new ImageQueryBuilder('view'))
             ->append(new Brightness(-30))
@@ -72,7 +73,7 @@ return [
             ->branch($resized);
     },
     ConfigDi::ArticleImageBuilder->name => function(): ImageQueryBuilder {
-        $upload =  ROOT_DIR . DS . getenv('FILE_UPLOAD_DIR') . DS . 'article';
+        $upload =  ROOT_DIR . DS . EnvLoader::get('FILE_UPLOAD_DIR') . DS . 'article';
 
         $og = (new ImageQueryBuilder('og'))
             ->lazy(fn (ProcessorContext $c) => Crop::build($c->get('width'), $c->get('height'), $c->get('x'), $c->get('y')), Crop::type())
@@ -99,10 +100,10 @@ return [
     },
     MailerInterface::class => function(): Mailer {
         return new Mailer(
-            getenv('SMTP_HOST'),
-            (int) getenv('SMTP_PORT'),
-            getenv('SMTP_USERNAME'),
-            getenv('SMTP_PASSWORD'),
+            EnvLoader::get('SMTP_HOST'),
+            (int) EnvLoader::get('SMTP_PORT'),
+            EnvLoader::get('SMTP_USERNAME'),
+            EnvLoader::get('SMTP_PASSWORD'),
         );
     }
 ];

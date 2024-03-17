@@ -18,4 +18,9 @@ class EnvLoader
             putenv(sprintf('%s=%s', trim($name), trim($value)));
         }
     }
+
+    public static function get(string $name): string|array|false
+    {
+        return getenv($name, true);
+    }
 }
