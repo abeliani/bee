@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use Abeliani\Blog\Application\Middleware;
 use Abeliani\Blog\Domain\Repository\User\ReadUserRepositoryInterface;
+use Abeliani\Blog\Infrastructure\Service\EnvLoader;
 use Abeliani\Blog\Infrastructure\Service\JWTAuthentication;
 use DI\Container;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -11,7 +12,11 @@ use Twig\Environment;
 
 return [
     Middleware\ErrorHandlerMiddleware::class => function(Container $c): Middleware\ErrorHandlerMiddleware {
-        return new Middleware\ErrorHandlerMiddleware($c->get(Environment::class), $c->get(LoggerInterface::class));
+        return new Middleware\ErrorHandlerMiddleware(
+            $c->get(Environment::class),
+            $c->get(LoggerInterface::class),
+            EnvLoader::get('APP_ENV') !== 'prod'
+        );
     },
     Middleware\RouteDispatcherMiddleware::class => function(Container $c): Middleware\RouteDispatcherMiddleware {
         return new Middleware\RouteDispatcherMiddleware($c->get(Environment::class));

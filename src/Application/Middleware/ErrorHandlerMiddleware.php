@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Abeliani\Blog\Application\Middleware;
 
+use Abeliani\Blog\Domain\Exception\NotFoundException;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Utils;
 use Monolog\Logger;
@@ -13,9 +16,13 @@ use Twig\Environment;
 
 final readonly class ErrorHandlerMiddleware implements MiddlewareInterface
 {
-    public function __construct(private Environment $view, private Logger $log)
-    {
+    public function __construct(
+        private Environment $view,
+        private Logger $log,
+        private bool $isDev,
+    ) {
     }
+
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {
@@ -30,10 +37,18 @@ final readonly class ErrorHandlerMiddleware implements MiddlewareInterface
             }
 
             throw new \RuntimeException(sprintf('Unknown error %d', $response->getStatusCode()));
+        } catch (NotFoundException $e) {
+            $responseBody = $this->view->render('error/40x.twig', [
+                'title' => '404 - page not found',
+                'message' => 'Page not found',
+            ]);
+
+            return (new Response())
+                ->withBody(Utils::streamFor($responseBody))
+                ->withStatus($e->getCode());
         } catch (\Throwable $e) {
-            $isDevelopment = true;
             $response = new Response();
-            if ($isDevelopment) {
+            if ($this->isDev) {
                 $whoops = new \Whoops\Run;
                 $whoops->allowQuit(false);
                 $whoops->writeToOutput(false);
