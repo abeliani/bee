@@ -14,11 +14,11 @@ final class CategoryForm implements ToArrayInterface
     private int $id;
 
     #[Assert\NotBlank]
-    #[Assert\Length(min: 5, max: 100)]
+    #[Assert\Length(min: 3, max: 100)]
     private string $title;
 
     #[Assert\NotBlank]
-    #[Assert\Length(min: 5, max: 100)]
+    #[Assert\Length(min: 3, max: 100)]
     private string $slug;
 
     #[Assert\Valid]
@@ -30,7 +30,7 @@ final class CategoryForm implements ToArrayInterface
     #[Assert\Valid]
     private CategoryMediaForm $media;
 
-    #[Assert\Length(min: 50)]
+    #[Assert\Length(min: 25)]
     private string $content;
 
     #[Assert\NotBlank]

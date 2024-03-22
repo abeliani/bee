@@ -22,11 +22,11 @@ final class ArticleForm implements ToArrayInterface
     private int $category_id;
 
     #[Assert\NotBlank]
-    #[Assert\Length(min: 5, max: 100)]
+    #[Assert\Length(min: 3, max: 100)]
     private string $title;
 
     #[Assert\NotBlank]
-    #[Assert\Length(min: 5, max: 100)]
+    #[Assert\Length(min: 3, max: 100)]
     private string $slug;
 
     #[Assert\Valid]
@@ -42,7 +42,7 @@ final class ArticleForm implements ToArrayInterface
     private string $tags;
 
     #[Assert\NotBlank]
-    #[Assert\Length(min: 50)]
+    #[Assert\Length(min: 25)]
     private string $preview;
 
     #[Assert\NotBlank]
