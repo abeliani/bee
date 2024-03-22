@@ -33,7 +33,7 @@ return [
         $twig->addGlobal('upload_dir', 'uploads');
         $twig->addGlobal('upload_path', sprintf('%s/%s', EnvLoader::get('APP_HOST'), 'uploads'));
         $twig->addGlobal('site_name', EnvLoader::get('SITE_NAME'));
-        $twig->addGlobal('author_url', 'https://localhost/author');
+        $twig->addGlobal('author_url',  EnvLoader::get('SITE_AUTHOR_URL'));
 
         $twig->addExtension(new Extension\ImageTypeFilter);
         $twig->addExtension(new Extension\TimeToRead);
