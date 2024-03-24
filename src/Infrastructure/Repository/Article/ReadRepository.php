@@ -54,7 +54,7 @@ SQL;
     public function findAll(int $limit, ?ArticleStatus $status = null): ArticleCollection
     {
         $sql = sprintf(
-            '%s %s GROUP BY a.id ORDER BY a.id DESC, a.published_at DESC LIMIT ?',
+            '%s %s GROUP BY a.id ORDER BY a.published_at DESC, a.id DESC LIMIT ?',
             self::BASE_SQL,
             ($status !== null ? "WHERE a.status={$status->value}" : '')
         );
