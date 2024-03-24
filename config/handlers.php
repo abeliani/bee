@@ -10,6 +10,7 @@ use Abeliani\Blog\Infrastructure\Persistence\Mapper\ArticleMapper;
 use Abeliani\Blog\Infrastructure\Persistence\Mapper\CategoryMapper;
 use Abeliani\Blog\Infrastructure\Service;
 use Abeliani\Blog\Infrastructure\UI\Web\Frontend\Controller\Category as FrontCategory;
+use Abeliani\Blog\Infrastructure\UI\Web\Frontend\Controller\Redirector as FrontRedirector;
 use Abeliani\Blog\Infrastructure\UI\Web\Frontend\Controller\Subscription as Subscribe;
 use Abeliani\Blog\Infrastructure\UI\Web\Frontend\Controller\Article as FrontArticle;
 use Abeliani\Blog\Infrastructure\UI\Web\Frontend\Controller\Tag as FrontTag;
@@ -93,6 +94,14 @@ return [
             $c->get(Category\ReadRepositoryInterface::class),
             $c->get(Tag\ReadRepositoryInterface::class),
             $c->get(SubscriptionService::class),
+        );
+    },
+    FrontRedirector\ViewController::class => function(Container $c): FrontRedirector\ViewController {
+        return new FrontRedirector\ViewController(
+            $c->get(Environment::class),
+            $c->get(Service\Redirector::class),
+            new Response(),
+            5,
         );
     },
     ItIsBackendController::class => function(Container $c): ItIsBackendController {

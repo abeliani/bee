@@ -65,6 +65,7 @@ final class ArticleFactory
     public static function createFromForm(
         int $actorId,
         int $authorId,
+        string $content,
         \DateTimeImmutable $createdAt,
         Enum\ArticleStatus $articleStatus,
         int $viewCount,
@@ -89,7 +90,7 @@ final class ArticleFactory
             $form->getTitle(),
             $form->getSlug(),
             $form->getPreview(),
-            $form->getContent(),
+            $content,
             $form->getTags(),
             (string) $images,
             $form->getMedia()->getImageAlt(),

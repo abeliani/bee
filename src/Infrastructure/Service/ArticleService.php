@@ -10,6 +10,8 @@ use Abeliani\Blog\Application\Service\Image\Processor\ProcessorContext;
 use Abeliani\Blog\Application\Service\Image\Processor\SavePathPremakeProcessor;
 use Abeliani\Blog\Domain\Collection\Concrete\ImageCollection;
 use Abeliani\Blog\Domain\Entity\Image;
+use Abeliani\Blog\Domain\Entity\RedirectUrl;
+use Abeliani\Blog\Domain\Enum\UrlProtocol;
 use Abeliani\Blog\Domain\Exception\ArticleException;
 use Abeliani\Blog\Domain\Factory\ArticleFactory;
 use Abeliani\Blog\Domain\Model\Article;
@@ -22,9 +24,11 @@ final readonly class ArticleService
     public function __construct(
         private repo\CreateRepositoryInterface $article,
         private repo\UpdateRepositoryInterface $updateRepository,
-        private ImageQueryProcessor            $imageQueryProcessor,
-        private SavePathPremakeProcessor       $imagePathsProcessor,
-        private string                         $uploadDir,
+        private ImageQueryProcessor $imageQueryProcessor,
+        private SavePathPremakeProcessor $imagePathsProcessor,
+        private Redirector $redirector,
+        private string $uploadDir,
+        private string $host,
     ) {
     }
 
@@ -45,13 +49,21 @@ final readonly class ArticleService
             ));
         }
 
+        $content = preg_replace_callback('`\b(https?)://([\w@:%._+~#=/?&-]+)`i', function (array $m) {
+            $hash = $this->redirector->make($m[0]);
+            $protocol = array_filter(UrlProtocol::cases(), fn (UrlProtocol $case) => $case->name === $m[1])[0] ?? null;
+            $this->redirector->save(new RedirectUrl($hash, $m[2], $protocol, false));
+
+            return sprintf('%s/c/%s', $this->host, $hash);
+        }, $form->getContent());
+
         $article = ArticleFactory::create(
             $actor->getId(),
             $form->getCategoryId(),
             $form->getTitle(),
             $form->getSlug(),
             $form->getPreview(),
-            $form->getContent(),
+            $content,
             $form->getTags(),
             (string) $this->getImagesData(),
             $form->getMedia()->getImageAlt(),
@@ -97,9 +109,22 @@ final readonly class ArticleService
             $imageData = $this->getImagesData();
         }
 
+        $content = preg_replace_callback('`\b(https?)://([\w@:%._+~#=/?&-]+)`i', function (array $m) {
+            if (($url = $m[0]) && str_starts_with($url, $this->host)) {
+                return $url;
+            }
+
+            $protocol = array_filter(UrlProtocol::cases(), fn (UrlProtocol $case) => $case->name === $m[1])[0] ?? null;
+            $hash = $this->redirector->make($url);
+            $this->redirector->save(new RedirectUrl($hash, $m[2], $protocol, false));
+
+            return sprintf('%s/c/%s', $this->host, $hash);
+        }, $form->getContent());
+
         $updated = ArticleFactory::createFromForm(
             $user->getId(),
             $article->getCreatedBy(),
+            $content,
             $article->getCreatedAt(),
             $article->getStatus(),
             $article->getViewCount(),

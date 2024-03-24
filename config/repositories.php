@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 use Abeliani\Blog\Domain\Repository\Article;
 use Abeliani\Blog\Domain\Repository\Category;
+use Abeliani\Blog\Domain\Repository\Redirector;
 use Abeliani\Blog\Domain\Repository\Subscription\CreateRepositoryInterface;
 use Abeliani\Blog\Domain\Repository\Subscription\ReadRepositoryInterface;
 use Abeliani\Blog\Domain\Repository\Tag;
-use Abeliani\Blog\Domain\Repository\Subscription;
 use Abeliani\Blog\Domain\Repository\User\CreateUserRepositoryInterface;
 use Abeliani\Blog\Domain\Repository\User\ReadUserRepositoryInterface;
 use Abeliani\Blog\Infrastructure\Persistence\Mapper;
@@ -54,4 +54,7 @@ return [
     ReadRepositoryInterface::class => function(Container $c): Repository\Subscription\ReadRepository {
         return new Repository\Subscription\ReadRepository($c->get(PDO::class));
     },
+    Redirector\RepositoryInterface::class => function(Container $c): Repository\Redirector\Repository {
+        return new Repository\Redirector\Repository($c->get(PDO::class));
+    }
 ];

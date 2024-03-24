@@ -14,6 +14,7 @@ use Abeliani\Blog\Domain\Repository\Subscription\CreateRepositoryInterface;
 use Abeliani\Blog\Domain\Repository\Subscription\ReadRepositoryInterface;
 use Abeliani\Blog\Domain\Repository\User\CreateUserRepositoryInterface;
 use Abeliani\Blog\Domain\Repository\User\ReadUserRepositoryInterface;
+use Abeliani\Blog\Domain\Repository\Redirector;
 use Abeliani\Blog\Domain\Service\Mailer\MailerInterface;
 use Abeliani\Blog\Domain\Service\PasswordHasher\PasswordHasherInterface;
 use Abeliani\Blog\Domain\Service\TransliteratorBijective;
@@ -90,7 +91,9 @@ return [
             $c->get(Article\UpdateRepositoryInterface::class),
             $c->get(ConfigDi::ArticleImageProcessor->name),
             new SavePathPremakeProcessor($c->get(ConfigDi::ArticleImageBuilder->name)),
-            ROOT_DIR . DS . getenv('FILE_UPLOAD_DIR') . DS . 'article'
+            $c->get(Service\Redirector::class),
+            ROOT_DIR . DS . getenv('FILE_UPLOAD_DIR') . DS . 'article',
+            getenv('APP_HOST'),
         );
     },
     SubscriptionService::class => function(Container $c): SubscriptionService {
@@ -107,5 +110,8 @@ return [
     },
     TransliteratorBijective::class => function(Container $c): TransliteratorBijective {
         return new TransliteratorBijective();
+    },
+    Service\Redirector::class => function(Container $c): Service\Redirector {
+        return new Service\Redirector($c->get(Redirector\RepositoryInterface::class));
     }
 ];
