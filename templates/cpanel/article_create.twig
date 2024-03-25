@@ -2,13 +2,9 @@
 {% extends "cpanel/main.twig" %}
 
 {% block head %}
-{% include 'cpanel/froala/styles.twig' %}
+{% include 'cpanel/sun/styles.twig' %}
 {% include 'cpanel/cropper/styles.twig' %}
 {% include 'cpanel/datetimepicker/styles.twig' %}
-<!--
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css">
--->
 {% endblock %}
 
 {% block content %}
@@ -157,16 +153,8 @@
         {{ form.inputField('translate_id', translate_id, errors, {class: 'form-control', type: 'hidden', id: 'translateId'}) }}
         </form>
     {% block bottom %}
-    {% include 'cpanel/froala/scripts.twig' with {'editorId': 'editor'} %}
+    {% include 'cpanel/sun/scripts.twig' with {'editorId': 'editor'} %}
     {% include 'cpanel/cropper/scripts.twig' with {'cropperId': 'imageInput', 'formId': 'create_category', 'dataId': 'imageData', 'imageId': 'image'} %}
     {% include 'cpanel/datetimepicker/scripts.twig' with {'pickerId': 'datepicker-autoclose'} %}
-
-    <!--
-    <script type="text/javascript"
-    src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js"></script>
-    <script type="text/javascript"
-    src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/xml/xml.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.2.7/purify.min.js"></script>
-    -->
     {% endblock %}
 {% endblock %}
