@@ -49,7 +49,8 @@ final readonly class ArticleService
             ));
         }
 
-        $content = preg_replace_callback('`\b(https?)://([\w@:%._+~#=/?&-]+)`i', function (array $m) {
+        $pattern = sprintf('`(?<=href=")(?!%s)(https?)://([\w@:%%._+~#=/?&-]+)`i', preg_quote($this->host));
+        $content = preg_replace_callback($pattern, function (array $m) {
             $hash = $this->redirector->make($m[0]);
             $protocol = array_filter(UrlProtocol::cases(), fn (UrlProtocol $case) => $case->name === $m[1])[0] ?? null;
             $this->redirector->save(new RedirectUrl($hash, $m[2], $protocol, false));
@@ -109,7 +110,8 @@ final readonly class ArticleService
             $imageData = $this->getImagesData();
         }
 
-        $content = preg_replace_callback('`\b(https?)://([\w@:%._+~#=/?&-]+)`i', function (array $m) {
+        $pattern = sprintf('`(?<=href=")(?!%s)(https?)://([\w@:%%._+~#=/?&-]+)`i', preg_quote($this->host));
+        $content = preg_replace_callback($pattern, function (array $m) {
             if (($url = $m[0]) && str_starts_with($url, $this->host)) {
                 return $url;
             }
