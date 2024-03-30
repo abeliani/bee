@@ -17,7 +17,6 @@ class ImageRepository implements ImageRepositoryInterface
 
     public function findAll(?UploadTag $tag = null): ImageUploadCollection
     {
-        $images = new ImageCollection;
         $files = new ImageUploadCollection;
         $sql = 'SELECT id, tag, title, files, created_by, created_at FROM uploads';
 
@@ -29,6 +28,7 @@ class ImageRepository implements ImageRepositoryInterface
         $stmt->execute();
 
         while ($file = $stmt->fetch()) {
+            $images = new ImageCollection;
             foreach (json_decode($file['files'], true) as $img) {
                 $images->add(new Image($img['type'], $img['url']));
             }
