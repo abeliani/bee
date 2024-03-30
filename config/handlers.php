@@ -10,6 +10,7 @@ use Abeliani\Blog\Infrastructure\Persistence\Mapper\ArticleMapper;
 use Abeliani\Blog\Infrastructure\Persistence\Mapper\CategoryMapper;
 use Abeliani\Blog\Infrastructure\Service;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\Upload\ImageCreateController;
+use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\Upload\ImageGalleryController;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\Upload\ImageIndexController;
 use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\Upload\ImageUpdateController;
 use Abeliani\Blog\Infrastructure\UI\Web\Frontend\Controller\Category as FrontCategory;
@@ -171,6 +172,12 @@ return [
             $c->get(Service\CategoryService::class),
             $c->get(Category\ReadRepositoryInterface::class),
             $c->get(CategoryMapper::class),
+        );
+    },
+    ImageGalleryController::class => function(Container $c): ImageGalleryController {
+        return new ImageGalleryController(
+            new Response(),
+            $c->get(\Abeliani\Blog\Domain\Repository\Upload\ImageRepositoryInterface::class),
         );
     },
     ImageIndexController::class => function(Container $c): ImageIndexController {
