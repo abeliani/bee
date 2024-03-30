@@ -7,7 +7,7 @@ use Abeliani\Blog\Domain\Exception\DomainException;
 
 trait SurrogateId
 {
-    private  ?int $id = null;
+    private ?int $id = null;
 
     public function getId(): ?int
     {
