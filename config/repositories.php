@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Abeliani\Blog\Domain\Repository\Article;
 use Abeliani\Blog\Domain\Repository\Category;
 use Abeliani\Blog\Domain\Repository\Redirector;
+use Abeliani\Blog\Domain\Repository\Upload;
 use Abeliani\Blog\Domain\Repository\Subscription\CreateRepositoryInterface;
 use Abeliani\Blog\Domain\Repository\Subscription\ReadRepositoryInterface;
 use Abeliani\Blog\Domain\Repository\Tag;
@@ -56,5 +57,8 @@ return [
     },
     Redirector\RepositoryInterface::class => function(Container $c): Repository\Redirector\Repository {
         return new Repository\Redirector\Repository($c->get(PDO::class));
-    }
+    },
+    Upload\ImageRepositoryInterface::class => function(Container $c): Repository\Upload\ImageRepository {
+        return new Repository\Upload\ImageRepository($c->get(PDO::class));
+    },
 ];

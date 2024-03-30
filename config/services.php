@@ -76,6 +76,13 @@ return [
             \GdImage::class,
         );
     },
+    ConfigDi::UploadImageProcessor->name => function(Container $c): ImageQueryProcessor {
+        return new ImageQueryProcessor(
+            $c->get(ConfigDi::UploadImageBuilder->name),
+            \Imagick::class,
+            \GdImage::class,
+        );
+    },
     Service\CategoryService::class => function(Container $c):Service\CategoryService {
         return new Service\CategoryService(
             $c->get(CreateCategoryRepositoryInterface::class),
@@ -96,6 +103,14 @@ return [
             getenv('APP_HOST'),
         );
     },
+    \Abeliani\Blog\Application\Service\Upload\UploadService::class => function (Container $c): \Abeliani\Blog\Application\Service\Upload\UploadService {
+        return new \Abeliani\Blog\Application\Service\Upload\UploadService(
+            $c->get(ConfigDi::UploadImageProcessor->name),
+            new SavePathPremakeProcessor($c->get(ConfigDi::UploadImageBuilder->name)),
+            $c->get(\Abeliani\Blog\Domain\Repository\Upload\ImageRepositoryInterface::class),
+            ROOT_DIR . DS . getenv('FILE_UPLOAD_DIR'),
+        );
+    },
     SubscriptionService::class => function(Container $c): SubscriptionService {
         return new SubscriptionService(
             getenv('MAILER_TOKEN_SECRET'),
@@ -113,5 +128,5 @@ return [
     },
     Service\Redirector::class => function(Container $c): Service\Redirector {
         return new Service\Redirector($c->get(Redirector\RepositoryInterface::class));
-    }
+    },
 ];

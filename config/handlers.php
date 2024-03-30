@@ -9,6 +9,9 @@ use Abeliani\Blog\Domain\Service\TransliteratorBijective;
 use Abeliani\Blog\Infrastructure\Persistence\Mapper\ArticleMapper;
 use Abeliani\Blog\Infrastructure\Persistence\Mapper\CategoryMapper;
 use Abeliani\Blog\Infrastructure\Service;
+use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\Upload\ImageCreateController;
+use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\Upload\ImageIndexController;
+use Abeliani\Blog\Infrastructure\UI\Web\CPanel\Controller\Upload\ImageUpdateController;
 use Abeliani\Blog\Infrastructure\UI\Web\Frontend\Controller\Category as FrontCategory;
 use Abeliani\Blog\Infrastructure\UI\Web\Frontend\Controller\Redirector as FrontRedirector;
 use Abeliani\Blog\Infrastructure\UI\Web\Frontend\Controller\Subscription as Subscribe;
@@ -168,6 +171,30 @@ return [
             $c->get(Service\CategoryService::class),
             $c->get(Category\ReadRepositoryInterface::class),
             $c->get(CategoryMapper::class),
+        );
+    },
+    ImageIndexController::class => function(Container $c): ImageIndexController {
+        return new ImageIndexController(
+            $c->get(Environment::class),
+            new Response(),
+            $c->get(\Abeliani\Blog\Domain\Repository\Upload\ImageRepositoryInterface::class),
+        );
+    },
+    ImageCreateController::class => function(Container $c): ImageCreateController {
+        return new ImageCreateController(
+            $c->get(Environment::class),
+            $c->get(FormService::class),
+            new Response(),
+            $c->get(\Abeliani\Blog\Application\Service\Upload\UploadService::class),
+        );
+    },
+    ImageUpdateController::class => function(Container $c): ImageUpdateController {
+        return new ImageUpdateController(
+            $c->get(Environment::class),
+            $c->get(FormService::class),
+            new Response(),
+            $c->get(\Abeliani\Blog\Application\Service\Upload\UploadService::class),
+            $c->get(\Abeliani\Blog\Domain\Repository\Upload\ImageRepositoryInterface::class),
         );
     },
 ];

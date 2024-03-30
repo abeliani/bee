@@ -33,6 +33,11 @@ return simpleDispatcher(function (RouteCollector $r) {
         $r->get('/article/create', CPanel\Controller\Article\CreateController::class);
         $r->post('/article/create', CPanel\Controller\Article\CreateController::class);
 
+        $r->get('/image', CPanel\Controller\Upload\ImageIndexController::class);
+        $r->get('/image/{tag:\w+}/{id:\d+}', CPanel\Controller\Upload\ImageUpdateController::class);
+        $r->post('/image/{tag:\w+}/{id:\d+}', CPanel\Controller\Upload\ImageUpdateController::class);
+        $r->post('/image/{tag:\w+}/upload', CPanel\Controller\Upload\ImageCreateController::class);
+
         $r->get('/article/update/{id:\d+}', CPanel\Controller\Article\UpdateController::class);
         $r->post('/article/update/{id:\d+}', CPanel\Controller\Article\UpdateController::class);
 

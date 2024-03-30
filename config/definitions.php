@@ -98,6 +98,25 @@ return [
             ->branch($og)
             ->branch($view);
     },
+    ConfigDi::UploadImageBuilder->name => function(): ImageQueryBuilder {
+        $upload =  ROOT_DIR . DS . EnvLoader::get('FILE_UPLOAD_DIR') . DS . 'article' . DS . 'images';
+
+        $thumb = (new ImageQueryBuilder('thumb'))
+            ->append(new Resize(new Size(200.0, 0)))
+            ->append(Crop::build(200.0, 200.0, 0.0, 0.0))
+            ->append(new Save($upload . DS . 'content' . DS . date('Y') . DS . uniqid(), IMAGETYPE_WEBP));
+
+        $resized = (new ImageQueryBuilder('view'))
+            ->append(new Discolor(0.5))
+            ->append(new Resize(new Size(700.0,0)))
+            ->append(new Save($upload . DS . 'content' . DS . date('Y') . DS . uniqid(), IMAGETYPE_WEBP))
+            ->branch($thumb);
+
+        return (new ImageQueryBuilder('original'))
+            ->append(new Strip())
+            ->append(new Save($upload . DS . 'original' . DS . uniqid(), IMAGETYPE_WEBP))
+            ->branch($resized);
+    },
     MailerInterface::class => function(): Mailer {
         return new Mailer(
             EnvLoader::get('SMTP_HOST'),

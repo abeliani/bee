@@ -1,0 +1,39 @@
+{% import 'cpanel/form_macros.twig' as form %}
+{% extends "cpanel/main.twig" %}
+{% block content %}
+    {% block head %}
+    {% include 'cpanel/datetimepicker/styles.twig' %}
+    {% endblock %}
+
+    <form class="form-horizontal mt-3" method="POST" id="create_iamge" enctype="multipart/form-data" action="{{ action_url }}">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                    <img src="{{ loaded.url }}"  alt="{{ alt }}" />
+                      <div class="form-group">
+                        <label for="alt">Alt</label>
+                            {{ form.inputField('alt', alt, errors, {class: 'form-control', type: 'text', id: 'alt'}) }}
+                        </div>
+                        {{ form.inputField('image', image, errors, {class: 'form-control', type: 'file', id: 'image', accept: 'image/*'}) }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="border-top">
+                        <div class="card-body">
+                            <button type="submit" class="btn btn-success text-white">Save</button>
+                            <button type="submit" class="btn btn-primary">Reset</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}" />
+    </form>
+    {% block bottom %}
+    {% endblock %}
+{% endblock %}

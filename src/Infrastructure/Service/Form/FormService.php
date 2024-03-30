@@ -30,7 +30,7 @@ final readonly class FormService
 
         return new FromInspector(
             $this->hydrate(array_merge($data, $query ?? []), $formClass),
-            empty($data),
+            empty($data), // fixme. empty form is empty if empty form object but not empty request data
             fn (object $form, ?string $field) => $this->validator->validate($form, $field),
             fn (object $form) => $this->hydrator->convert($form)
         );
