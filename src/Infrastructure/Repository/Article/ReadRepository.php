@@ -33,7 +33,19 @@ SQL;
      */
     public function find(int $id): ?Article
     {
-        $sql = sprintf('%s WHERE a.id = ? AND a.status = ? GROUP BY a.id LIMIT 1', self::BASE_SQL);
+        // todo must be refactor
+        $sql = <<<SQL
+SELECT a.id, a.category_id, a.created_at, a.published_at, a.updated_at, a.author_id, a.edited_by,
+               at.lang, at.title, at.slug, at.preview, at.content, at.seo_meta, at.seo_og, at.media_image,
+               at.media_image_alt, at.media_video, at.status, at.view_count, at.id as translate_id,
+               GROUP_CONCAT(t.name SEPARATOR ', ') AS tags
+        FROM articles a
+        INNER JOIN article_translations at ON a.id = at.article_id
+        LEFT JOIN article_tags atag ON at.id = atag.article_translate_id
+        LEFT JOIN tags t ON atag.tag_id = t.id
+SQL;
+
+        $sql = sprintf('%s WHERE a.id = ? AND a.status = ? GROUP BY a.id LIMIT 1', $sql);
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$id, ArticleStatus::Published->value]);
 
