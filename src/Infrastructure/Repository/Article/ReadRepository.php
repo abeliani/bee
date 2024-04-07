@@ -45,7 +45,7 @@ SELECT a.id, a.category_id, a.created_at, a.published_at, a.updated_at, a.author
         LEFT JOIN tags t ON atag.tag_id = t.id
 SQL;
 
-        $sql = sprintf('%s WHERE a.id = ? AND a.status = ? GROUP BY a.id LIMIT 1', $sql);
+        $sql = sprintf('%s WHERE a.id = ? AND a.status = ? GROUP BY a.id, at.lang LIMIT 1', $sql);
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$id, ArticleStatus::Published->value]);
 
