@@ -13,10 +13,10 @@ use Abeliani\Blog\Application\Service\Image\Builder\Manipulate\Save;
 use Abeliani\Blog\Application\Service\Image\Builder\Manipulate\Strip;
 use Abeliani\Blog\Application\Service\Image\Processor\ProcessorContext;
 use Abeliani\Blog\Domain\Service\Mailer\MailerInterface;
-use Abeliani\Blog\Domain\Service\TransliteratorBijective;
 use Abeliani\Blog\Infrastructure\Service\EnvLoader;
 use Abeliani\Blog\Infrastructure\Service\Mailer;
 use Abeliani\Blog\Infrastructure\Service\Twig\Extension;
+use Abeliani\StringTranslator\Drivers\Bijective;
 use DI\Container;
 use Monolog\Handler\FilterHandler;
 use Monolog\Handler\RotatingFileHandler;
@@ -38,7 +38,8 @@ return [
         $twig->addExtension(new Extension\ImageTypeFilter);
         $twig->addExtension(new Extension\TimeToRead);
         $twig->addExtension(new Extension\CsrfToken);
-        $twig->addExtension(new Extension\Translator($c->get(TransliteratorBijective::class)));
+        $twig->addExtension(new Extension\Translator(new Bijective()));
+
         return $twig;
     },
     PDO::class => function (): PDO {
