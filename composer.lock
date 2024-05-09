@@ -4,8 +4,145 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d5e17e4ac7efc6d9bb5531c675da434b",
+    "content-hash": "e6e0c546fd31a73e72bf3ab9f6cea6ac",
     "packages": [
+        {
+            "name": "abeliani/slug-helper",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/abeliani/slug-helper.git",
+                "reference": "5029dddb542877cea3050fe87bd9f6da1151985f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/abeliani/slug-helper/zipball/5029dddb542877cea3050fe87bd9f6da1151985f",
+                "reference": "5029dddb542877cea3050fe87bd9f6da1151985f",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "codeception/codeception": "^4.1",
+                "codeception/module-asserts": "^2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Abeliani\\SlugHelper\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anatolii Belianin"
+                }
+            ],
+            "description": "Helps to get a valid slug from the passed string",
+            "homepage": "https://treecode.ru",
+            "support": {
+                "issues": "https://github.com/abeliani/slug-helper/issues",
+                "source": "https://github.com/abeliani/slug-helper/tree/v1.0.0"
+            },
+            "time": "2024-05-08T22:00:07+00:00"
+        },
+        {
+            "name": "abeliani/string-translator",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/abeliani/string-translator.git",
+                "reference": "1030f4df840b71f7406709854d1b81272b034c97"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/abeliani/string-translator/zipball/1030f4df840b71f7406709854d1b81272b034c97",
+                "reference": "1030f4df840b71f7406709854d1b81272b034c97",
+                "shasum": ""
+            },
+            "require": {
+                "ext-http": "*",
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "codeception/codeception": "^4.1",
+                "codeception/specify": "^2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Abeliani\\StringTranslator\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anatolii Belianin"
+                }
+            ],
+            "description": "Translates the received text using various services",
+            "homepage": "https://treecode.ru",
+            "support": {
+                "issues": "https://github.com/abeliani/string-translator/issues",
+                "source": "https://github.com/abeliani/string-translator/tree/v1.0.0"
+            },
+            "time": "2024-05-08T22:56:59+00:00"
+        },
+        {
+            "name": "abeliani/translated-slug-helper",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/abeliani/translated-slug-helper.git",
+                "reference": "efd7a1eeca03717771359e155e91ba393541a26c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/abeliani/translated-slug-helper/zipball/efd7a1eeca03717771359e155e91ba393541a26c",
+                "reference": "efd7a1eeca03717771359e155e91ba393541a26c",
+                "shasum": ""
+            },
+            "require": {
+                "abeliani/slug-helper": "^1.0",
+                "abeliani/string-translator": "^1.0",
+                "guzzlehttp/guzzle": "^7.8.0",
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "codeception/codeception": "^4.1",
+                "codeception/module-asserts": "^2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Abeliani\\TranslatedSlugHelper\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anatolii Belianin",
+                    "email": "belianianatoli@gmail.com"
+                }
+            ],
+            "description": "Helps to get a valid slug translated or transliterated by a driver collection",
+            "homepage": "https://treecode.ru",
+            "support": {
+                "issues": "https://github.com/abeliani/translated-slug-helper/issues",
+                "source": "https://github.com/abeliani/translated-slug-helper/tree/v1.0.0"
+            },
+            "time": "2024-05-08T21:48:12+00:00"
+        },
         {
             "name": "filp/whoops",
             "version": "2.15.4",
@@ -6016,11 +6153,12 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "ext-pdo": "*",
-        "ext-imagick": "*",
+        "ext-fileinfo": "*",
         "ext-gd": "*",
-        "ext-fileinfo": "*"
+        "ext-imagick": "*",
+        "ext-memcached": "*",
+        "ext-pdo": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.3.0"
 }
