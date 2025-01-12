@@ -54,6 +54,7 @@ final readonly class SubscriptionService
             ->getToken($this->jwtConfig->signer(), $this->jwtConfig->signingKey());
 
         $message = $this->view->render('email/confirm_email_subscription.twig', [
+            // fixme dynamic host
             'confirm_url' => sprintf('http://localhost/subscribe/confirm/%s', base64_encode($token->toString())),
         ]);
 

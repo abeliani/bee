@@ -53,6 +53,7 @@ final readonly class SubscribeController implements RequestHandlerInterface
             'last_articles' => $this->repository->findLast(),
             'categories' => $this->categoryRepository->findAll(),
             'tags' => $this->tagRepository->findAll(),
+            // fixme pass google recaptcha secret as param
         ]));
 
         return $this->response;
